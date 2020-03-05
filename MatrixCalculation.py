@@ -1,6 +1,6 @@
 import control as ctrl
 import numpy as np
-import Cit_par.py
+from Cit_par.py import *
 
 ## Composite Matrices from appendix D
 # These have been rewritten in terms of State variable u,a,theta,q.
@@ -9,22 +9,27 @@ import Cit_par.py
 cbar = c
 V = V0
 
-C1 = np.array([  [(-2*muc*cbar/V**2), 0, 0,0],
+C1 = np.array([ [(-2*muc*cbar/V**2), 0, 0,0],
                 [0, (CZadot -2*muc), 0, 0],
                 [0, 0, (-cbar/V), 0],
                 [0,(cbar/V*Cmadot)]])
 
-C2 = np.array()
+C2 = np.array([ [1/V*CXa, CXa, CZ0, cbar/V*CXa],
+                [1/V*CZa, Cza, -CX0, -cbar/V*(CZa + 2*muc)],
+                [0, 0, 0, cbar/V],
+                [1/V*Cma, Cma, 0,cbar/V*Cmq]])
+
+C3 = np.array([ [CXde],
+                [CZde],
+                [0],
+                [Cmde]])
 
 ## Define matrices A,B,C,D ##
 
 # State matrix A
+A = -np.matmul(np.linalg.inv(C1),C2)
+B = -np.matmul(np.linalg.inv(C1),C3)
 
-# Input matrix B
-
-# Output matrix C
-
-# Feedforward matrix D
 
 ## Create state space system ##
 
