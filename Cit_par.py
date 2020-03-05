@@ -18,7 +18,7 @@ CD0    =  0.04           # Zero lift drag coefficient [ ]
 CLa    =  5.084           # Slope of CL-alpha curve [ ]
 
 # Longitudinal stability
-# Cma    =             # longitudinal stabilty [ ]
+Cma    =   -0.5626          # longitudinal stabilty [ ]
 # Cmde   =             # elevator effectiveness [ ]
 
 # Aircraft geometry
@@ -39,13 +39,13 @@ ih     = -2 * pi / 180   # stabiliser angle of incidence [rad]
 # Constant values concerning atmosphere and gravity
 
 rho0   = 1.2250          # air density at sea level [kg/m^3] 
-a = -0.0065         # temperature gradient in ISA [K/m]
+Temprad = -0.0065         # temperature gradient in ISA [K/m]
 Temp0  = 288.15          # temperature at sea level in ISA [K]
 R      = 287.05          # specific gas constant [m^2/sec^2K]
 g      = 9.81            # [m/sec^2] (gravity constant)
 
 # air density [kg/m^3]  
-rho    = rho0 * pow(((1+(a * hp0 / Temp0))), (-((g / (a*R)) + 1)))
+rho    = rho0 * pow(((1+(a * hp0 / Temp0))), (-((g / (Temprad*R)) + 1)))
 W      = m * g            # [N]       (aircraft weight)
 
 # Constant values concerning aircraft inertia
