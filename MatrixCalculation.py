@@ -30,6 +30,12 @@ C3 = np.array([ [CXde],
 A = -np.matmul(np.linalg.inv(C1),C2)
 B = -np.matmul(np.linalg.inv(C1),C3)
 
+C = np.array([  [1/V, 0, 0, 0],
+                [0, 1, 0, 0],
+                [0, 0, 1, 0],
+                [0, 0, 0, cbar/V]])
+D = np.zeros((4,4))
+
 
 ## Create state space system ##
 
