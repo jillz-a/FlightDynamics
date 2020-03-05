@@ -10,7 +10,7 @@ alpha0 =             # angle of attack in the stationary flight condition [rad]
 th0    =             # pitch angle in the stationary flight condition [rad]
 
 # Aircraft mass
-m      =             # mass [kg]
+m      =  60500/9.80665           # mass [kg]
 
 # aerodynamic properties
 e      =  0.8            # Oswald factor [ ]
