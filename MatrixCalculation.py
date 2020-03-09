@@ -65,15 +65,15 @@ def GenAsymmetricStateSys():
     sys: State-space system
     '''
     
-    C1 = np.array([ [(CYbdot -2*mub)*b/V, 0, 0, 0],
-                    [0, -.5*b/V, 0, 0],
+    C1 = np.array([ [(CYbdot -2*mub)*(b/V), 0, 0, 0],
+                    [0, -.5*(b/V), 0, 0],
                     [0, 0, -2*mub*KX2*(b/V)**2, 2*mub*KXZ*(b/V)**2],
-                    [0, 0, 2*mub*KXZ*(b/V)**2, -2*mub*KX2*(b/V)**2]])
+                    [0, 0, 2*mub*KXZ*(b/V)**2, -2*mub*KZ2*(b/V)**2]])
 
-    C2 = np.array([ [CYb, CL, CYp*b/(2*V), (CYr - 4*mub)],
+    C2 = np.array([ [CYb, CL, CYp*(b/(2*V)), (CYr - 4*mub)*(b/(2*V))],
                     [0, 0, b/(2*V), 0],
-                    [Clb, 0, Clp*b/(2*V), Clr*b/(2*V)],
-                    [Cnb, 0, Cnp*b/(2*V), Cnr*b/(2*V)]])
+                    [Clb, 0, Clp*(b/(2*V)), Clr*(b/(2*V))],
+                    [Cnb, 0, Cnp*(b/(2*V)), Cnr*(b/(2*V))]])
 
     C3 = np.array([ [CYda, CYdr],
                     [0 , 0],
