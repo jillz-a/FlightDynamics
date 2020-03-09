@@ -88,7 +88,7 @@ def GenAsymmetricStateSys():
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
                     [0, 0, 0, 1]])
-    D = np.zeros((4,1))
+    D = np.zeros((4,2))
 
 
     ## Create state space system ##
@@ -101,7 +101,7 @@ def GenAsymmetricStateSys():
 
 
 ######### Symmetric response ###############
-symmsys, symmsysEig = GenSymmetricStateSys()
+symmsys, symmsysEig = GenAsymmetricStateSys()
 ## General System information
 
 print(symmsys)
@@ -119,6 +119,6 @@ plt.show()
 
 ## System Response ##
 initials = [V0,alpha0,th0,0]
-t, y = ctrl.impulse_response(symmsys,X0=initials, input=0)
-plt.plot(t,y[3])
+t, y = ctrl.impulse_response(symmsys,X0=initials)
+plt.plot(t,y[0])
 plt.show()
