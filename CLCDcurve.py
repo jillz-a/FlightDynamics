@@ -9,21 +9,17 @@ with open('AOA_VTAS.csv', encoding='UTF-8') as csvfile:
     alpha = []
     V = []
     for row in readCSV:
-        alpha.append(float(row[0]))
-        V.append(float(row[1])*0.51444444444444) #convert knots to m/s
-AOA = np.array(alpha)
-Vtas = np.array(V)
+        if float(row[0]) > 100:
+            alpha.append(float(row[1]))
+            V.append(float(row[0])*0.51444444444444) #convert knots to m/s
 
-# alpha =np.array([1.7, 2.4, 3.6, 8.7, 10.6])
-# V = np.array([128.0967, 113.6922, 98.7733, 66.8777, 60.70444])
-CLgraph = W /(0.5 * Vtas**2 * rho * S)
-CDgraph = CD0 + (CLgraph * AOA * (pi/180)) ** 2 / (pi * A * e)
-print(np.argmax(CLgraph),max(CLgraph))
-print(np.argmin(Vtas),min(Vtas))
+data = np.array([alpha,V])
+data2 = np.argsort(data,axis=0)
+print(data)
+print(data2)
 
-# def test_func(x,a,b):
-#     return a*x**4 + b
-# params, params_covariance = optimize.curve_fit(test_func, alpha, CDgraph)
+CLgraph = W/(0.5 * data[1]**2 * rho * S)
+AOA = data[0]
 
 plt.grid()
 plt.scatter(AOA,CLgraph)
@@ -37,3 +33,10 @@ plt.show()
 # plt.ylim(0.0395,0.0418)
 # plt.show()
 
+## Comments ##
+# CDgraph = CD0 + (CLgraph * AOA * (pi/180)) ** 2 / (pi * A * e)
+# def test_func(x,a,b):
+#     return a*x**4 + b
+# params, params_covariance = optimize.curve_fit(test_func, alpha, CDgraph)
+# alpha =np.array([1.7, 2.4, 3.6, 8.7, 10.6])
+# V = np.array([128.0967, 113.6922, 98.7733, 66.8777, 60.70444])
