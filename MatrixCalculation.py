@@ -20,16 +20,16 @@ def GenSymmetricStateSys():
 
     ## Composite Matrices from appendix D
     # These have been rewritten in terms of State variable u,a,theta,q.
-    # C1* xdot + C2* x + C3 * uinpuy
-    C1 = np.array([ [(-2*muc*cbar/V**2), 0., 0., 0.],                       # [u]
-                    [0., (CZadot -2*muc), 0., 0.],                          # [alpha]
-                    [0., 0., (-cbar/V), 0.],                                # [theta]
-                    [0., (cbar/V*Cmadot), 0., (-2*muc*KY2*(cbar/V)**2)]])   # [q]
+    # C1* xdot + C2* x + C3 * u
+    C1 = np.array([ [(-2*muc*cbar/V**2), 0., 0., 0.],
+                    [0., (CZadot -2*muc) * (cbar/V), 0., 0.],
+                    [0., 0., (-cbar/V), 0.],
+                    [0., ((cbar/V)*Cmadot), 0., (-2*muc*KY2*(cbar/V)**2)]])
 
-    C2 = np.array([ [1/V*CXa, CXa, CZ0, cbar/V*CXa],
-                    [1/V*CZa, CZa, -CX0, -cbar/V*(CZa + 2*muc)],
+    C2 = np.array([ [(1/V)*CXa, CXa, CZ0, (cbar/V)*CXa],
+                    [(1/V)*CZa, CZa, -CX0, (cbar/V)*(CZq + 2*muc)],
                     [0., 0., 0., cbar/V],
-                    [1/V*Cmu, Cma, 0., cbar/V*Cmq]])
+                    [(1/V)*Cmu, Cma, 0., (cbar/V)*Cmq]])
 
     C3 = np.array([ [CXde],
                     [CZde],
