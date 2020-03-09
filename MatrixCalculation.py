@@ -59,5 +59,5 @@ def GenAsymmetricStateSys():
 
     C2 = np.array([ [CYb, CL, CYp*b/(2*V), (CYr - 4*mub)],
                     [0, 0, b/(2*V), 0],
-                    [Clb, 0, Clp*b/(2*V), Clr*b/(2*V)]
+                    [Clb, 0, Clp*b/(2*V), Clr*b/(2*V)],
                     [Cnb, 0, Cnp*b/(2*V), Cnr*b/(2*V)]])
