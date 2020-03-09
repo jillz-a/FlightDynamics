@@ -84,10 +84,10 @@ def GenAsymmetricStateSys():
     A = -np.matmul(np.linalg.inv(C1),C2)
     B = -np.matmul(np.linalg.inv(C1),C3)
 
-    C = np.array([  [1/V, 0, 0, 0],
+    C = np.array([  [1, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
-                    [0, 0, 0, cbar/V]])
+                    [0, 0, 0, 1]])
     D = np.zeros((4,1))
 
 
@@ -105,7 +105,7 @@ symmsys, symmsysEig = GenSymmetricStateSys()
 ## General System information
 
 print(symmsys)
-'''
+
 symmsyspoles = symmsys.damp()
 print("Pole information.\n wn: ",symmsyspoles[0],"\n Zeta: ",symmsyspoles[1],"\n Poles: ",symmsyspoles[2])
 print("Eigenvalues: ", symmsysEig)
@@ -119,7 +119,6 @@ plt.show()
 
 ## System Response ##
 initials = [V0,alpha0,th0,0]
-t, y = ctrl.initial_response(symmsys,X0=initials, input=1)
-plt.plot(t,y[0])
+t, y = ctrl.impulse_response(symmsys,X0=initials, input=0)
+plt.plot(t,y[3])
 plt.show()
-'''
