@@ -9,6 +9,7 @@ CLgraph = W /(0.5 * V**2 * rho * S)
 CDgraph = CD0 + (CLgraph * alpha) ** 2 / (pi * A * e)
 print(CDgraph)
 
+
 # xt = np.polyfit(alpha, CLgraph,1)
 # yt = np.poly1d(xt)
 # plt.grid()
