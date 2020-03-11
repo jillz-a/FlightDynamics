@@ -16,16 +16,16 @@ with open('AOA_VTAS.csv', encoding='UTF-8') as csvfile:
 data = np.array([alpha,V])
 data2 = data[np.argsort(data[:, 0])]
 print(data2)
-# data22 = np.delete(data2,[0:5653], 0)
-# print(len(data22))
 
 CLgraph = W/(0.5 * data2[1]**2 * rho * S)
 AOA = data2[0]
 
 plt.grid()
 plt.scatter(AOA,CLgraph)
+t, m = np.polyfit(AOA,CLgraph,1)
+plt.plot(AOA,t*AOA+m,c='red')
 plt.show()
-
+print(t*(180/pi))
 
 
 ## Comments ##
