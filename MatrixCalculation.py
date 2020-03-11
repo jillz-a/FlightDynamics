@@ -65,15 +65,15 @@ def GenAsymmetricStateSys():
     sys: State-space system
     '''
     
-    C1 = np.array([ [(CYbdot -2*mub)*b/V, 0, 0, 0],
-                    [0, -.5*b/V, 0, 0],
+    C1 = np.array([ [(CYbdot -2*mub)*(b/V), 0, 0, 0],
+                    [0, -.5*(b/V), 0, 0],
                     [0, 0, -2*mub*KX2*(b/V)**2, 2*mub*KXZ*(b/V)**2],
-                    [0, 0, 2*mub*KXZ*(b/V)**2, -2*mub*KX2*(b/V)**2]])
+                    [0, 0, 2*mub*KXZ*(b/V)**2, -2*mub*KZ2*(b/V)**2]])
 
-    C2 = np.array([ [CYb, CL, CYp*b/(2*V), (CYr - 4*mub)],
+    C2 = np.array([ [CYb, CL, CYp*(b/(2*V)), (CYr - 4*mub)*(b/(2*V))],
                     [0, 0, b/(2*V), 0],
-                    [Clb, 0, Clp*b/(2*V), Clr*b/(2*V)],
-                    [Cnb, 0, Cnp*b/(2*V), Cnr*b/(2*V)]])
+                    [Clb, 0, Clp*(b/(2*V)), Clr*(b/(2*V))],
+                    [Cnb, 0, Cnp*(b/(2*V)), Cnr*(b/(2*V))]])
 
     C3 = np.array([ [CYda, CYdr],
                     [0 , 0],
@@ -84,11 +84,11 @@ def GenAsymmetricStateSys():
     A = -np.matmul(np.linalg.inv(C1),C2)
     B = -np.matmul(np.linalg.inv(C1),C3)
 
-    C = np.array([  [1/V, 0, 0, 0],
+    C = np.array([  [1, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
-                    [0, 0, 0, cbar/V]])
-    D = np.zeros((4,1))
+                    [0, 0, 0, 1]])
+    D = np.zeros((4,2))
 
 
     ## Create state space system ##
@@ -101,11 +101,11 @@ def GenAsymmetricStateSys():
 
 
 ######### Symmetric response ###############
-symmsys, symmsysEig = GenSymmetricStateSys()
+symmsys, symmsysEig = GenAsymmetricStateSys()
 ## General System information
 
 print(symmsys)
-'''
+
 symmsyspoles = symmsys.damp()
 print("Pole information.\n wn: ",symmsyspoles[0],"\n Zeta: ",symmsyspoles[1],"\n Poles: ",symmsyspoles[2])
 print("Eigenvalues: ", symmsysEig)
@@ -119,7 +119,6 @@ plt.show()
 
 ## System Response ##
 initials = [V0,alpha0,th0,0]
-t, y = ctrl.initial_response(symmsys,X0=initials, input=1)
+t, y = ctrl.impulse_response(symmsys,X0=initials)
 plt.plot(t,y[0])
 plt.show()
-'''
