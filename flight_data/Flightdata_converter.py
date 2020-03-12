@@ -32,36 +32,37 @@ TAS = []
 for i in range(l):
     a = data["flightdata"]["Dadc1_tas"]['data'][:][i]
     TAS.append(a[0])
+TAS = np.array(TAS)
+print(TAS)
+# np.savetxt("TAS", TAS, delimiter=",")
 
-np.savetxt("TAS", TAS, delimiter=",")
-
-Mach = []
-for i in range(l):
-    a = data["flightdata"]["Dadc1_mach"]['data'][:][i]
-    Mach.append(a[0])
-
-np.savetxt("Mach", Mach, delimiter=",")
-
-TAT = []
-for i in range(l):
-    a = data["flightdata"]["Dadc1_tat"]['data'][:][i]
-    TAT.append(a[0])
-
-np.savetxt("TAT", TAT, delimiter=",")
-
-bcAlt = []
-for i in range(l):
-    a = data["flightdata"]["Dadc1_bcAlt"]['data'][:][i]
-    bcAlt.append(a[0])
-
-np.savetxt("bcAlt", bcAlt, delimiter=",")
-
-alt = []
-for i in range(l):
-    a = data["flightdata"]["Dadc1_alt"]['data'][:][i]
-    alt.append(a[0])
-
-np.savetxt("alt", alt, delimiter=",")
+# Mach = []
+# for i in range(l):
+#     a = data["flightdata"]["Dadc1_mach"]['data'][:][i]
+#     Mach.append(a[0])
+#
+# np.savetxt("Mach", Mach, delimiter=",")
+#
+# TAT = []
+# for i in range(l):
+#     a = data["flightdata"]["Dadc1_tat"]['data'][:][i]
+#     TAT.append(a[0])
+#
+# np.savetxt("TAT", TAT, delimiter=",")
+#
+# bcAlt = []
+# for i in range(l):
+#     a = data["flightdata"]["Dadc1_bcAlt"]['data'][:][i]
+#     bcAlt.append(a[0])
+#
+# np.savetxt("bcAlt", bcAlt, delimiter=",")
+#
+# alt = []
+# for i in range(l):
+#     a = data["flightdata"]["Dadc1_alt"]['data'][:][i]
+#     alt.append(a[0])
+#
+# np.savetxt("alt", alt, delimiter=",")
 
 #test
 #TAS, MACH, TAT, bcALT, alt
