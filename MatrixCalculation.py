@@ -109,7 +109,7 @@ def CalcResponse(mode):
     mode:
         "symmetric" or "symm" calculates using the symmetric case
         "asymmetric" or "asymm" calculates using the asymmetric configuration
-
+        
     Returns
     ------
     Success on completion
@@ -134,7 +134,7 @@ def CalcResponse(mode):
     print("Eigenvalues: ", sysEig)
 
     ## System Responses ##
-    initials = [5,alpha0,th0,0]
+    initials = [0,0,0,0]
     T = np.linspace(0,100,2000)
     (time,yinit) = ctrl.initial_response(sys, T, initials)
     _, y_impulse  = ctrl.impulse_response(sys,T, initials)
