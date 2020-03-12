@@ -5,13 +5,12 @@ import numpy as np
 data = loadmat('matlab.mat')
 l = len(data["flightdata"]["vane_AOA"]['data'])
 
-# AOA = []
-# for i in range(l):
-#     a = data["flightdata"]["vane_AOA"]['data'][:][i]
-#     AOA.append(a[0])
-#
-# np.savetxt("AOA", AOA, delimiter=",")
-#
+AOA = []
+for i in range(l):
+    a = data["flightdata"]["vane_AOA"]['data'][:][i]
+    AOA.append(a[0])
+
+np.savetxt("AOA.csv", AOA, delimiter=",")
 #
 # elevator_def = []
 # for i in range(l):
@@ -32,37 +31,36 @@ TAS = []
 for i in range(l):
     a = data["flightdata"]["Dadc1_tas"]['data'][:][i]
     TAS.append(a[0])
-TAS = np.array(TAS)
-print(TAS)
-# np.savetxt("TAS", TAS, delimiter=",")
 
-# Mach = []
-# for i in range(l):
-#     a = data["flightdata"]["Dadc1_mach"]['data'][:][i]
-#     Mach.append(a[0])
+np.savetxt("TAS.csv", TAS, delimiter=",")
+
+Mach = []
+for i in range(l):
+    a = data["flightdata"]["Dadc1_mach"]['data'][:][i]
+    Mach.append(a[0])
+
+np.savetxt("Mach.csv", Mach, delimiter=",")
 #
-# np.savetxt("Mach", Mach, delimiter=",")
+TAT = []
+for i in range(l):
+    a = data["flightdata"]["Dadc1_tat"]['data'][:][i]
+    TAT.append(a[0])
+
+np.savetxt("TAT.csv", TAT, delimiter=",")
+
+bcAlt = []
+for i in range(l):
+    a = data["flightdata"]["Dadc1_bcAlt"]['data'][:][i]
+    bcAlt.append(a[0])
+
+np.savetxt("bcAlt.csv", bcAlt, delimiter=",")
 #
-# TAT = []
-# for i in range(l):
-#     a = data["flightdata"]["Dadc1_tat"]['data'][:][i]
-#     TAT.append(a[0])
-#
-# np.savetxt("TAT", TAT, delimiter=",")
-#
-# bcAlt = []
-# for i in range(l):
-#     a = data["flightdata"]["Dadc1_bcAlt"]['data'][:][i]
-#     bcAlt.append(a[0])
-#
-# np.savetxt("bcAlt", bcAlt, delimiter=",")
-#
-# alt = []
-# for i in range(l):
-#     a = data["flightdata"]["Dadc1_alt"]['data'][:][i]
-#     alt.append(a[0])
-#
-# np.savetxt("alt", alt, delimiter=",")
+alt = []
+for i in range(l):
+    a = data["flightdata"]["Dadc1_alt"]['data'][:][i]
+    alt.append(a[0])
+
+np.savetxt("alt.csv", alt, delimiter=",")
 
 #test
 #TAS, MACH, TAT, bcALT, alt
