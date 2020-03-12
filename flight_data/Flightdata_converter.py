@@ -63,6 +63,7 @@ for i in range(l):
 
 np.savetxt("alt", alt, delimiter=",")
 
+#test
 #TAS, MACH, TAT, bcALT, alt
 
 
