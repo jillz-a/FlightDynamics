@@ -26,8 +26,8 @@ def GenSymmetricStateSys():
                     [0., 0., (-cbar/V), 0.],
                     [0., ((cbar/V)*Cmadot), 0., (-2*muc*KY2*(cbar/V)**2)]])
 
-    C2 = np.array([ [(1/V)*CXa, CXa, CZ0, (cbar/V)*CXa],
-                    [(1/V)*CZa, CZa, -CX0, (cbar/V)*(CZq + 2*muc)],
+    C2 = np.array([ [(1/V)*CXu, CXa, CZ0, (cbar/V)*CXa],
+                    [(1/V)*CZu, CZa, -CX0, (cbar/V)*(CZq + 2*muc)],
                     [0., 0., 0., cbar/V],
                     [(1/V)*Cmu, Cma, 0., (cbar/V)*Cmq]])
 
@@ -40,10 +40,10 @@ def GenSymmetricStateSys():
     A = -np.matmul(np.linalg.inv(C1),C2)
     B = -np.matmul(np.linalg.inv(C1),C3)
 
-    C = np.array([  [1, 0, 0, 0],
+    C = np.array([  [1/V, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
-                    [0, 0, 0, 1]])
+                    [0, 0, 0, cbar/V]])
     D = np.zeros((4,1))
 
 
@@ -84,10 +84,10 @@ def GenAsymmetricStateSys():
     A = -np.matmul(np.linalg.inv(C1),C2)
     B = -np.matmul(np.linalg.inv(C1),C3)
 
-    C = np.array([  [1, 0, 0, 0],
+    C = np.array([  [1/V, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
-                    [0, 0, 0, 1]])
+                    [0, 0, 0, cbar/V]])
     D = np.zeros((4,2))
 
 
@@ -101,24 +101,69 @@ def GenAsymmetricStateSys():
 
 
 ######### Symmetric response ###############
-symmsys, symmsysEig = GenAsymmetricStateSys()
-## General System information
 
-print(symmsys)
-
-symmsyspoles = symmsys.damp()
-print("Pole information.\n wn: ",symmsyspoles[0],"\n Zeta: ",symmsyspoles[1],"\n Poles: ",symmsyspoles[2])
-print("Eigenvalues: ", symmsysEig)
+def SymmResponse():
 
 
-# Pole and zeroes map #
-plt.scatter(symmsys.pole().real, symmsys.pole().imag)
-plt.grid()
-plt.show()
+    symmsys, symmsysEig = GenSymmetricStateSys()
+    ## General System information
+
+    print(symmsys)
+
+    symmsyspoles = symmsys.damp()
+    print("Pole information.\n wn: ",symmsyspoles[0],"\n Zeta: ",symmsyspoles[1],"\n Poles: ",symmsyspoles[2])
+    print("Eigenvalues: ", symmsysEig)
 
 
-## System Response ##
-initials = [V0,alpha0,th0,0]
-t, y = ctrl.impulse_response(symmsys,X0=initials)
-plt.plot(t,y[0])
-plt.show()
+    # Pole and zeroes map #
+    plt.scatter(symmsys.pole().real, symmsys.pole().imag)
+    #plt.scatter(symmsys.zero().real, symmsys.zero.imag)
+    plt.suptitle("Pole-Zero map")
+    plt.grid()
+
+
+
+    ## System Response ##
+    initials = [5,alpha0,th0,0]
+    T = np.linspace(0,100,2000)
+    (time,yinit) = ctrl.initial_response(symmsys, T, initials)
+    _, y_impulse  = ctrl.impulse_response(symmsys,T, initials)
+    _, y_step = ctrl.step_response(symmsys, T, initials)
+
+    fig1, axs1 = plt.subplots(4, sharex=True)
+    fig1.suptitle("Initial Condition Response")
+    axs1[0].plot(time,yinit[0])
+    axs1[0].set_title("u response")
+    axs1[1].plot(time,yinit[1])
+    axs1[1].set_title("alpha response")
+    axs1[2].plot(time,yinit[2])
+    axs1[2].set_title("theta response")
+    axs1[3].plot(time,yinit[3])
+    axs1[3].set_title("q response")
+
+    fig2, axs2 = plt.subplots(4, sharex=True)
+    fig2.suptitle("Impulse Response")
+    axs2[0].plot(time,y_impulse[0])
+    axs2[0].set_title("u response")
+    axs2[1].plot(time,y_impulse[1])
+    axs2[1].set_title("alpha response")
+    axs2[2].plot(time,y_impulse[2])
+    axs2[2].set_title("theta response")
+    axs2[3].plot(time,y_impulse[3])
+    axs2[3].set_title("q response")
+
+    fig3, axs3 = plt.subplots(4, sharex=True)
+    fig3.suptitle("Step Response")
+    axs3[0].plot(time,y_step[0])
+    axs3[0].set_title("u response")
+    axs3[1].plot(time,y_step[1])
+    axs3[1].set_title("alpha response")
+    axs3[2].plot(time,y_step[2])
+    axs3[2].set_title("theta response")
+    axs3[3].plot(time,y_step[3])
+    axs3[3].set_title("q response")
+
+    plt.show()
+    return 1
+
+SymmResponse()
