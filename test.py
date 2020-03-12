@@ -6,6 +6,8 @@ import numpy as np
 
 #ola
 
-A = np.array([[1,0,0,0],[1,1,0,0],[1,1,1,1],[1,1,1,1]])
-eig = np.linalg.eigvals(A)
-print(eig)
+A = np.array([[2, 0], [0, 2]])
+B = np.array([[1, 1], [1, 1]])
+C = np.matmul(A, B)
+print(C)
+
