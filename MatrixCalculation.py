@@ -15,6 +15,7 @@ def GenSymmetricStateSys():
     ------
     sys: State-space system. 
         Inputs: [u, alpha, theta, q]
+        u is the deviation of speed to V0, alpha is the AoA to alpha0, theta is the flight path angle to theta0, q is the real pitch rate.
         Outputs: [udakje, alpha, theta, qding]
     '''
 
@@ -90,7 +91,6 @@ def GenAsymmetricStateSys():
                     [0, 0, 0, cbar/V]])
     D = np.zeros((4,2))
 
-
     ## Create state space system ##
     sys = ctrl.ss(A,B,C,D)
 
@@ -100,35 +100,45 @@ def GenAsymmetricStateSys():
     return sys, eigs
 
 
-######### Symmetric response ###############
+def CalcResponse(mode):
+    '''
+    Calculates the response of the specified system and reports by showing initial response, impulse response, and step response. Also shows a pole-zero map and prints in the log the pole and system information.
 
-def SymmResponse():
+    Input
+    ------
+    mode:
+        "symmetric" or "symm" calculates using the symmetric case
+        "asymmetric" or "asymm" calculates using the asymmetric configuration
 
+    Returns
+    ------
+    Success on completion
+    '''
+    if mode.lower == "symmetric" or "symm" or "sym":
+        sys, sysEig = GenSymmetricStateSys()
+    elif mode.lower == "asymmetric" or "asymm" or "asym":
+        sys, sysEig = GenAsymmetricStateSys()
+    else:
+        print("Please fill in either \"Symmetric\" or \"Asymmetric\" as a paramter for the CalcResponse")
 
-    symmsys, symmsysEig = GenSymmetricStateSys()
-    ## General System information
-
-    print(symmsys)
-
-    symmsyspoles = symmsys.damp()
-    print("Pole information.\n wn: ",symmsyspoles[0],"\n Zeta: ",symmsyspoles[1],"\n Poles: ",symmsyspoles[2])
-    print("Eigenvalues: ", symmsysEig)
-
+    sys, sysEig = GenSymmetricStateSys()
+    print(sys)
 
     # Pole and zeroes map #
-    plt.scatter(symmsys.pole().real, symmsys.pole().imag)
-    #plt.scatter(symmsys.zero().real, symmsys.zero.imag)
+    plt.scatter(sys.pole().real, sys.pole().imag)
+    #plt.scatter(sys.zero().real, sys.zero.imag)
     plt.suptitle("Pole-Zero map")
     plt.grid()
+    syspoles = sys.damp()
+    print("Pole information.\n wn: ",syspoles[0],"\n Zeta: ",syspoles[1],"\n Poles: ",syspoles[2])
+    print("Eigenvalues: ", sysEig)
 
-
-
-    ## System Response ##
+    ## System Responses ##
     initials = [5,alpha0,th0,0]
     T = np.linspace(0,100,2000)
-    (time,yinit) = ctrl.initial_response(symmsys, T, initials)
-    _, y_impulse  = ctrl.impulse_response(symmsys,T, initials)
-    _, y_step = ctrl.step_response(symmsys, T, initials)
+    (time,yinit) = ctrl.initial_response(sys, T, initials)
+    _, y_impulse  = ctrl.impulse_response(sys,T, initials)
+    _, y_step = ctrl.step_response(sys, T, initials)
 
     fig1, axs1 = plt.subplots(4, sharex=True)
     fig1.suptitle("Initial Condition Response")
@@ -166,4 +176,4 @@ def SymmResponse():
     plt.show()
     return 1
 
-SymmResponse()
+CalcResponse("symm")
