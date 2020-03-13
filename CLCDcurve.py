@@ -13,26 +13,28 @@ alt = np.array(pd.read_csv('flight_data/alt.csv', delimiter=' ', header=None))
 bcAlt = np.array(pd.read_csv('flight_data/bcAlt.csv', delimiter=' ', header=None))
 
 AT = np.column_stack([AOA,TAS])
-# AT = [[[AOA[x],TAS[x]] for x in AOA if TAS[x] > 39] for x in TAS]     #filter the outliers for the plots
-AT = [AT[i,:] for i in AT if AT[i,1] > 39.00]
 print(AT)
+cut_off = 45.
+AT_trimmed = AT[AT[:,1] > cut_off]
+print(AT_trimmed.shape)
+print(AT_trimmed[:,0])
 
 ##Calculate CLalpha##
-CLgraph = W/(0.5 * AT[1]**2 * rho * S)
-t, m = np.polyfit(AT[0],CLgraph,1)
-print('Cl_alpha =', t*(180/pi))
+CLgraph = W/(0.5 * AT_trimmed[:,1]**2 * rho * S)
+t, m = np.polyfit(AT_trimmed[:,0],CLgraph,1)
+print('Cl_alpha =', t)
 
 ##Calculate CD##
 CDgraph = CD0 + (CLgraph) ** 2 / (pi * A * e)
 
 #Subplots##
-plt.subplot(121)
+# plt.subplot(121)
 plt.grid()
-plt.scatter(AT[0],CLgraph)
-plt.plot(AT[0],t*AT[0]+m,c='red')
+plt.scatter(AT_trimmed[:,0],CLgraph)
+plt.plot(AT_trimmed[:,0],t*AT_trimmed[:,0]+m,c='red')
 plt.title('CL-alpha curve')
-
-plt.subplot(122)
+plt.show()
+# plt.subplot(122)
 plt.grid()
 plt.scatter(CDgraph,CLgraph)
 plt.title('CD-CL curve')
