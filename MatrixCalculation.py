@@ -27,7 +27,7 @@ def GenSymmetricStateSys():
                     [0., 0., (-cbar/V), 0.],
                     [0., ((cbar/V)*Cmadot), 0., (-2*muc*KY2*(cbar/V)**2)]])
 
-    C2 = np.array([ [(1/V)*CXu, CXa, CZ0, (cbar/V)*CXa],
+    C2 = np.array([ [(1/V)*CXu, CXa, CZ0, (cbar/V)*CXq],
                     [(1/V)*CZu, CZa, -CX0, (cbar/V)*(CZq + 2*muc)],
                     [0., 0., 0., cbar/V],
                     [(1/V)*Cmu, Cma, 0., (cbar/V)*Cmq]])
@@ -116,26 +116,26 @@ def CalcResponse(mode,inputparam):
     '''
 
     # Input handling
-    if mode.lower == "symmetric" or "symm" or "sym":
-        sys, sysEig = GenSymmetricStateSys()
+    if mode == 0:
         inputindex = 0
         print("Calculating system for the symmetric case. Disregarding input for the response input parameter.")
-    elif mode.lower == "asymmetric" or "asymm" or "asym":
-        sys, sysEig = GenAsymmetricStateSys()
-        if inputparam.lower == "da" or "deltaa" or "delta_a" or "0":
+        sys, sysEig = GenSymmetricStateSys()
+    elif mode == 1:
+        if inputparam == 0:
             inputindex = 0
             print("Calculating system for asymmetric case, response to delta a")
-        elif inputparam.lower == "dr" or "deltar" or "delta_r" or "1":
+            sys, sysEig = GenAsymmetricStateSys()
+        elif inputparam == 1:
             inputindex = 1
             print("Calculating system for asymmetric case, response to delta r")
+            sys, sysEig = GenAsymmetricStateSys()
         else:
             print("Error: please provide a valid input for the response input parameter")
     else:
-        print("Error: Please fill in either \"Symmetric\" or \"Asymmetric\" as a paramter for the CalcResponse")
+        print("Error: Please fill in either \"Symmetric\" or \"Asymmetric\" as a parameter for the CalcResponse")
 
     
 
-    sys, sysEig = GenSymmetricStateSys()
     print("System eigenvalues: ", sysEig)
 
     # Pole and zeroes map #
@@ -150,7 +150,7 @@ def CalcResponse(mode,inputparam):
     ## System Responses ##
     initials = [0,0,0,0]
     T = np.linspace(0,200,4000)
-    forcedInput = np.zeros_like(T)                                                            # Needs to be of length equal to the length of T
+    forcedInput = 2                                                            # Needs to be of length equal to the length of T
     (time,yinit) = ctrl.initial_response(sys, T, initials, input=inputindex)
     _, y_impulse  = ctrl.impulse_response(sys,T, initials, input=inputindex)
     _, y_step = ctrl.step_response(sys, T, initials, input=inputindex)
@@ -203,4 +203,4 @@ def CalcResponse(mode,inputparam):
     plt.show()
     return True
 
-CalcResponse("symm","0")
+CalcResponse(1,0)

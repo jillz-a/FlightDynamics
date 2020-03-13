@@ -30,5 +30,5 @@ PHU_C2 = np.array([ [CXu/V, CZ0, 0],
                     [CZu/V, 0, cbar/V*2*muc],
                     [0, 0, cbar/V]])
 
-PHU_A = -np.matmul(np.linalg.inv(PHU_C1),PHU_C2)
-print("Eigenvalues PHU: \n", np.linalg.eigvals(PHU_A))
+#PHU_A = -np.matmul(np.linalg.inv(PHU_C1),PHU_C2)
+#print("Eigenvalues PHU: \n", np.linalg.eigvals(PHU_A))
