@@ -17,7 +17,6 @@ AT = np.column_stack([AOA,TAS])
 AT = [AT[i,:] for i in AT if AT[i,1] > 39.00]
 print(AT)
 
-
 ##Calculate CLalpha##
 CLgraph = W/(0.5 * AT[1]**2 * rho * S)
 t, m = np.polyfit(AT[0],CLgraph,1)
