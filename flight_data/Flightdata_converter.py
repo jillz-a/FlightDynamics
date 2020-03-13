@@ -2,7 +2,7 @@ from mat4py import loadmat
 import csv
 import numpy as np
 
-data = loadmat('matlab.mat')
+data = loadmat('Flightdata.mat')
 l = len(data["flightdata"]["vane_AOA"]['data'])
 
 AOA = []

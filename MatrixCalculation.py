@@ -100,7 +100,7 @@ def GenAsymmetricStateSys():
     return sys, eigs
 
 
-def CalcResponse(mode):
+def CalcResponse(mode,inputparam):
     '''
     Calculates the response of the specified system and reports by showing initial response, impulse response, and step response. Also shows a pole-zero map and prints in the log the pole and system information.
 
@@ -114,12 +114,26 @@ def CalcResponse(mode):
     ------
     Success on completion
     '''
+
+    # Input handling
     if mode.lower == "symmetric" or "symm" or "sym":
         sys, sysEig = GenSymmetricStateSys()
+        inputindex = 0
+        print("Calculating system for the symmetric case. Disregarding input for the response input parameter.")
     elif mode.lower == "asymmetric" or "asymm" or "asym":
         sys, sysEig = GenAsymmetricStateSys()
+        if inputparam.lower == "da" or "deltaa" or "delta_a" or "0":
+            inputindex = 0
+            print("Calculating system for asymmetric case, response to delta a")
+        elif inputparam.lower == "dr" or "deltar" or "delta_r" or "1":
+            inputindex = 1
+            print("Calculating system for asymmetric case, response to delta r")
+        else:
+            print("Error: please provide a valid input for the response input parameter")
     else:
-        print("Please fill in either \"Symmetric\" or \"Asymmetric\" as a paramter for the CalcResponse")
+        print("Error: Please fill in either \"Symmetric\" or \"Asymmetric\" as a paramter for the CalcResponse")
+
+    
 
     sys, sysEig = GenSymmetricStateSys()
     print(sys)
@@ -136,9 +150,11 @@ def CalcResponse(mode):
     ## System Responses ##
     initials = [0,0,0,0]
     T = np.linspace(0,100,2000)
-    (time,yinit) = ctrl.initial_response(sys, T, initials)
-    _, y_impulse  = ctrl.impulse_response(sys,T, initials)
-    _, y_step = ctrl.step_response(sys, T, initials)
+    forcedInput = np.zeros_like(T)                                                            # Needs to be of length equal to the length of T
+    (time,yinit) = ctrl.initial_response(sys, T, initials, input=inputindex)
+    _, y_impulse  = ctrl.impulse_response(sys,T, initials, input=inputindex)
+    _, y_step = ctrl.step_response(sys, T, initials, input=inputindex)
+    _, y_forced, _ = ctrl.forced_response(sys,T,forcedInput, initials)
 
     fig1, axs1 = plt.subplots(4, sharex=True)
     fig1.suptitle("Initial Condition Response")
@@ -173,7 +189,18 @@ def CalcResponse(mode):
     axs3[3].plot(time,y_step[3])
     axs3[3].set_title("q response")
 
-    plt.show()
-    return 1
+    fig4, axs4 = plt.subplots(4, sharex=True)
+    fig4.suptitle("Forced Function Response")
+    axs4[0].plot(time,y_forced[0])
+    axs4[0].set_title("u response")
+    axs4[1].plot(time,y_forced[1])
+    axs4[1].set_title("alpha response")
+    axs4[2].plot(time,y_forced[2])
+    axs4[2].set_title("theta response")
+    axs4[3].plot(time,y_forced[3])
+    axs4[3].set_title("q response")
 
-CalcResponse("symm")
+    plt.show()
+    return True
+
+CalcResponse("asymm","1")
