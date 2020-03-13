@@ -6,18 +6,17 @@ import pandas as pd
 ##READ DATA AND CREATE ARRAY##
 AOA = np.array(pd.read_csv('flight_data/AOA.csv', delimiter=' ', header=None))
 TAS = np.array(pd.read_csv('flight_data/TAS.csv', delimiter=' ', header=None))      #TAS in knots
-TAS = TAS * 0.51444444444444
+TAS2 = TAS * 0.51444444444444
 TAT = np.array(pd.read_csv('flight_data/TAT.csv', delimiter=' ', header=None))
 Mach = np.array(pd.read_csv('flight_data/Mach.csv', delimiter=' ', header=None))
 alt = np.array(pd.read_csv('flight_data/alt.csv', delimiter=' ', header=None))
 bcAlt = np.array(pd.read_csv('flight_data/bcAlt.csv', delimiter=' ', header=None))
 
-AT = np.column_stack([AOA,TAS])
-print(AT)
-cut_off = 45.
+AT = np.column_stack([AOA,TAS2])
+# print(AT)
+cut_off = 39
 AT_trimmed = AT[AT[:,1] > cut_off]
-print(AT_trimmed.shape)
-print(AT_trimmed[:,0])
+# print(AT_trimmed.shape)
 
 ##Calculate CLalpha##
 CLgraph = W/(0.5 * AT_trimmed[:,1]**2 * rho * S)
@@ -43,10 +42,3 @@ plt.show()
 
 ##Calculate Reynolds##
 
-##COMMENTS##
-    # alpha = []
-    # V = []
-    # for row in readCSV:
-    #     if float(row[0])>75:
-    #         alpha.append(float(row[1]))
-    #         V.append(float(row[0])*0.51444444444444) #convert knots to m/s
