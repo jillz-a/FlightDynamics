@@ -52,7 +52,7 @@ def GenSymmetricStateSys():
     sys = ctrl.ss(A,B,C,D)
 
     ## Calculate eigenvalues and vectors of A
-    eigs = np.linalg.eig(A)
+    eigs = np.linalg.eigvals(A)
 
     return sys, eigs
 
@@ -136,7 +136,7 @@ def CalcResponse(mode,inputparam):
     
 
     sys, sysEig = GenSymmetricStateSys()
-    print(sys)
+    print("System eigenvalues: ", sysEig)
 
     # Pole and zeroes map #
     plt.scatter(sys.pole().real, sys.pole().imag)
@@ -149,7 +149,7 @@ def CalcResponse(mode,inputparam):
 
     ## System Responses ##
     initials = [0,0,0,0]
-    T = np.linspace(0,100,2000)
+    T = np.linspace(0,200,4000)
     forcedInput = np.zeros_like(T)                                                            # Needs to be of length equal to the length of T
     (time,yinit) = ctrl.initial_response(sys, T, initials, input=inputindex)
     _, y_impulse  = ctrl.impulse_response(sys,T, initials, input=inputindex)
@@ -203,4 +203,4 @@ def CalcResponse(mode,inputparam):
     plt.show()
     return True
 
-CalcResponse("asymm","1")
+CalcResponse("symm","0")
