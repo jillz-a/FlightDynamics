@@ -73,7 +73,23 @@ M_pay = x_s1 * m_s1 + x_s2 * m_s2 + x_s3 * m_s3 + x_s4 * m_s4 + x_s5 * m_s5 + x_
 
 #Fuel contribution
 #Data from weighing form
-fuel_data = np.array(pd.read_csv('fuel_variation.csv', delimiter=',', header=None))
+time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None))
+time = np.array([time[i][0] for i in range(len(time))])
+
+fuel_data = np.array(pd.read_csv('fuel_variation.csv', delimiter=',', header=None)) #moment arm/100 in inches for every 100 pounds
+
+flow_eng1 = np.array(pd.read_csv('flight_data/FMF_eng1.csv', delimiter=',', header=None))
+flow_eng1 = np.array([flow_eng1[i][0] for i in range(len(flow_eng1))]) #pounds per hour
+
+flow_eng2 = np.array(pd.read_csv('flight_data/FMF_eng2.csv', delimiter=',', header=None))
+flow_eng2= np.array([flow_eng2[i][0] for i in range(len(flow_eng2))]) #pounds per hour
+
+FMF = flow_eng1 + flow_eng2 #total fuel mass flow in pounds per hour
+FMF = FMF * (0.0254 / 3600.) #kg/s
+
+
+
+
 
 
 #Steps to calculate ramp mass and x_cg_datum:
