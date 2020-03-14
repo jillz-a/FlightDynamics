@@ -5,12 +5,12 @@ import numpy as np
 data = loadmat('Flightdata.mat')
 l = len(data["flightdata"]["vane_AOA"]['data'])
 
-AOA = []
-for i in range(l):
-    a = data["flightdata"]["vane_AOA"]['data'][:][i]
-    AOA.append(a[0])
-
-np.savetxt("AOA.csv", AOA, delimiter=",")
+# AOA = []
+# for i in range(l):
+#     a = data["flightdata"]["vane_AOA"]['data'][:][i]
+#     AOA.append(a[0])
+#
+# np.savetxt("AOA.csv", AOA, delimiter=",")
 #
 # elevator_def = []
 # for i in range(l):
@@ -27,40 +27,50 @@ np.savetxt("AOA.csv", AOA, delimiter=",")
 #
 # np.savetxt("FMF_eng1", FMF_eng1, delimiter=",")
 
-TAS = []
-for i in range(l):
-    a = data["flightdata"]["Dadc1_tas"]['data'][:][i]
-    TAS.append(a[0])
-
-np.savetxt("TAS.csv", TAS, delimiter=",")
-
-Mach = []
-for i in range(l):
-    a = data["flightdata"]["Dadc1_mach"]['data'][:][i]
-    Mach.append(a[0])
-
-np.savetxt("Mach.csv", Mach, delimiter=",")
+# TAS = []
+# for i in range(l):
+#     a = data["flightdata"]["Dadc1_tas"]['data'][:][i]
+#     TAS.append(a[0])
 #
-TAT = []
-for i in range(l):
-    a = data["flightdata"]["Dadc1_tat"]['data'][:][i]
-    TAT.append(a[0])
-
-np.savetxt("TAT.csv", TAT, delimiter=",")
-
-bcAlt = []
-for i in range(l):
-    a = data["flightdata"]["Dadc1_bcAlt"]['data'][:][i]
-    bcAlt.append(a[0])
-
-np.savetxt("bcAlt.csv", bcAlt, delimiter=",")
+# np.savetxt("TAS.csv", TAS, delimiter=",")
 #
-alt = []
-for i in range(l):
-    a = data["flightdata"]["Dadc1_alt"]['data'][:][i]
-    alt.append(a[0])
+# Mach = []
+# for i in range(l):
+#     a = data["flightdata"]["Dadc1_mach"]['data'][:][i]
+#     Mach.append(a[0])
+#
+# np.savetxt("Mach.csv", Mach, delimiter=",")
+# #
+# TAT = []
+# for i in range(l):
+#     a = data["flightdata"]["Dadc1_tat"]['data'][:][i]
+#     TAT.append(a[0])
+#
+# np.savetxt("TAT.csv", TAT, delimiter=",")
+#
+# bcAlt = []
+# for i in range(l):
+#     a = data["flightdata"]["Dadc1_bcAlt"]['data'][:][i]
+#     bcAlt.append(a[0])
+#
+# np.savetxt("bcAlt.csv", bcAlt, delimiter=",")
+# #
+# alt = []
+# for i in range(l):
+#     a = data["flightdata"]["Dadc1_alt"]['data'][:][i]
+#     alt.append(a[0])
+#
+# np.savetxt("alt.csv", alt, delimiter=",")
 
-np.savetxt("alt.csv", alt, delimiter=",")
+# time = []
+# for i in range(l):
+#     a = data["flightdata"]["time"]['data'][:][i]
+#     b = []
+#     b.append(a)
+#     time.append(b[0])
+#
+#
+# np.savetxt("time.csv", time, delimiter=",")
 
 #test
 #TAS, MACH, TAT, bcALT, alt

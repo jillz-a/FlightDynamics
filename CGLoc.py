@@ -74,6 +74,10 @@ M_pay = x_s1 * m_s1 + x_s2 * m_s2 + x_s3 * m_s3 + x_s4 * m_s4 + x_s5 * m_s5 + x_
 #Fuel contribution
 #Data from weighing form
 fuel_data = np.array(pd.read_csv('fuel_variation.csv', delimiter=',', header=None))
+time = pd.read_csv('flight_data/time.csv', delimiter=',', header=None)
+time2 = time.values
+
+
 
 
 #Steps to calculate ramp mass and x_cg_datum:
