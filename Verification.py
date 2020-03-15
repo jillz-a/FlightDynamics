@@ -1,6 +1,7 @@
 import unittest
 import numpy as np
 
+
 class Test(unittest.TestCase):
 
     def test_eig(self): #test eigvals function
@@ -15,6 +16,7 @@ class Test(unittest.TestCase):
         C = np.matmul(A,B)
         expected = np.array([[2,2],[2,2]])
         self.assertEqual(C.all(), expected.all())
+
 
 if __name__ == '__main__':
     unittest.main()

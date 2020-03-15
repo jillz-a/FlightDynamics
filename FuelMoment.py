@@ -15,7 +15,7 @@ for i in range(len(fuel)):
 fuelx = fuelx * 0.453592
 
 for i in range(len(fuel)):
-    fuely[i] = fuel[i,1]
+    fuely[i] = fuel[i,1] * 100
 #from pounds-inch to kg-m
 fuely = fuely * 0.0254 * 0.453592
 
