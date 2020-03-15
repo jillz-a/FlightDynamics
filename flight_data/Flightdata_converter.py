@@ -20,12 +20,12 @@ l = len(data["flightdata"]["vane_AOA"]['data'])
 # np.savetxt("elevator_def", elevator_def, delimiter=",")
 #
 #
-FMF_eng2 = []
-for i in range(l):
-    a = data["flightdata"]["rh_engine_FMF"]['data'][:][i]
-    FMF_eng2.append(a[0])
-
-np.savetxt("FMF_eng2.csv", FMF_eng2, delimiter=",")
+# FMF_eng2 = []
+# for i in range(l):
+#     a = data["flightdata"]["rh_engine_FMF"]['data'][:][i]
+#     FMF_eng2.append(a[0])
+#
+# np.savetxt("FMF_eng2.csv", FMF_eng2, delimiter=",")
 
 # TAS = []
 # for i in range(l):
@@ -76,4 +76,9 @@ np.savetxt("FMF_eng2.csv", FMF_eng2, delimiter=",")
 #TAS, MACH, TAT, bcALT, alt
 
 
+delta_e = []
+for i in range(l):
+    a = data["flightdata"]["delta_e"]['data'][:][i]
+    delta_e.append(a[0])
 
+np.savetxt("delta_e.csv", delta_e, delimiter=",")
