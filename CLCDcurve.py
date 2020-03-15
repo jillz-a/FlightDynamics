@@ -37,8 +37,14 @@ plt.show()
 plt.grid()
 plt.scatter(CDgraph,CLgraph)
 plt.title('CD-CL curve')
-
 plt.show()
 
-##Calculate Reynolds##
+##Calculate Reynolds Sutherland Equation##
+b = 1.458*10**(-6)  #kg/msK^1/2
+S = 110.4 #K
+T = TAT + 273.15
+mu = (b * T ** (3/2))/(T + S)
+print('Reynoldsnumber Range =', max(mu), min(mu))
+
+
 
