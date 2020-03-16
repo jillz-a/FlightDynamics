@@ -134,8 +134,8 @@ m_payload_t = np.ones(len(time))*m_payload #Payload weight for every time step
 #=========================x_cg location in m========================
 x_cg_t = np.divide(M_total_t, np.add(np.add(OEW_t, m_payload), m_fuel_t))
 
-# plt.plot(time, M_fuel_t)
-# plt.plot(time, M_empty_t)
-# plt.plot(time, M_pay_t)
-plt.plot(time, x_cg_t)
-plt.show()
+
+# plt.plot(time, x_cg_t)
+# plt.show()
+
+np.savetxt('x_cg.csv', x_cg_t, delimiter=',')
