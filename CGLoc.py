@@ -80,7 +80,7 @@ M_empty_t = np.ones(len(time)) * M_empty #kgm per time step
 
 #Payload contribution
 M_pay = x_s1 * m_s1 + x_s2 * m_s2 + x_s3 * m_s3 + x_s4 * m_s4 + x_s5 * m_s5 + x_s6 * m_s6 + x_s7 * m_s7 + x_s8 * m_s8 + x_s10 * m_s10 #kgm
-M_pay_t = np.ones(len(time)) * M_pay
+M_pay_t = np.ones(len(time)) * M_pay #gm per time step
 
 #Fuel contribution
 #Data from weighing form
@@ -95,6 +95,7 @@ flow_eng2= np.array([flow_eng2[i][0] for i in range(len(flow_eng2))]) #pounds pe
 FMF = flow_eng1 + flow_eng2 #total fuel mass flow in pounds per hour
 FMF = FMF * (0.453592 / 3600.) #kg/s
 
+
 m_fuel_t = [] #fuel mass per for every time step
 for i in range(len(time)):
     Fuel_block = Fuel_block - FMF[i]*ave_diff #Fuel mass for every time step in kg, average was taken of difference due to outliers
@@ -104,18 +105,12 @@ for i in range(len(time)):
 fuel = fuel_data
 
 #splitting up the array into x and y arrays
-#make empty arrays
-fuelx = np.zeros(len(fuel)) #weight, in pounds
-fuely = np.zeros(len(fuel)) #moment, in pounds-inch
+fuelx = np.array([fuel[i,0] for i in range(len(fuel))]) #weight, in pounds
+fuely = np.array([fuel[i,1] * 100 for i in range(len(fuel))]) #moment, in pounds-inch
 
-#replace entries with fuel and moment
-for i in range(len(fuel)):
-    fuelx[i] = fuel[i,0]
 #from pounds to kg
 fuelx = fuelx * 0.453592
 
-for i in range(len(fuel)):
-    fuely[i] = fuel[i,1] * 100
 #from pounds-inch to kg-m
 fuely = fuely * 0.0254 * 0.453592
 
@@ -136,8 +131,7 @@ M_total_t = M_empty_t + M_pay_t + M_fuel_t #total moment in kg
 OEW_t = np.ones(len(time))*OEW #OEW for every time step
 m_payload_t = np.ones(len(time))*m_payload #Payload weight for every time step
 
-# x_cg_t = M_total_t / (OEW_t + m_payload_t + m_fuel_t)
-
+#=========================x_cg location in m========================
 x_cg_t = np.divide(M_total_t, np.add(np.add(OEW_t, m_payload), m_fuel_t))
 
 # plt.plot(time, M_fuel_t)
