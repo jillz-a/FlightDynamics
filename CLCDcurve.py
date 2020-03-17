@@ -33,7 +33,7 @@ print('Cl_alpha =', t)
 ##Calculate CD##
 CDgraph = CD0 + (CLgraph) ** 2 / (pi * A * e)
 
-#Subplots##
+#Plots##
 # plt.grid()
 # plt.scatter(AOA,CLgraph)
 # plt.plot(AOA,t*AOA+m,c='red')
@@ -65,6 +65,13 @@ plt.ylabel('-delta_e')
 plt.xlabel('AOA')
 plt.show()
 
+Cmdelta = -CLline/c
+Cmalpha = -deda * Cmdelta
+print('Cmdelta =', np.average(Cmdelta))
+print('Cmalpha =', np.average(Cmalpha))
+
+print(AOA1[0])
+####-------------------------Comments----------------------------------#####
 # xcg = AT_trimmed[:,3]
 # dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
 # dxcg = np.vstack([dxcg,0])
@@ -77,9 +84,3 @@ plt.show()
 #         dde[i] = dde[i]
 # print(dde, len(dde))
 # Cmdelta = np.array([(1/dde[i]) * CLline[i] * (dxcg[i]/c) for i in range(len(dde))])
-
-Cmdelta = -CLline/c
-Cmalpha = -deda * Cmdelta
-print('Cmdelta =', np.average(Cmdelta))
-print('Cmalpha =', np.average(Cmalpha))
-
