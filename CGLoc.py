@@ -45,32 +45,30 @@ m_payload = m_s1 + m_s2 + m_s2 + m_s3 + m_s4 + m_s5 + m_s6 + m_s7 + m_s8 + m_s10
 Fuel_block = Fuel_block * 0.453592 #kg
 OEW = OEW*0.453592 #kg
 
-x_s1 = x_s1 * 0.0254 #m
+x_s1 = x_s1 * 0.0254 #m pilot 1
 m_s1 = m_s1 * 0.0254 #kg
 
-x_s2 = x_s2 * 0.0254 #m
+x_s2 = x_s2 * 0.0254 #m pilot 2
 m_s2 = m_s2 * 0.453592 #kg
 
-x_s3 = x_s3 * 0.0254 #m
+x_s3 = x_s3 * 0.0254 #m observer 1L
 m_s3 = m_s3 * 0.453592 #kg
 
-x_s4 = x_s4 * 0.0254 #m
+x_s4 = x_s4 * 0.0254 #m observer 1R
 m_s4 = m_s4 * 0.453592 #kg
 
-x_s5 = x_s5 * 0.0254 #m
+x_s5 = x_s5 * 0.0254 #m observer 2L
 m_s5 = m_s5 * 0.453592 #kg
 
-x_s6 = x_s6 * 0.0254 #m
+x_s6 = x_s6 * 0.0254 #m observer 2R
 m_s6 = m_s6 * 0.453592 #kg
 
-x_s7 = x_s7 * 0.0254 #m
+x_s7 = x_s7 * 0.0254 #m observer 3L
 m_s7 = m_s7 * 0.453592 #kg
 
-#this man moves at a certain time
-x_s8 = x_s8 * 0.0254 #m
 m_s8 = m_s8 * 0.453592 #kg
 
-x_s10 = x_s10 * 0.0254 #m
+x_s10 = x_s10 * 0.0254 #m co-coordinator
 m_s10 = m_s10 * 0.453592 #kg
 
 m_payload = m_payload * 0.453592 #kg
@@ -80,8 +78,16 @@ M_empty = 2672953.5 * 0.453592 * 0.0254 #kgm
 M_empty_t = np.ones(len(time)) * M_empty #kgm per time step
 
 #Payload contribution
-M_pay = x_s1 * m_s1 + x_s2 * m_s2 + x_s3 * m_s3 + x_s4 * m_s4 + x_s5 * m_s5 + x_s6 * m_s6 + x_s7 * m_s7 + x_s8 * m_s8 + x_s10 * m_s10 #kgm
-M_pay_t = np.ones(len(time)) * M_pay
+#account for observer 3L moving to cockpit at 58 min 19 sec: so at t[34990]
+x_s7_t = []
+for i in range(len(time)):
+    if i < 34990:
+        x_s7_t.append(x_s7)
+    else:
+        x_s7_t.append(x_s1)
+
+M_pay_t = np.array([x_s1 * m_s1 + x_s2 * m_s2 + x_s3 * m_s3 + x_s4 * m_s4 + x_s5 * m_s5 + x_s6 * m_s6 + x_s7 * m_s7 + x_s8 * m_s8 + x_s10 * m_s10 for x_s7 in x_s7_t])#kgm
+# M_pay_t = np.ones(len(time)) * M_pay #gm per time step
 
 #Fuel contribution
 #Data from weighing form
@@ -96,6 +102,7 @@ flow_eng2= np.array([flow_eng2[i][0] for i in range(len(flow_eng2))]) #pounds pe
 FMF = flow_eng1 + flow_eng2 #total fuel mass flow in pounds per hour
 FMF = FMF * (0.453592 / 3600.) #kg/s
 
+
 m_fuel_t = [] #fuel mass per for every time step
 for i in range(len(time)):
     Fuel_block = Fuel_block - FMF[i]*ave_diff #Fuel mass for every time step in kg, average was taken of difference due to outliers
@@ -105,18 +112,12 @@ for i in range(len(time)):
 fuel = fuel_data
 
 #splitting up the array into x and y arrays
-#make empty arrays
-fuelx = np.zeros(len(fuel)) #weight, in pounds
-fuely = np.zeros(len(fuel)) #moment, in pounds-inch
+fuelx = np.array([fuel[i,0] for i in range(len(fuel))]) #weight, in pounds
+fuely = np.array([fuel[i,1] * 100 for i in range(len(fuel))]) #moment, in pounds-inch
 
-#replace entries with fuel and moment
-for i in range(len(fuel)):
-    fuelx[i] = fuel[i,0]
 #from pounds to kg
 fuelx = fuelx * 0.453592
 
-for i in range(len(fuel)):
-    fuely[i] = fuel[i,1] * 100
 #from pounds-inch to kg-m
 fuely = fuely * 0.0254 * 0.453592
 
@@ -137,15 +138,10 @@ M_total_t = M_empty_t + M_pay_t + M_fuel_t #total moment in kg
 OEW_t = np.ones(len(time))*OEW #OEW for every time step
 m_payload_t = np.ones(len(time))*m_payload #Payload weight for every time step
 
-#x_cg_t = M_total_t / (OEW_t + m_payload_t + m_fuel_t)
-
+#=========================x_cg location in m========================
 x_cg_t = np.divide(M_total_t, np.add(np.add(OEW_t, m_payload), m_fuel_t))
 
-plt.plot(time, m_fuel_t)
-#plt.plot(time, M_empty_t)
-#plt.plot(time, M_pay_t)
 plt.plot(time, x_cg_t)
-#plt.plot(time, M_total_t)
-#plt.plot(time, OEW_t)
-#plt.plot(time, FMF)
 plt.show()
+
+np.savetxt('x_cg.csv', x_cg_t, delimiter=',')
