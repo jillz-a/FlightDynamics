@@ -66,6 +66,7 @@ m_s6 = m_s6 * 0.453592 #kg
 x_s7 = x_s7 * 0.0254 #m
 m_s7 = m_s7 * 0.453592 #kg
 
+#this man moves at a certain time
 x_s8 = x_s8 * 0.0254 #m
 m_s8 = m_s8 * 0.453592 #kg
 
@@ -136,12 +137,15 @@ M_total_t = M_empty_t + M_pay_t + M_fuel_t #total moment in kg
 OEW_t = np.ones(len(time))*OEW #OEW for every time step
 m_payload_t = np.ones(len(time))*m_payload #Payload weight for every time step
 
-# x_cg_t = M_total_t / (OEW_t + m_payload_t + m_fuel_t)
+#x_cg_t = M_total_t / (OEW_t + m_payload_t + m_fuel_t)
 
 x_cg_t = np.divide(M_total_t, np.add(np.add(OEW_t, m_payload), m_fuel_t))
 
-# plt.plot(time, M_fuel_t)
-# plt.plot(time, M_empty_t)
-# plt.plot(time, M_pay_t)
+plt.plot(time, m_fuel_t)
+#plt.plot(time, M_empty_t)
+#plt.plot(time, M_pay_t)
 plt.plot(time, x_cg_t)
+#plt.plot(time, M_total_t)
+#plt.plot(time, OEW_t)
+#plt.plot(time, FMF)
 plt.show()
