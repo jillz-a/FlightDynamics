@@ -64,6 +64,11 @@ def GenAsymmetricStateSys():
     Returns
     ------
     sys: State-space system
+        Inputs: [beta, phi, p, r]
+                beta: sideslip angle
+                phi: banking angle
+                p: roll rate
+                r: normal angular yaw rate
     '''
     
     C1 = np.array([ [(CYbdot -2*mub)*(b/V), 0, 0, 0],
@@ -116,18 +121,24 @@ def CalcResponse(mode,inputparam):
     '''
 
     # Input handling
+
+    stateVectorSymm = ["u", "alpha", "theta", "q"]
+    stateVectorAsymm = ["beta", "phi", "p", "r"]
+
     if mode == 0:
         inputindex = 0
         print("Calculating system for the symmetric case. Disregarding input for the response input parameter.")
         sys, sysEig = GenSymmetricStateSys()
+        stVec = stateVectorSymm
     elif mode == 1:
+        stVec = stateVectorAsymm
         if inputparam == 0:
             inputindex = 0
-            print("Calculating system for asymmetric case, response to delta a")
+            print("Calculating system for asymmetric case, response to aileron input delta a")
             sys, sysEig = GenAsymmetricStateSys()
         elif inputparam == 1:
             inputindex = 1
-            print("Calculating system for asymmetric case, response to delta r")
+            print("Calculating system for asymmetric case, response to rudder input delta r")
             sys, sysEig = GenAsymmetricStateSys()
         else:
             print("Error: please provide a valid input for the response input parameter")
@@ -159,48 +170,48 @@ def CalcResponse(mode,inputparam):
     fig1, axs1 = plt.subplots(4, sharex=True)
     fig1.suptitle("Initial Condition Response")
     axs1[0].plot(time,yinit[0])
-    axs1[0].set_title("u response")
+    axs1[0].set_title(stVec[0] + " response")
     axs1[1].plot(time,yinit[1])
-    axs1[1].set_title("alpha response")
+    axs1[1].set_title(stVec[1]+ " response")
     axs1[2].plot(time,yinit[2])
-    axs1[2].set_title("theta response")
+    axs1[2].set_title(stVec[2]+ " response")
     axs1[3].plot(time,yinit[3])
-    axs1[3].set_title("q response")
+    axs1[3].set_title(stVec[3]+" response")
 
     fig2, axs2 = plt.subplots(4, sharex=True)
     fig2.suptitle("Impulse Response")
     axs2[0].plot(time,y_impulse[0])
-    axs2[0].set_title("u response")
+    axs2[0].set_title(stVec[0]+ " response")
     axs2[1].plot(time,y_impulse[1])
-    axs2[1].set_title("alpha response")
+    axs2[1].set_title(stVec[1]+"  response")
     axs2[2].plot(time,y_impulse[2])
-    axs2[2].set_title("theta response")
+    axs2[2].set_title(stVec[2]+" response")
     axs2[3].plot(time,y_impulse[3])
-    axs2[3].set_title("q response")
+    axs2[3].set_title(stVec[3]+" response")
 
     fig3, axs3 = plt.subplots(4, sharex=True)
     fig3.suptitle("Step Response")
     axs3[0].plot(time,y_step[0])
-    axs3[0].set_title("u response")
+    axs3[0].set_title(stVec[0]+" response")
     axs3[1].plot(time,y_step[1])
-    axs3[1].set_title("alpha response")
+    axs3[1].set_title(stVec[1]+" response")
     axs3[2].plot(time,y_step[2])
-    axs3[2].set_title("theta response")
+    axs3[2].set_title(stVec[2]+" response")
     axs3[3].plot(time,y_step[3])
-    axs3[3].set_title("q response")
+    axs3[3].set_title(stVec[3]+ " response")
 
     fig4, axs4 = plt.subplots(4, sharex=True)
     fig4.suptitle("Forced Function Response")
     axs4[0].plot(time,y_forced[0])
-    axs4[0].set_title("u response")
+    axs4[0].set_title(stVec[0]+ " response")
     axs4[1].plot(time,y_forced[1])
-    axs4[1].set_title("alpha response")
+    axs4[1].set_title(stVec[1]+" response")
     axs4[2].plot(time,y_forced[2])
-    axs4[2].set_title("theta response")
+    axs4[2].set_title(stVec[2]+ " response")
     axs4[3].plot(time,y_forced[3])
-    axs4[3].set_title("q response")
+    axs4[3].set_title(stVec[3]+" response")
 
     plt.show()
     return True
 
-CalcResponse(1,0)
+CalcResponse(1,1)
