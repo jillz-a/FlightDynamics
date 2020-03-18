@@ -12,21 +12,21 @@ l = len(data["flightdata"]["vane_AOA"]['data'])
 #
 # np.savetxt("AOA.csv", AOA, delimiter=",")
 #
-elevator_def = []
-for i in range(l):
-    a = data["flightdata"]["delta_e"]['data'][:][i]
-    elevator_def.append(a[0])
-
-np.savetxt("elevator_def", elevator_def, delimiter=",")
-
-elevator_trim = []
-for i in range(l):
-    a = data["flightdata"]["elevator_dte"]['data'][:][i]
-    elevator_def.append(a[0])
-
+# elevator_def = []
+# for i in range(l):
+#     a = data["flightdata"]["delta_e"]['data'][:][i]
+#     elevator_def.append(a[0])
 #
-np.savetxt("elevator_trim", elevator_trim, delimiter=",")
+# np.savetxt("elevator_def", elevator_def, delimiter=",")
+
+# elevator_trim = []
+# for i in range(l):
+#     a = data["flightdata"]["elevator_dte"]['data'][:][i]
+#     elevator_def.append(a[0])
 #
+# #
+# np.savetxt("elevator_trim", elevator_trim, delimiter=",")
+# #
 #
 # FMF_eng2 = []
 # for i in range(l):
@@ -97,3 +97,10 @@ np.savetxt("elevator_trim", elevator_trim, delimiter=",")
 #     delta_e.append(a[0])
 #
 #np.savetxt("delta_e.csv", delta_e, delimiter=",")
+
+pitch = []
+for i in range(l):
+    a = data["flightdata"]["Ahrs1_Pitch"]['data'][:][i]
+    pitch.append(a[0])
+
+np.savetxt("theta.csv", pitch, delimiter=",")
