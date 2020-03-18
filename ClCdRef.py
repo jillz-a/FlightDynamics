@@ -15,11 +15,12 @@ for passenger in passlist:
 def Vequi(hp,Vias,Tm):
     p =  p0*(1+Tempgrad*hp/Temp0)**(-g/(Tempgrad*R))
     M = np.sqrt( 2/(gamma-1) * ((1+p0/p*((1+ (gamma-1)/(2*gamma) * rho0/p0 * Vias**2)**(gamma/(gamma-1))-1))**((gamma-1)/gamma)-1))
+    print(M)
     T = Tm/(1+(gamma-1)/2*M**2)
     a = np.sqrt(gamma*R*T)
     Vt = M*a
     rho = p/(R*T)
-    Ve = Vt*np.sqrt(rho/rho0) 
+    Ve = Vt*np.sqrt(rho/rho0)   
     return Ve
 
 thrust = open("Thrust//thrustCLCD1Meas.dat", "r")
@@ -43,6 +44,7 @@ AOAlist = []
 for i in CLCD1: 
     hp = i.height
     Vias = i.IAS
+    print(Vias)
     Tm = float(i.TAT) + 273.15
 #    type(Tm)
     Fused = i.Fused
@@ -81,8 +83,11 @@ for i in CLCD1:
 #plt.show()
 
 CL2 = np.array(CLlist)**2
+###     Produce least squares solution    ###
 C = np.vstack([CL2, np.ones(len(CL2))]).T
 piAe,CD0 = np.linalg.lstsq(C,CDlist,rcond=None)[0]
+
+
 #plt.scatter(CL2,CDlist)
 #plt.plot(CL2, CL2*piAe + CD0)
 #plt.xlabel('Lift coefficient squared [-]')

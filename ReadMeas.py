@@ -15,7 +15,7 @@ def getdata(rangestart,rangeend,datatype = False):
                 measurement = getval(i,0)
                 time = getval(i,1)
                 height = getval(i,3)*convert.ft_to_m
-                IAS = getval(i,4)*convert.kts_to_ms
+                IAS = (getval(i,4)-2)*convert.kts_to_ms
                 AoA = getval(i,5)
                 if datatype:
                     de = getval(i,6)
