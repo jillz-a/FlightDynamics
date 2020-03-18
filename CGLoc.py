@@ -121,13 +121,13 @@ def x_cg(time, fuel_data, flow_eng1, flow_eng2):
 
     #splitting up the array into x and y arrays
     fuelx = np.array([fuel[i,0] for i in range(len(fuel))]) #weight, in pounds
-    fuely = np.array([fuel[i,1] * 100 for i in range(len(fuel))]) #moment, in pounds-inch
+    fuely = np.array([fuel[i,1] for i in range(len(fuel))]) #moment, in pounds-inch / 100
 
     #from pounds to kg
     fuelx = fuelx * 0.453592
 
     #from pounds-inch to kg-m
-    fuely = fuely * 0.0254 * 0.453592
+    fuely = fuely * 0.0254 * 0.453592 * 100
 
 
     M_fuel_t = []
@@ -147,7 +147,7 @@ def x_cg(time, fuel_data, flow_eng1, flow_eng2):
     m_payload_t = np.ones(len(time))*m_payload #Payload weight for every time step
 
     #=========================x_cg location in m========================
-    x_cg_t = np.divide(M_total_t, np.add(np.add(OEW_t, m_payload), m_fuel_t))
+    x_cg_t = np.divide(M_total_t, np.add(np.add(OEW_t, m_payload_t), m_fuel_t))
 
 
     plt.plot(time, x_cg_t)
@@ -157,6 +157,7 @@ def x_cg(time, fuel_data, flow_eng1, flow_eng2):
 
     np.savetxt('x_cg.csv', x_cg_t, delimiter=',')
 
-    return x_cg_t
+    return x_cg_t, m_fuel_t
 
-x_cg_t = x_cg(time, fuel_data, flow_eng1, flow_eng2)
+x_cg_t, m_fuel_t = x_cg(time, fuel_data, flow_eng1, flow_eng2)
+

@@ -12,27 +12,35 @@ l = len(data["flightdata"]["vane_AOA"]['data'])
 #
 # np.savetxt("AOA.csv", AOA, delimiter=",")
 #
-# elevator_def = []
+elevator_def = []
+for i in range(l):
+    a = data["flightdata"]["delta_e"]['data'][:][i]
+    elevator_def.append(a[0])
+
+np.savetxt("elevator_def", elevator_def, delimiter=",")
+
+elevator_trim = []
+for i in range(l):
+    a = data["flightdata"]["elevator_dte"]['data'][:][i]
+    elevator_def.append(a[0])
+
+#
+np.savetxt("elevator_trim", elevator_trim, delimiter=",")
+#
+#
+# FMF_eng2 = []
 # for i in range(l):
-#     a = data["flightdata"]["elevator_dte"]['data'][:][i]
-#     elevator_def.append(a[0])
+#     a = data["flightdata"]["rh_engine_FMF"]['data'][:][i]
+#     FMF_eng2.append(a[0])
 #
-# np.savetxt("elevator_def", elevator_def, delimiter=",")
+# np.savetxt("FMF_eng2.csv", FMF_eng2, delimiter=",")
 #
+# FMF_eng1 = []
+# for i in range(l):
+#     a = data["flightdata"]["lh_engine_FMF"]['data'][:][i]
+#     FMF_eng1.append(a[0])
 #
-FMF_eng2 = []
-for i in range(l):
-    a = data["flightdata"]["rh_engine_FMF"]['data'][:][i]
-    FMF_eng2.append(a[0])
-
-np.savetxt("FMF_eng2.csv", FMF_eng2, delimiter=",")
-
-FMF_eng1 = []
-for i in range(l):
-    a = data["flightdata"]["lh_engine_FMF"]['data'][:][i]
-    FMF_eng1.append(a[0])
-
-np.savetxt("FMF_eng1.csv", FMF_eng1, delimiter=",")
+# np.savetxt("FMF_eng1.csv", FMF_eng1, delimiter=",")
 
 # TAS = []
 # for i in range(l):
@@ -88,4 +96,4 @@ np.savetxt("FMF_eng1.csv", FMF_eng1, delimiter=",")
 #     a = data["flightdata"]["delta_e"]['data'][:][i]
 #     delta_e.append(a[0])
 #
-# np.savetxt("delta_e.csv", delta_e, delimiter=",")
+#np.savetxt("delta_e.csv", delta_e, delimiter=",")
