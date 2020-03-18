@@ -48,7 +48,7 @@ for i in range(7,16):
         weight = getval(i,7)
     passlist.append(passenger)
 
-#fuelblock = getval(17,3)*convert.lbs_to_kg
+fuelblock = getval(17,3)*convert.lbs_to_kg
 CLCD1 = getdata(27,33)
 #CLCD2 = getdata(43,50)
 EleTrimCurve = getdata(58,64,True)

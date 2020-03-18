@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from ReadMeas import *
+from ClCdRef import passmass, Vequi
 
 ##READ DATA AND CREATE ARRAY##
 time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None))
@@ -63,16 +64,22 @@ plt.ylabel('-delta_e')
 plt.xlabel('AOA')
 plt.show()
 
-dde = [i.de for i in CGshift[:].de]
-print(dde)
+dde = [i.de for i in CGshift]
+dde = dde[1] - dde[0]
 xcg = AT_trimmed[:,3]
 dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
 xcgd = min(dxcg)
-
-# Cmdelta = -(1/dde) *CLline * xcgd/c
-# Cmalpha = -deda * Cmdelta
-# print('Cmdelta =', np.average(Cmdelta))
-# print('Cmalpha =', np.average(Cmalpha))
+hp = CGshift[0].height
+Vias = CGshift[0].IAS
+Tm = CGshift[0].TAT
+V, rho = Vequi(hp,Vias,Tm)
+Fused = CGshift[1].Fused
+W = (m + passmass + fuelblock - Fused)*9.81
+CN = W /(0.5*rho*V**2*S)
+Cmdelta = -(1/dde) * CN * xcgd/c
+Cmalpha = -deda * Cmdelta
+print('Cmdelta =', Cmdelta)
+print('Cmalpha =', Cmalpha)
 
 ####-------------------------Comments----------------------------------#####
 
