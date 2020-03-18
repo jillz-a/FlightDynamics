@@ -2,7 +2,7 @@ from Cit_par import *
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import statistics
+from ReadMeas import *
 
 ##READ DATA AND CREATE ARRAY##
 time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None))
@@ -65,16 +65,18 @@ plt.ylabel('-delta_e')
 plt.xlabel('AOA')
 plt.show()
 
-Cmdelta = -CLline/c
-Cmalpha = -deda * Cmdelta
-print('Cmdelta =', np.average(Cmdelta))
-print('Cmalpha =', np.average(Cmalpha))
+dde = [i.de for i in CGshift]
+print(dde)
+xcg = AT_trimmed[:,3]
+dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
+xcgd = min(dxcg)
+# Cmdelta = -(1/dde) *CLline * xcgd/c
+# Cmalpha = -deda * Cmdelta
+# print('Cmdelta =', np.average(Cmdelta))
+# print('Cmalpha =', np.average(Cmalpha))
 
-print(AOA1[0])
 ####-------------------------Comments----------------------------------#####
-# xcg = AT_trimmed[:,3]
-# dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
-# dxcg = np.vstack([dxcg,0])
+
 # dde = np.array([[de[i] - de[i-1]] for i in range(1,len(de))])
 # dde = np.vstack([dde,0.0001])
 # for i in range(len(dde)):
