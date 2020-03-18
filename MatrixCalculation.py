@@ -41,10 +41,10 @@ def GenSymmetricStateSys():
     A = -np.matmul(np.linalg.inv(C1),C2)
     B = -np.matmul(np.linalg.inv(C1),C3)
 
-    C = np.array([  [1/V, 0, 0, 0],
+    C = np.array([  [1, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
-                    [0, 0, 0, cbar/V]])
+                    [0, 0, 0, 1]])
     D = np.zeros((4,1))
 
 
@@ -90,10 +90,10 @@ def GenAsymmetricStateSys():
     A = -np.matmul(np.linalg.inv(C1),C2)
     B = -np.matmul(np.linalg.inv(C1),C3)
 
-    C = np.array([  [1/V, 0, 0, 0],
+    C = np.array([  [1, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
-                    [0, 0, 0, cbar/V]])
+                    [0, 0, 0, 1]])
     D = np.zeros((4,2))
 
     ## Create state space system ##
@@ -122,8 +122,8 @@ def CalcResponse(mode,inputparam):
 
     # Input handling
 
-    stateVectorSymm = ["u", "alpha", "theta", "q"]
-    stateVectorAsymm = ["beta", "phi", "p", "r"]
+    stateVectorSymm = ["u [airpseed]", "alpha [AoA]", "theta [flight path]", "q [pitch rate]"]
+    stateVectorAsymm = ["beta [sideslip]", "phi [roll]", "p [roll rate]", "r [yaw rate]"]
 
     if mode == 0:
         inputindex = 0
@@ -147,16 +147,16 @@ def CalcResponse(mode,inputparam):
 
     
 
-    print("System eigenvalues: ", sysEig)
-
     # Pole and zeroes map #
     plt.scatter(sys.pole().real, sys.pole().imag)
     #plt.scatter(sys.zero().real, sys.zero.imag)
     plt.suptitle("Pole-Zero map")
     plt.grid()
     syspoles = sys.damp()
+    print("------------------")
     print("Pole information.\n wn: ",syspoles[0],"\n Zeta: ",syspoles[1],"\n Poles: ",syspoles[2])
     print("Eigenvalues: ", sysEig)
+    print("------------------")
 
     ## System Responses ##
     initials = [0,0,0,0]
