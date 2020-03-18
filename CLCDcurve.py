@@ -68,6 +68,7 @@ print(dde)
 xcg = AT_trimmed[:,3]
 dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
 xcgd = min(dxcg)
+
 # Cmdelta = -(1/dde) *CLline * xcgd/c
 # Cmalpha = -deda * Cmdelta
 # print('Cmdelta =', np.average(Cmdelta))
