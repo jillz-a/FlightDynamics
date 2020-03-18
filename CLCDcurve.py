@@ -12,8 +12,6 @@ TAS = np.array(pd.read_csv('flight_data/TAS.csv', delimiter=' ', header=None))  
 TAS2 = TAS * 0.51444444444444
 TAT = np.array(pd.read_csv('flight_data/TAT.csv', delimiter=' ', header=None))
 Mach = np.array(pd.read_csv('flight_data/Mach.csv', delimiter=' ', header=None))
-# alt = np.array(pd.read_csv('flight_data/alt.csv', delimiter=' ', header=None))
-# bcAlt = np.array(pd.read_csv('flight_data/bcAlt.csv', delimiter=' ', header=None))
 de = np.array(pd.read_csv('flight_data/delta_e.csv', delimiter=' ', header=None))
 xcg = np.array(pd.read_csv('x_cg.csv', delimiter=' ', header=None))
 
@@ -65,7 +63,7 @@ plt.ylabel('-delta_e')
 plt.xlabel('AOA')
 plt.show()
 
-dde = [i.de for i in CGshift]
+dde = [i.de for i in CGshift[:].de]
 print(dde)
 xcg = AT_trimmed[:,3]
 dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
