@@ -73,6 +73,7 @@ hp = CGshift[0].height
 Vias = CGshift[0].IAS
 Tm = CGshift[0].TAT
 V, rho = Vequi(hp,Vias,Tm)
+
 Fused = CGshift[1].Fused
 W = (m + passmass + fuelblock - Fused)*9.81
 CN = W /(0.5*rho*V**2*S)
