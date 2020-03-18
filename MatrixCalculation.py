@@ -15,6 +15,7 @@ def GenSymmetricStateSys():
     ------
     sys: State-space system. 
         Inputs: [u, alpha, theta, q]
+        u is the deviation of speed to V0, alpha is the AoA to alpha0, theta is the flight path angle to theta0, q is the real pitch rate.
         Outputs: [udakje, alpha, theta, qding]
     '''
 
@@ -26,8 +27,8 @@ def GenSymmetricStateSys():
                     [0., 0., (-cbar/V), 0.],
                     [0., ((cbar/V)*Cmadot), 0., (-2*muc*KY2*(cbar/V)**2)]])
 
-    C2 = np.array([ [(1/V)*CXa, CXa, CZ0, (cbar/V)*CXa],
-                    [(1/V)*CZa, CZa, -CX0, (cbar/V)*(CZq + 2*muc)],
+    C2 = np.array([ [(1/V)*CXu, CXa, CZ0, (cbar/V)*CXq],
+                    [(1/V)*CZu, CZa, -CX0, (cbar/V)*(CZq + 2*muc)],
                     [0., 0., 0., cbar/V],
                     [(1/V)*Cmu, Cma, 0., (cbar/V)*Cmq]])
 
@@ -40,10 +41,10 @@ def GenSymmetricStateSys():
     A = -np.matmul(np.linalg.inv(C1),C2)
     B = -np.matmul(np.linalg.inv(C1),C3)
 
-    C = np.array([  [1, 0, 0, 0],
+    C = np.array([  [1/V, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
-                    [0, 0, 0, 1]])
+                    [0, 0, 0, cbar/V]])
     D = np.zeros((4,1))
 
 
@@ -51,7 +52,7 @@ def GenSymmetricStateSys():
     sys = ctrl.ss(A,B,C,D)
 
     ## Calculate eigenvalues and vectors of A
-    eigs = np.linalg.eig(A)
+    eigs = np.linalg.eigvals(A)
 
     return sys, eigs
 
@@ -63,6 +64,11 @@ def GenAsymmetricStateSys():
     Returns
     ------
     sys: State-space system
+        Inputs: [beta, phi, p, r]
+                beta: sideslip angle
+                phi: banking angle
+                p: roll rate
+                r: normal angular yaw rate
     '''
     
     C1 = np.array([ [(CYbdot -2*mub)*(b/V), 0, 0, 0],
@@ -84,12 +90,11 @@ def GenAsymmetricStateSys():
     A = -np.matmul(np.linalg.inv(C1),C2)
     B = -np.matmul(np.linalg.inv(C1),C3)
 
-    C = np.array([  [1, 0, 0, 0],
+    C = np.array([  [1/V, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
-                    [0, 0, 0, 1]])
+                    [0, 0, 0, cbar/V]])
     D = np.zeros((4,2))
-
 
     ## Create state space system ##
     sys = ctrl.ss(A,B,C,D)
@@ -100,25 +105,113 @@ def GenAsymmetricStateSys():
     return sys, eigs
 
 
-######### Symmetric response ###############
-symmsys, symmsysEig = GenAsymmetricStateSys()
-## General System information
+def CalcResponse(mode,inputparam):
+    '''
+    Calculates the response of the specified system and reports by showing initial response, impulse response, and step response. Also shows a pole-zero map and prints in the log the pole and system information.
 
-print(symmsys)
+    Input
+    ------
+    mode:
+        "symmetric" or "symm" calculates using the symmetric case
+        "asymmetric" or "asymm" calculates using the asymmetric configuration
+        
+    Returns
+    ------
+    Success on completion
+    '''
 
-symmsyspoles = symmsys.damp()
-print("Pole information.\n wn: ",symmsyspoles[0],"\n Zeta: ",symmsyspoles[1],"\n Poles: ",symmsyspoles[2])
-print("Eigenvalues: ", symmsysEig)
+    # Input handling
 
+    stateVectorSymm = ["u", "alpha", "theta", "q"]
+    stateVectorAsymm = ["beta", "phi", "p", "r"]
 
-# Pole and zeroes map #
-plt.scatter(symmsys.pole().real, symmsys.pole().imag)
-plt.grid()
-plt.show()
+    if mode == 0:
+        inputindex = 0
+        print("Calculating system for the symmetric case. Disregarding input for the response input parameter.")
+        sys, sysEig = GenSymmetricStateSys()
+        stVec = stateVectorSymm
+    elif mode == 1:
+        stVec = stateVectorAsymm
+        if inputparam == 0:
+            inputindex = 0
+            print("Calculating system for asymmetric case, response to aileron input delta a")
+            sys, sysEig = GenAsymmetricStateSys()
+        elif inputparam == 1:
+            inputindex = 1
+            print("Calculating system for asymmetric case, response to rudder input delta r")
+            sys, sysEig = GenAsymmetricStateSys()
+        else:
+            print("Error: please provide a valid input for the response input parameter")
+    else:
+        print("Error: Please fill in either \"Symmetric\" or \"Asymmetric\" as a parameter for the CalcResponse")
 
+    
 
-## System Response ##
-initials = [V0,alpha0,th0,0]
-t, y = ctrl.impulse_response(symmsys,X0=initials)
-plt.plot(t,y[0])
-plt.show()
+    print("System eigenvalues: ", sysEig)
+
+    # Pole and zeroes map #
+    plt.scatter(sys.pole().real, sys.pole().imag)
+    #plt.scatter(sys.zero().real, sys.zero.imag)
+    plt.suptitle("Pole-Zero map")
+    plt.grid()
+    syspoles = sys.damp()
+    print("Pole information.\n wn: ",syspoles[0],"\n Zeta: ",syspoles[1],"\n Poles: ",syspoles[2])
+    print("Eigenvalues: ", sysEig)
+
+    ## System Responses ##
+    initials = [0,0,0,0]
+    T = np.linspace(0,200,4000)
+    forcedInput = 2                                                            # Needs to be of length equal to the length of T
+    (time,yinit) = ctrl.initial_response(sys, T, initials, input=inputindex)
+    _, y_impulse  = ctrl.impulse_response(sys,T, initials, input=inputindex)
+    _, y_step = ctrl.step_response(sys, T, initials, input=inputindex)
+    _, y_forced, _ = ctrl.forced_response(sys,T,forcedInput, initials)
+
+    fig1, axs1 = plt.subplots(4, sharex=True)
+    fig1.suptitle("Initial Condition Response")
+    axs1[0].plot(time,yinit[0])
+    axs1[0].set_title(stVec[0] + " response")
+    axs1[1].plot(time,yinit[1])
+    axs1[1].set_title(stVec[1]+ " response")
+    axs1[2].plot(time,yinit[2])
+    axs1[2].set_title(stVec[2]+ " response")
+    axs1[3].plot(time,yinit[3])
+    axs1[3].set_title(stVec[3]+" response")
+
+    fig2, axs2 = plt.subplots(4, sharex=True)
+    fig2.suptitle("Impulse Response")
+    axs2[0].plot(time,y_impulse[0])
+    axs2[0].set_title(stVec[0]+ " response")
+    axs2[1].plot(time,y_impulse[1])
+    axs2[1].set_title(stVec[1]+"  response")
+    axs2[2].plot(time,y_impulse[2])
+    axs2[2].set_title(stVec[2]+" response")
+    axs2[3].plot(time,y_impulse[3])
+    axs2[3].set_title(stVec[3]+" response")
+
+    fig3, axs3 = plt.subplots(4, sharex=True)
+    fig3.suptitle("Step Response")
+    axs3[0].plot(time,y_step[0])
+    axs3[0].set_title(stVec[0]+" response")
+    axs3[1].plot(time,y_step[1])
+    axs3[1].set_title(stVec[1]+" response")
+    axs3[2].plot(time,y_step[2])
+    axs3[2].set_title(stVec[2]+" response")
+    axs3[3].plot(time,y_step[3])
+    axs3[3].set_title(stVec[3]+ " response")
+
+    fig4, axs4 = plt.subplots(4, sharex=True)
+    fig4.suptitle("Forced Function Response")
+    axs4[0].plot(time,y_forced[0])
+    axs4[0].set_title(stVec[0]+ " response")
+    axs4[1].plot(time,y_forced[1])
+    axs4[1].set_title(stVec[1]+" response")
+    axs4[2].plot(time,y_forced[2])
+    axs4[2].set_title(stVec[2]+ " response")
+    axs4[3].plot(time,y_forced[3])
+    axs4[3].set_title(stVec[3]+" response")
+
+    plt.show()
+    return True
+
+CalcResponse(1,1)

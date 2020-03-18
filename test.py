@@ -1,11 +1,16 @@
 #test
 import numpy as np
+from CGLoc import time, fuelx, fuely, fuel_t
+import matplotlib.pyplot as plt
 #vo
 
 #lol
 
 #ola
+# 
+M_fuel_i = np.interp(fuelx, fuely, 1300)
 
-A = np.array([[1,0,0,0],[1,1,0,0],[1,1,1,1],[1,1,1,1]])
-eig = np.linalg.eigvals(A)
-print(eig)
+print(M_fuel_i)
+
+plt.plot(fuelx, fuely)
+plt.show()

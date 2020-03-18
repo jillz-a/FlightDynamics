@@ -1,5 +1,5 @@
 # Citation 550 - Linear simulation
-from math import *
+from math import cos, sin, pi
 # xcg = 0.25 * c
 
 # Stationary flight condition
@@ -72,7 +72,7 @@ CD = CD0 + (CLa * alpha0) ** 2 / (pi * A * e) # Drag coefficient [ ]
 # Stabiblity derivatives
 
 CX0    = W * sin(th0) / (0.5 * rho * V0 ** 2 * S)
-CXu    = -0.02792
+CXu    = -0.095
 CXa    = +0.47966		# Positive! (has been erroneously negative since 1993) 
 CXadot = +0.08330
 CXq    = -0.28170
