@@ -109,16 +109,14 @@ def x_cg(time, fuel_data, flow_eng1, flow_eng2):
 
     FMF = flow_eng1 + flow_eng2 #total fuel mass flow in pounds per hour
     FMF = FMF * (0.453592 / 3600.) #kg/s
-
-
+    
     m_fuel_t = [] #fuel mass per for every time step
     for i in range(len(time)):
         Fuel_block = Fuel_block - FMF[i]*ave_diff #Fuel mass for every time step in kg, average was taken of difference due to outliers
         m_fuel_t.append(Fuel_block)
-
     #Using moment arm data for fuel
     fuel = fuel_data
-
+ 
     #splitting up the array into x and y arrays
     fuelx = np.array([fuel[i,0] for i in range(len(fuel))]) #weight, in pounds
     fuely = np.array([fuel[i,1] * 100 for i in range(len(fuel))]) #moment, in pounds-inch
@@ -128,7 +126,7 @@ def x_cg(time, fuel_data, flow_eng1, flow_eng2):
 
     #from pounds-inch to kg-m
     fuely = fuely * 0.0254 * 0.453592
-
+    
 
     M_fuel_t = []
     for i in range(len(m_fuel_t)):
@@ -149,7 +147,8 @@ def x_cg(time, fuel_data, flow_eng1, flow_eng2):
     #=========================x_cg location in m========================
     x_cg_t = np.divide(M_total_t, np.add(np.add(OEW_t, m_payload), m_fuel_t))
 
-
+    
+    #plt.plot(time,M_total_t)
     plt.plot(time, x_cg_t)
     plt.xlabel('time [s]')
     plt.ylabel('x_cg [m]')

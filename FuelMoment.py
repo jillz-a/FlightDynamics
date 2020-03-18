@@ -12,15 +12,15 @@ fuely = np.zeros(len(fuel)) #moment, in pounds-inch
 for i in range(len(fuel)):
     fuelx[i] = fuel[i,0]
 #from pounds to kg
-fuelx = fuelx * 0.453592
+fuelx = fuelx #* 0.453592
 
 for i in range(len(fuel)):
     fuely[i] = fuel[i,1] * 100
 #from pounds-inch to kg-m
-fuely = fuely * 0.0254 * 0.453592
+fuely = fuely #* 0.0254 * 0.453592
 
 #set up points where to interpolate
-x = np.arange(fuelx[0],fuelx[49],5)
+x = np.arange(fuelx[0],fuelx[49],10)
 
 
 fuel_int = np.zeros(len(x))
