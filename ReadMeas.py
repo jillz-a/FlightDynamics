@@ -1,5 +1,5 @@
 from xlrd import open_workbook
-wb = open_workbook('20200305_V4.xlsx')
+wb = open_workbook('20200305_V4_updated.xlsx')
 sheet = wb.sheets()[0]
 
 def getval(row,col):
@@ -48,10 +48,10 @@ for i in range(7,16):
         weight = getval(i,7)
     passlist.append(passenger)
 
-#fuelblock = getval(17,3)*convert.lbs_to_kg
+fuelblock = getval(17,3)*convert.lbs_to_kg
 CLCD1 = getdata(27,33)
 #CLCD2 = getdata(43,50)
-EleTrimCurve = getdata(58,64,True)
+EleTrimCurve = getdata(58,63,True)
 CGpos1 = getval(70,2)
 CGpos2 = getval(70,7)
 CGshift= getdata(74,76,True)
