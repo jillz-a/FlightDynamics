@@ -19,14 +19,14 @@ xcg = np.array(pd.read_csv('x_cg.csv', delimiter=' ', header=None))
 AT = np.column_stack([AOA1,TAS2,de,xcg])
 cut_off = 10
 AT_trimmed = AT[AT[:,1] > cut_off]
-print(AT_trimmed.shape)
+# print(AT_trimmed.shape)
 
 ##Calculate CL and CLalpha##
 AOA = AT_trimmed[:,0]
 V = AT_trimmed[:,1]
 CLgraph = W/(0.5 * V**2 * rho * S)
-t, m = np.polyfit(AOA,CLgraph,1)
-CLline = t*AOA + m
+t, ma = np.polyfit(AOA,CLgraph,1)
+CLline = t*AOA + ma
 print('Cl_alpha =', t)
 
 ##Calculate CD##
@@ -56,24 +56,24 @@ de = AT_trimmed[:,2]
 deda, q = np.polyfit(AOA,de,1)
 line = deda*AOA+q
 print('deda =', deda)
-plt.grid()
-plt.scatter(AOA,de)
-plt.plot(AOA,line, c='red')
-plt.ylim(7,-7)
-plt.ylabel('-delta_e')
-plt.xlabel('AOA')
-plt.show()
+# plt.grid()
+# plt.scatter(AOA,de)
+# plt.plot(AOA,line, c='red')
+# plt.ylim(7,-7)
+# plt.ylabel('-delta_e')
+# plt.xlabel('AOA')
+# plt.show()
 
+##------------Calculate Cmdelta and Cmalpha using Post Flight Data-------------------------##
 dde = [i.de for i in CGshift]
-dde = dde[1] - dde[0]
+dde = (dde[1] - dde[0])*(pi/180)
 xcg = AT_trimmed[:,3]
 dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
 xcgd = min(dxcg)
-hp = CGshift[0].height
-Vias = CGshift[0].IAS
-Tm = CGshift[0].TAT
-V, rho = Vequi(hp,Vias,Tm)
-
+hp = CGshift[1].height
+Vias = CGshift[1].IAS
+Tm = float(CGshift[1].TAT) + 273.15
+VTAS, rho = Vequi(hp,Vias,Tm)
 Fused = CGshift[1].Fused
 W = (m + passmass + fuelblock - Fused)*9.81
 CN = W /(0.5*rho*V**2*S)
@@ -81,15 +81,4 @@ Cmdelta = -(1/dde) * CN * xcgd/c
 Cmalpha = -deda * Cmdelta
 print('Cmdelta =', Cmdelta)
 print('Cmalpha =', Cmalpha)
-
 ####-------------------------Comments----------------------------------#####
-
-# dde = np.array([[de[i] - de[i-1]] for i in range(1,len(de))])
-# dde = np.vstack([dde,0.0001])
-# for i in range(len(dde)):
-#     if dde[i] <= 0.000001 and dde[i] >= -0.000001:
-#         dde[i] = 0.001
-#     else:
-#         dde[i] = dde[i]
-# print(dde, len(dde))
-# Cmdelta = np.array([(1/dde[i]) * CLline[i] * (dxcg[i]/c) for i in range(len(dde))])
