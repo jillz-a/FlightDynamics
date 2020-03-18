@@ -65,20 +65,20 @@ print('deda =', deda)
 # plt.show()
 
 ##------------Calculate Cmdelta and Cmalpha using Post Flight Data-------------------------##
-dde = [i.de for i in CGshift]
-dde = (dde[1] - dde[0])*(pi/180)
+dde1 = [i.de for i in CGshift]
+dde = (dde1[1] - dde1[0])*(pi/180)
 xcg = AT_trimmed[:,3]
 dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
 xcgd = min(dxcg)
 hp = CGshift[1].height
 Vias = CGshift[1].IAS
 Tm = float(CGshift[1].TAT) + 273.15
-VTAS, rho = Vequi(hp,Vias,Tm)
+VTAS, rhoTAS = Vequi(hp,Vias,Tm)
 Fused = CGshift[1].Fused
 W = (m + passmass + fuelblock - Fused)*9.81
 CN = W /(0.5*rho*V**2*S)
 Cmdelta = -(1/dde) * CN * xcgd/c
 Cmalpha = -deda * Cmdelta
-print('Cmdelta =', Cmdelta)
+print('Cmdelta =', Cmdelta)                 #ongeveer factor 2 te klein
 print('Cmalpha =', Cmalpha)
 ####-------------------------Comments----------------------------------#####
