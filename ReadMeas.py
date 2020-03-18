@@ -1,5 +1,5 @@
 from xlrd import open_workbook
-wb = open_workbook('Post_Flight_Datasheet_Flight_1_DD_12_3_2018.xlsx')
+wb = open_workbook('20200305_V4_UPDATED.xlsx')
 sheet = wb.sheets()[0]
 
 def getval(row,col):
@@ -15,7 +15,7 @@ def getdata(rangestart,rangeend,datatype = False):
                 measurement = getval(i,0)
                 time = getval(i,1)
                 height = getval(i,3)*convert.ft_to_m
-                IAS = getval(i,4)*convert.kts_to_ms
+                IAS = (getval(i,4)-2)*convert.kts_to_ms
                 AoA = getval(i,5)
                 if datatype:
                     de = getval(i,6)
@@ -30,7 +30,7 @@ def getdata(rangestart,rangeend,datatype = False):
                     FFr = getval(i,7)*convert.lbs_to_kg
                     Fused = getval(i,8)*convert.lbs_to_kg
                     TAT = getval(i,9)
-                ET  = float(time.split(":")[0])*60 + float(time.split(":")[1])
+#               ET  = float(time.split(":")[0])*60 + float(time.split(":")[1])
             datalist.append(data)
     return datalist
 
@@ -49,9 +49,9 @@ for i in range(7,16):
     passlist.append(passenger)
 
 fuelblock = getval(17,3)*convert.lbs_to_kg
-CLCD1 = getdata(27,34)
-CLCD2 = getdata(43,50)
-EleTrimCurve = getdata(58,65,True)
+CLCD1 = getdata(27,33)
+#CLCD2 = getdata(43,50)
+EleTrimCurve = getdata(58,63,True)
 CGpos1 = getval(70,2)
 CGpos2 = getval(70,7)
 CGshift= getdata(74,76,True)

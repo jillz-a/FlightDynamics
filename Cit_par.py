@@ -42,7 +42,7 @@ rho0   = 1.2250          # air density at sea level [kg/m^3]
 Tempgrad = -0.0065         # temperature gradient in ISA [K/m]
 Temp0  = 288.15          # temperature at sea level in ISA [K]
 R      = 287.05          # specific gas constant [m^2/sec^2K]
-g      = 9.81            # [m/sec^2] (gravity constant)
+g      = 9.80665            # [m/sec^2] (gravity constant)
 
 # air density [kg/m^3]  
 rho    = rho0 * pow(((1+(Tempgrad * hp0 / Temp0))), (-((g / (Tempgrad*R)) + 1)))
@@ -74,9 +74,9 @@ CD = CD0 + (CLa * alpha0) ** 2 / (pi * A * e) # Drag coefficient [ ]
 CX0    = W * sin(th0) / (0.5 * rho * V0 ** 2 * S)
 CXu    = -0.095
 CXa    = +0.47966		# Positive! (has been erroneously negative since 1993) 
-CXadot = +0.08330
-CXq    = -0.28170
-CXde   = -0.03728
+CXadot = +0.08330                                   # According to FD notes p110, should be 0.
+CXq    = -0.28170                                   # According to FD notes p110, should be 0.
+CXde   = -0.03728                                   # According to FD notes p120, should be 0.
 
 CZ0    = -W * cos(th0) / (0.5 * rho * V0 ** 2 * S)
 CZu    = -0.37616
@@ -85,26 +85,26 @@ CZadot = -0.00350
 CZq    = -5.66290
 CZde   = -0.69612
 
-Cmu    = +0.06990
+Cmu    = +0.06990                                   # According to FD notes p543, should be very close to 0.
 Cmadot = +0.17800
 Cmq    = -8.79415
 
-CYb    = -0.7500
-CYbdot =  0     
-CYp    = -0.0304
-CYr    = +0.8495
-CYda   = -0.0400
-CYdr   = +0.2300
+CYb    = -0.7500                                    # should be negative, check
+CYbdot =  0                                         # 
+CYp    = -0.0304                                    # Should be very small and negative, check
+CYr    = +0.8495                                    # pos, check
+CYda   = -0.0400                                    # SHOULD BE 0 NOT CHECK
+CYdr   = +0.2300                                    # pos, check
 
-Clb    = -0.10260
-Clp    = -0.71085
-Clr    = +0.23760
-Clda   = -0.23088
-Cldr   = +0.03440
+Clb    = -0.10260                                   # for positive sweep should be negative, check
+Clp    = -0.71085                                   # negative, check
+Clr    = +0.23760                                   # pos, check
+Clda   = -0.23088                                   # neg, check
+Cldr   = +0.03440                                   # pos, check
 
-Cnb    =  +0.1348
+Cnb    =  +0.1348                                   # should be positive
 Cnbdot =   0     
-Cnp    =  -0.0602
-Cnr    =  -0.2061
-Cnda   =  -0.0120
-Cndr   =  -0.0939
+Cnp    =  -0.0602                                   # negative, check
+Cnr    =  -0.2061                                   # neg, check
+Cnda   =  -0.0120                                   # SHOULD BE POSITIVE
+Cndr   =  -0.0939                                   # neg, check
