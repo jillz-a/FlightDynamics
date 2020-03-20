@@ -15,32 +15,36 @@ TAT = np.array(pd.read_csv('flight_data/TAT.csv', delimiter=' ', header=None))
 Mach = np.array(pd.read_csv('flight_data/Mach.csv', delimiter=' ', header=None))
 de = np.array(pd.read_csv('flight_data/delta_e.csv', delimiter=' ', header=None))
 xcg = np.array(pd.read_csv('x_cg.csv', delimiter=' ', header=None))
+alt = np.array(pd.read_csv('flight_data/bcAlt.csv', delimiter=' ', header = None))
+alt2 = alt * 0.3048   #ft to meters
 
-AT = np.column_stack([AOA1,TAS2,de,xcg])
-cut_off = 10
+AT = np.column_stack([AOA1,TAS2,de,xcg,alt2])
+cut_off = 70
 AT_trimmed = AT[AT[:,1] > cut_off]
 # print(AT_trimmed.shape)
 
 ##Calculate CL and CLalpha##
 AOA = AT_trimmed[:,0]
 V = AT_trimmed[:,1]
-CLgraph = W/(0.5 * V**2 * rho * S)
+h = AT_trimmed[:,4]
+rho1 = rho0 * pow((1 + (Tempgrad*h)/Temp0),(-g/(R*Tempgrad) - 1))
+CLgraph = W/(0.5 * V**2 * rho1 * S)
 t, ma = np.polyfit(AOA,CLgraph,1)
 CLline = t*AOA + ma
-print('Cl_alpha =', t)
-
+print('Cl_alpha =', t, ma)
 ##Calculate CD##
-CDgraph = CD0 + (CLgraph) ** 2 / (pi * A * e)
+CDgraph = CD0 + (CLline) ** 2 / (pi * A * e)
 
 #Plots##
 # plt.grid()
-# plt.scatter(AOA,CLgraph)
-# plt.plot(AOA,t*AOA+m,c='red')
+# scatter = plt.scatter(AOA,CLgraph,marker= '.', label='Measure point')
+# line = plt.plot(AOA,CLline,c='red', label= 'Least squares')
 # plt.title('CL-alpha curve')
+# plt.legend()
 # plt.show()
 
 # plt.grid()
-# plt.scatter(CDgraph,CLgraph)
+# plt.scatter(CDgraph,CLline)
 # plt.title('CD-CL curve')
 # plt.show()
 
@@ -67,6 +71,7 @@ print('deda =', deda)
 ##------------Calculate Cmdelta and Cmalpha using Post Flight Data-------------------------##
 dde1 = [i.de for i in CGshift]
 dde = (dde1[1] - dde1[0])*(pi/180)
+dde2 = -0.15 *(pi/180)          #from first version data sheet excel
 xcg = AT_trimmed[:,3]
 dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
 xcgd = min(dxcg)
@@ -75,9 +80,10 @@ Vias = CGshift[1].IAS
 Tm = float(CGshift[1].TAT) + 273.15
 VTAS, rhoTAS = Vequi(hp,Vias,Tm)
 Fused = CGshift[1].Fused
-W = (m + passmass + fuelblock - Fused)*9.81
-CN = W /(0.5*rho*V**2*S)
-Cmdelta = -(1/dde) * CN * xcgd/c
+Weight = (m + passmass + fuelblock - Fused)*9.81
+CN = Weight /(0.5*rhoTAS*(VTAS**2)*S)
+print(CN)
+Cmdelta = -(1/dde2) * CN * xcgd/c
 Cmalpha = -deda * Cmdelta
 print('Cmdelta =', Cmdelta)                 #ongeveer factor 2 te klein
 print('Cmalpha =', Cmalpha)
