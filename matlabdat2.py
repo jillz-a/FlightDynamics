@@ -10,7 +10,7 @@ SAT = np.array(pd.read_csv('flight_data/SAT.csv', delimiter=' ', header=None))
 alt = np.array(pd.read_csv('flight_data/alt.csv', delimiter=' ', header= None)) * 0.3048 #meters
 FMFL = np.array(pd.read_csv('flight_data/FMF_eng1.csv', delimiter=',', header=None)) * 0.000125998 #1 kg/s
 FMFR = np.array(pd.read_csv('flight_data/FMF_eng2.csv', delimiter=',', header=None)) * 0.000125998 #2 kg/s
-T = [SAT[i] - Temp0 for i in range(len(SAT))]
+T = [((SAT[i] + 273.15) - Temp0) for i in range(len(SAT))]
 
 trust = np.column_stack([alt,Mach,T,FMFL,FMFR])
 
