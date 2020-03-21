@@ -33,11 +33,6 @@ for i in thrustarray:
 totalthrust = np.add(leftthrust,rightthrust)
 for i in range(len(CLCD1)):
     CLCD1[i].thrust = totalthrust[i]
-
-totalthrust = np.add(leftthrust,rightthrust)
-for i in range(len(CLCD1)):
-    CLCD1[i].thrust = totalthrust[i]
-
     
 CLlist = []
 CDlist = []
