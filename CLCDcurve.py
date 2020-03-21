@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from ReadMeas import *
-from ClCdRef import passmass, Vequi
+from ClCdRef import passmass, Vequi, totalthrustele
 
 ##READ DATA AND CREATE ARRAY##
 time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None))
@@ -81,11 +81,33 @@ Vias = CGshift[1].IAS
 Tm = float(CGshift[1].TAT) + 273.15
 VTAS, rhoTAS = Vequi(hp,Vias,Tm)[0:2]
 Fused = CGshift[1].Fused
-Weight = (m + passmass + fuelblock - Fused)*9.81
+Weight = (m + passmass + fuelblock - Fused)*g
 CN = Weight /(0.5*rhoTAS*(VTAS**2)*S)
 print(CN)
 Cmdelta = -(1/dde2) * CN * xcgd/c
 Cmalpha = -deda * Cmdelta
 print('Cmdelta =', Cmdelta)                 #ongeveer factor 2 te klein
 print('Cmalpha =', Cmalpha)
+
+##--------------Elevator Trim Curve-----------------##
+height = np.array([i.height for i in EleTrimCurve])
+V_ias = np.array([i.IAS for i in EleTrimCurve])
+Temp = np.array([i.TAT for i in EleTrimCurve])
+V_e = Vequi(height,V_ias,Temp)[2]
+Fusedele = np.array([i.Fused for i in EleTrimCurve])
+mtot_el = m + passmass + fuelblock - Fusedele
+Wele = mtot_el * g
+Ws = m * g
+Ve_e = V_e * np.sqrt(Ws/Wele)
+print(Ve_e)
+
+print(totalthrustele)
+mflow_s = 0.048 #kg/s
+Cmtc = -.0064
+eledefl = np.array([i.de for i in EleTrimCurve])
+mflow = np.array([(i.FFl + i.FFr)/3600 for i in EleTrimCurve])
+dV = [(Ve_e[i]-Ve_e[i-1]) for i in range(1,5)]
+tc = (mflow_s - mflow)
+print(dV) #Look into tomorrow which way to calculate Tc and Tcs!!!
+
 ####-------------------------Comments----------------------------------#####
