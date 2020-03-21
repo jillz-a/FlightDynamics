@@ -18,21 +18,21 @@ def Vequi(hp,Vias,Tm):
     Vt = M*a
     rho = p/(R*T)
     Ve = Vt*np.sqrt(rho/rho0) 
-    return Vt, rho
+    return Vt, rho, Ve
 
-# thrust = open("Thrust//thrustCLCD1Meas.dat", "r")
-# thrustarray = thrust.readlines()
-# leftthrust = []
-# rightthrust = []
-# for i in thrustarray:
-#     i = i.split('\t')
-#     i[1] = i[1].replace('\n','')
-#     leftthrust.append(float(i[0]))
-#     rightthrust.append(float(i[1]))
-#
-# totalthrust = np.add(leftthrust,rightthrust)
-# for i in range(len(CLCD1)):
-#     CLCD1[i].thrust = totalthrust[i]
+thrust = open("Thrust//thrustCLCD1Meas.dat", "r")
+thrustarray = thrust.readlines()
+leftthrust = []
+rightthrust = []
+for i in thrustarray:
+    i = i.split('\t')
+    i[1] = i[1].replace('\n','')
+    leftthrust.append(float(i[0]))
+    rightthrust.append(float(i[1]))
+
+totalthrust = np.add(leftthrust,rightthrust)
+for i in range(len(CLCD1)):
+    CLCD1[i].thrust = totalthrust[i]
 
 totalthrust = np.add(leftthrust,rightthrust)
 for i in range(len(CLCD1)):
@@ -51,7 +51,7 @@ for i in CLCD1:
     D = i.thrust
     
     mtot = m + passmass + fuelblock - Fused
-    Ve = Vequi(hp,Vias,Tm)
+    Ve = Vequi(hp,Vias,Tm)[2]
     aero = 0.5*rho0*Ve**2*S
     Cl = mtot*g/aero
     Cd = D/aero
@@ -60,26 +60,29 @@ for i in CLCD1:
     CDlist.append(Cd)
     AOAlist.append(float(i.AoA))
 
-#plt.subplot(211)
-#Am = np.vstack([AOAlist, np.ones(len(AOAlist))]).T
-#a,b = np.linalg.lstsq(Am,CLlist,rcond=None)[0]
-#plt.scatter(AOAlist,CLlist)
-#plt.plot(AOAlist, np.array(AOAlist)*a + b)
-#plt.ylabel("Lift coefficient [-]")
-#plt.xlabel("Angle of Attack [deg]")
-#plt.xlim(0,11)
-#plt.ylim(0,1.3)
+
+# plt.subplot(211)
+Am = np.vstack([AOAlist, np.ones(len(AOAlist))]).T
+a,b = np.linalg.lstsq(Am,CLlist,rcond=None)[0]
+CLalpha = a
+print(CLalpha)
+# plt.scatter(AOAlist,CLlist)
+# plt.plot(AOAlist, np.array(AOAlist)*a + b)
+# plt.ylabel("Lift coefficient [-]")
+# plt.xlabel("Angle of Attack [deg]")
+# plt.xlim(0,11)
+# plt.ylim(0,1.3)
 #
-#plt.subplot(212)
-#B = np.vstack([AOAlist, np.ones(len(AOAlist))]).T
-#c,d = np.linalg.lstsq(B,CDlist,rcond=None)[0]
-#plt.scatter(AOAlist,CDlist)
-#plt.plot(AOAlist, np.array(AOAlist)*c + d)
-#plt.ylabel("Drag coefficient [-]")
-#plt.xlabel("Angle of Attack [deg]")
-#plt.xlim(0,11)
-#plt.ylim(0,0.1)
-#plt.show()
+# plt.subplot(212)
+# B = np.vstack([AOAlist, np.ones(len(AOAlist))]).T
+# c,d = np.linalg.lstsq(B,CDlist,rcond=None)[0]
+# plt.scatter(AOAlist,CDlist)
+# plt.plot(AOAlist, np.array(AOAlist)*c + d)
+# plt.ylabel("Drag coefficient [-]")
+# plt.xlabel("Angle of Attack [deg]")
+# plt.xlim(0,11)
+# plt.ylim(0,0.1)
+# plt.show()
 
 # CL2 = np.array(CLlist)**2
 # C = np.vstack([CL2, np.ones(len(CL2))]).T

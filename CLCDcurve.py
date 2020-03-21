@@ -18,7 +18,7 @@ xcg = np.array(pd.read_csv('x_cg.csv', delimiter=' ', header=None))
 alt = np.array(pd.read_csv('flight_data/bcAlt.csv', delimiter=' ', header = None))
 alt2 = alt * 0.3048   #ft to meters
 
-AT = np.column_stack([AOA1,TAS2,de,xcg,alt2])
+AT = np.column_stack([AOA1,TAS2,de,xcg,alt2,TAT])
 cut_off = 70
 AT_trimmed = AT[AT[:,1] > cut_off]
 # print(AT_trimmed.shape)
@@ -31,9 +31,10 @@ rho1 = rho0 * pow((1 + (Tempgrad*h)/Temp0),(-g/(R*Tempgrad) - 1))
 CLgraph = W/(0.5 * V**2 * rho1 * S)
 t, ma = np.polyfit(AOA,CLgraph,1)
 CLline = t*AOA + ma
-print('Cl_alpha =', t, ma)
+print('Cl_alpha =', t, t *(180/pi))
 ##Calculate CD##
 CDgraph = CD0 + (CLline) ** 2 / (pi * A * e)
+
 
 #Plots##
 # plt.grid()
@@ -51,9 +52,10 @@ CDgraph = CD0 + (CLline) ** 2 / (pi * A * e)
 ##Calculate Reynolds Range with Sutherland Equation##
 b = 1.458*10**(-6)  #kg/msK^1/2
 S = 110.4 #K
-T = TAT + 273.15
+T = AT_trimmed[:,5] + 273.15
 mu = (b * T ** (3/2))/(T + S)
-print('Reynoldsnumber Range =', max(mu), min(mu))
+Reyn = np.array([(rho1[i] * V[i] * c/mu[i]) for i in range(len(mu))])
+print('Reynoldsnumber Range =', max(Reyn), min(Reyn))
 
 ##Cmalpha and Cmdelta Calculations##
 de = AT_trimmed[:,2]
@@ -78,7 +80,7 @@ xcgd = min(dxcg)
 hp = CGshift[1].height
 Vias = CGshift[1].IAS
 Tm = float(CGshift[1].TAT) + 273.15
-VTAS, rhoTAS = Vequi(hp,Vias,Tm)
+VTAS, rhoTAS = Vequi(hp,Vias,Tm)[0:2]
 Fused = CGshift[1].Fused
 Weight = (m + passmass + fuelblock - Fused)*9.81
 CN = Weight /(0.5*rhoTAS*(VTAS**2)*S)
