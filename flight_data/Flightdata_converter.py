@@ -56,12 +56,12 @@ l = len(data["flightdata"]["vane_AOA"]['data'])
 #
 # np.savetxt("Mach.csv", Mach, delimiter=",")
 # #
-# TAT = []
-# for i in range(l):
-#     a = data["flightdata"]["Dadc1_tat"]['data'][:][i]
-#     TAT.append(a[0])
+SAT = []
+for i in range(l):
+    a = data["flightdata"]["Dadc1_sat"]['data'][:][i]
+    SAT.append(a[0])
 #
-# np.savetxt("TAT.csv", TAT, delimiter=",")
+np.savetxt("SAT.csv", SAT, delimiter=",")
 #
 # bcAlt = []
 # for i in range(l):
@@ -98,9 +98,9 @@ l = len(data["flightdata"]["vane_AOA"]['data'])
 #
 #np.savetxt("delta_e.csv", delta_e, delimiter=",")
 
-pitch = []
-for i in range(l):
-    a = data["flightdata"]["Ahrs1_Pitch"]['data'][:][i]
-    pitch.append(a[0])
-
-np.savetxt("theta.csv", pitch, delimiter=",")
+# pitch = []
+# for i in range(l):
+#     a = data["flightdata"]["Ahrs1_Pitch"]['data'][:][i]
+#     pitch.append(a[0])
+#
+# np.savetxt("theta.csv", pitch, delimiter=",")

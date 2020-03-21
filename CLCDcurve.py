@@ -35,7 +35,6 @@ print('Cl_alpha =', t, t *(180/pi))
 ##Calculate CD##
 CDgraph = CD0 + (CLline) ** 2 / (pi * A * e)
 
-
 #Plots##
 # plt.grid()
 # scatter = plt.scatter(AOA,CLgraph,marker= '.', label='Measure point')
