@@ -109,5 +109,4 @@ mflow = np.array([(i.FFl + i.FFr)/3600 for i in EleTrimCurve])
 dV = [(Ve_e[i]-Ve_e[i-1]) for i in range(1,5)]
 tc = (mflow_s - mflow)
 print(dV) #Look into tomorrow which way to calculate Tc and Tcs!!!
-
 ####-------------------------Comments----------------------------------#####
