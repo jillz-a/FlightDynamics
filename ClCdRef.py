@@ -84,17 +84,17 @@ print(CLalpha)
 # plt.ylim(0,0.1)
 # plt.show()
 
-# CL2 = np.array(CLlist)**2
-# C = np.vstack([CL2, np.ones(len(CL2))]).T
-# piAe,CD0 = np.linalg.lstsq(C,CDlist,rcond=None)[0]
-#plt.scatter(CL2,CDlist)
-#plt.plot(CL2, CL2*piAe + CD0)
-#plt.xlabel('Lift coefficient squared [-]')
-#plt.ylabel('Drag coefficient [-]')
-#plt.plot()
+CL2 = np.array(CLlist)**2
+C = np.vstack([CL2, np.ones(len(CL2))]).T
+piAe,CD0 = np.linalg.lstsq(C,CDlist,rcond=None)[0]
+plt.scatter(CL2,CDlist)
+plt.plot(CL2, CL2*piAe + CD0)
+plt.xlabel('Lift coefficient squared [-]')
+plt.ylabel('Drag coefficient [-]')
+plt.plot()
 
-# e = 1/(piAe*np.pi*A)
-# print('CD0 = ', CD0,'  e = ',e)
+e = 1/(piAe*np.pi*A)
+print('CD0 = ', CD0,'  e = ',e)
 #
 # plt.scatter(CDlist,CLlist)
 # plt.plot(CD0 + CL2/(np.pi*A*e), CLlist)
