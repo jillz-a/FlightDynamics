@@ -274,7 +274,8 @@ def x_cg_num(CLCD1, EleTrimCurve, CGshift, fuel_data):
     M_fuel_cgshift  = np.array([f_fuel(m_fuel_cgshift[i]) for i in range(len(m_fuel_cgshift))]) #kgm
     x_cg_cgshift = np.divide(M_fuel_cgshift + M_empty + np.array([M_pay,M_pay_shift]), np.add(np.add(OEW, m_payload), m_fuel_cgshift)) #m from datum line
 
-    return  x_cg_CLCD1, x_cg_elev, x_cg_cgshift
+    return  x_cg_CLCD1, x_cg_elev, x_cg_cgshift, m_fuel_CLCD1, m_fuel_elev, m_fuel_cgshift, OEW, m_payload
 
-x_cg_CLCD1, x_cg_elev, x_cg_cgshift = x_cg_num(CLCD1, EleTrimCurve,CGshift, fuel_data)
+x_cg_CLCD1, x_cg_elev, x_cg_cgshift, m_fuel_CLCD1, m_fuel_elev, m_fuel_cgshift, OEW, m_payload = x_cg_num(CLCD1, EleTrimCurve,CGshift, fuel_data)
 
+np.savetxt('cg_shift.csv', x_cg_cgshift, delimiter=',')
