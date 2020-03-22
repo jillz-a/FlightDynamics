@@ -172,31 +172,31 @@ def x_cg_num(CLCD1, EleTrimCurve, CGshift, fuel_data):
     OEW = 9165 #pounds
 
     x_s1 = 131
-    m_s1 = 150
+    m_s1 = 224.8
 
     x_s2 = 131
-    m_s2 = 150
+    m_s2 = 176.4
 
     x_s3 = 214
-    m_s3 = 150
+    m_s3 = 174.2
 
     x_s4 = 214
-    m_s4 = 150
+    m_s4 = 167.6
 
     x_s5 = 251
-    m_s5 = 150
+    m_s5 = 138.9
 
     x_s6 = 251
-    m_s6 = 150
+    m_s6 = 167.6
 
     x_s7 = 288
-    m_s7 = 150
+    m_s7 = 174.2
 
     x_s8 = 288
-    m_s8 = 150
+    m_s8 = 209.4
 
     x_s10 = 170
-    m_s10 = 150
+    m_s10 = 189.6
 
     m_payload = m_s1 + m_s2 + m_s2 + m_s3 + m_s4 + m_s5 + m_s6 + m_s7 + m_s8 + m_s10 #pounds
     #initial values (metric)
