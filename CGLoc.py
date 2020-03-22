@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 from ReadMeas import *
+import matplotlib2tikz as tikz
 
 #import data
 time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None)) #sec
@@ -277,3 +278,13 @@ def x_cg_num(CLCD1, EleTrimCurve, CGshift, fuel_data):
 x_cg_CLCD1, x_cg_elev, x_cg_cgshift, m_fuel_CLCD1, m_fuel_elev, m_fuel_cgshift, OEW, m_payload = x_cg_num(CLCD1, EleTrimCurve,CGshift, fuel_data)
 
 np.savetxt('cg_shift.csv', x_cg_cgshift, delimiter=',')
+
+plt.plot(time, x_cg_t)
+plt.plot([1686, 1784, 1956, 2085, 2215, 2365], x_cg_CLCD1, 'r')
+plt.plot([3029, 3093, 3165, 3237, 3314], x_cg_elev, 'r')
+plt.plot([3408, 3559], x_cg_cgshift, 'r')
+
+plt.xlabel('time [s]')
+plt.ylabel('x_cg [m]')
+plt.ylim(6.9, 7.0)
+plt.show()
