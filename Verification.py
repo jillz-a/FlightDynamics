@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
         FMF1 = [] #constant fuel flow
         FMF2 = [] #constant fuel flow
 
-        x_cg_t = x_cg(time, fuel_data, FMF1, FMF2)
+        x_cg_t, m_fuel_t, FMF = x_cg(time, fuel_data, FMF1, FMF2)
         xcg_begin = 0
         xcg_middle = 0
         xcg_end = 0
