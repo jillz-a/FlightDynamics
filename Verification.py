@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-
+from CGLoc import x_cg, time, fuel_data
 
 class Test(unittest.TestCase):
 
@@ -17,8 +17,18 @@ class Test(unittest.TestCase):
         expected = np.array([[2,2],[2,2]])
         self.assertEqual(C.all(), expected.all())
 
+    def test_cg(self): #tests cg location script with simplified input values
+        FMF1 = [] #constant fuel flow
+        FMF2 = [] #constant fuel flow
 
+        x_cg_t, m_fuel_t, FMF = x_cg(time, fuel_data, FMF1, FMF2)
+        xcg_begin = 0
+        xcg_middle = 0
+        xcg_end = 0
 
+        self.assertEqual(x_cg_t[0], xcg_begin)
+        self.assertEqual(x_cg_t[53430 / 2], xcg_middle)
+        self.assertEqual(x_cg_t[-1], xcg_end)
 
 if __name__ == '__main__':
     unittest.main()

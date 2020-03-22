@@ -1,6 +1,6 @@
 #test
 import numpy as np
-from CGLoc import time, fuelx, fuely, fuel_t
+from CGLoc import time, x_cg, fuel_data, flow_eng1, flow_eng2
 import matplotlib.pyplot as plt
 #vo
 
@@ -8,9 +8,10 @@ import matplotlib.pyplot as plt
 
 #ola
 # 
-M_fuel_i = np.interp(fuelx, fuely, 1300)
 
-print(M_fuel_i)
+# x_cg_t, m_fuel_t, FMF = x_cg(time, fuel_data, flow_eng1, flow_eng2)
+# print(x_cg_t)
 
-plt.plot(fuelx, fuely)
-plt.show()
+x = np.array([0,1,2]) + np.array([1,2,3])
+
+print(x)
