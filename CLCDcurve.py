@@ -15,6 +15,7 @@ TAT = np.array(pd.read_csv('flight_data/TAT.csv', delimiter=' ', header=None))
 Mach = np.array(pd.read_csv('flight_data/Mach.csv', delimiter=' ', header=None))
 de = np.array(pd.read_csv('flight_data/delta_e.csv', delimiter=' ', header=None))
 xcg = np.array(pd.read_csv('x_cg.csv', delimiter=' ', header=None))
+shiftxcg = np.array(pd.read_csv('cg_shift.csv', delimiter=' ', header=None))
 alt = np.array(pd.read_csv('flight_data/bcAlt.csv', delimiter=' ', header = None))
 alt2 = alt * 0.3048   #ft to meters
 
@@ -73,9 +74,7 @@ print('deda =', deda)
 dde1 = [i.de for i in CGshift]
 dde = (dde1[1] - dde1[0])*(pi/180)
 dde2 = -0.15 *(pi/180)          #from first version data sheet excel
-xcg = AT_trimmed[:,3]
-dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
-xcgd = min(dxcg)
+dxcg = shiftxcg[1]-shiftxcg[0]
 hp = CGshift[1].height
 Vias = CGshift[1].IAS
 Tm = float(CGshift[1].TAT) + 273.15
@@ -84,7 +83,7 @@ Fused = CGshift[1].Fused
 Weight = (m + passmass + fuelblock - Fused)*g
 CN = Weight /(0.5*rhoTAS*(VTAS**2)*S)
 print(CN)
-Cmdelta = -(1/dde2) * CN * xcgd/c
+Cmdelta = -(1/dde) * CN * dxcg/c
 Cmalpha = -deda * Cmdelta
 print('Cmdelta =', Cmdelta)                 #ongeveer factor 2 te klein
 print('Cmalpha =', Cmalpha)
@@ -107,6 +106,10 @@ Cmtc = -.0064
 eledefl = np.array([i.de for i in EleTrimCurve])
 mflow = np.array([(i.FFl + i.FFr)/3600 for i in EleTrimCurve])
 dV = [(Ve_e[i]-Ve_e[i-1]) for i in range(1,5)]
-tc = (mflow_s - mflow)
+d_eng = 686 #mm
+
 print(dV) #Look into tomorrow which way to calculate Tc and Tcs!!!
 ####-------------------------Comments----------------------------------#####
+# xcg = AT_trimmed[:,3]
+# dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
+# xcgd = min(dxcg)
