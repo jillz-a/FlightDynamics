@@ -147,7 +147,7 @@ def CalcResponse(mode,inputparam):
 
     
 
-    print("System eigenvalues: ", sysEig)
+    #print("System eigenvalues: ", sysEig)
 
     # Pole and zeroes map #
     plt.scatter(sys.pole().real, sys.pole().imag)
