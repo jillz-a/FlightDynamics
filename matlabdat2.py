@@ -12,7 +12,7 @@ FMFL = np.array(pd.read_csv('flight_data/FMF_eng1.csv', delimiter=',', header=No
 FMFR = np.array(pd.read_csv('flight_data/FMF_eng2.csv', delimiter=',', header=None)) * 0.000125998 #2 kg/s
 T = [((SAT[i] + 273.15) - Temp0) for i in range(len(SAT))]
 
-trust = np.column_stack([alt,Mach,T,FMFL,FMFR])
+trust = np.column_stack([alt[29910:33511],Mach[29910:33511],T[29910:33511],FMFL[29910:33511],FMFR[29910:33511]])
 
 matlab = open("matlab.dat", "w")
 for i in range(len(trust)):
