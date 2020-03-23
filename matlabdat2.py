@@ -14,12 +14,12 @@ T = [((SAT[i] + 273.15) - Temp0) for i in range(len(SAT))]
 
 trust = np.column_stack([alt[29910:33511],Mach[29910:33511],T[29910:33511],FMFL[29910:33511],FMFR[29910:33511]])
 
-matlab = open("matlab.dat", "w")
+matlab = open("matlab3.dat", "w")
 for i in range(len(trust)):
     hp = round(trust[i,0],3)
     M = round(trust[i,1],3)
     T = round(trust[i,2],3)
-    FFl = round(trust[i,3],3)
-    FFr = round(trust[i,4],3)
+    FFl = round(0.048,3)
+    FFr = round(0.048,3)
     matlab.write(str(hp) + " " + str(M) + " " + str(T) + " " + str(FFl) + " " + str(FFr) + "\n")
 matlab.close()
