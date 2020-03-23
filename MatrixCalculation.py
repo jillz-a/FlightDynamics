@@ -105,6 +105,36 @@ def GenAsymmetricStateSys():
     return sys, eigs
 
 
+def ResponseInputHandler(mode, inputparam):
+    stateVectorSymm = ["u [airpseed]", "alpha [AoA]", "theta [flight path]", "q [pitch rate]"]
+    stateVectorAsymm = ["beta [sideslip]", "phi [roll]", "p [roll rate]", "r [yaw rate]"]
+
+    if mode == 0:
+        inputindex = 0
+        print("Calculating system for the symmetric case. Disregarding input for the response input parameter.")
+        sys, sysEig = GenSymmetricStateSys()
+        stVec = stateVectorSymm
+        inputtitle = ", symmetric, elevator input"
+    elif mode == 1:
+        stVec = stateVectorAsymm
+        if inputparam == 0:
+            inputindex = 0
+            inputtitle = ", asymmetric, aileron input"
+            print("Calculating system for asymmetric case, response to aileron input delta a")
+            sys, sysEig = GenAsymmetricStateSys()
+        elif inputparam == 1:
+            inputindex = 1
+            inputtitle = ", asymmetric, rudder input"
+            print("Calculating system for asymmetric case, response to rudder input delta r")
+            sys, sysEig = GenAsymmetricStateSys()
+        else:
+            print("Error: please provide a valid input for the response input parameter")
+    else:
+        print("Error: Please fill in either \"Symmetric\" or \"Asymmetric\" as a parameter for the CalcResponse")
+    
+    return sys, sysEig, inputindex, stVec, inputtitle
+
+
 def CalcResponse(mode,inputparam):
     '''
     Calculates the response of the specified system and reports by showing initial response, impulse response, and step response. Also shows a pole-zero map and prints in the log the pole and system information.
@@ -120,32 +150,7 @@ def CalcResponse(mode,inputparam):
     Success on completion
     '''
 
-    # Input handling
-
-    stateVectorSymm = ["u [airpseed]", "alpha [AoA]", "theta [flight path]", "q [pitch rate]"]
-    stateVectorAsymm = ["beta [sideslip]", "phi [roll]", "p [roll rate]", "r [yaw rate]"]
-
-    if mode == 0:
-        inputindex = 0
-        print("Calculating system for the symmetric case. Disregarding input for the response input parameter.")
-        sys, sysEig = GenSymmetricStateSys()
-        stVec = stateVectorSymm
-    elif mode == 1:
-        stVec = stateVectorAsymm
-        if inputparam == 0:
-            inputindex = 0
-            inputtitle = ", aileron input"
-            print("Calculating system for asymmetric case, response to aileron input delta a")
-            sys, sysEig = GenAsymmetricStateSys()
-        elif inputparam == 1:
-            inputindex = 1
-            inputtile = ", rudder input"
-            print("Calculating system for asymmetric case, response to rudder input delta r")
-            sys, sysEig = GenAsymmetricStateSys()
-        else:
-            print("Error: please provide a valid input for the response input parameter")
-    else:
-        print("Error: Please fill in either \"Symmetric\" or \"Asymmetric\" as a parameter for the CalcResponse")
+    sys, sysEig, inputindex, stVec, inputtitle = ResponseInputHandler(mode, inputparam)
 
     
 
@@ -170,7 +175,7 @@ def CalcResponse(mode,inputparam):
     _, y_forced, _ = ctrl.forced_response(sys,T,forcedInput, initials)
 
     fig1, axs1 = plt.subplots(4, sharex=True)
-    fig1.suptitle("Initial Condition Response"+inputtile)
+    fig1.suptitle("Initial Condition Response"+inputtitle)
     axs1[0].plot(time,yinit[0])
     axs1[0].set_title(stVec[0] + " response")
     axs1[1].plot(time,yinit[1])
@@ -181,7 +186,7 @@ def CalcResponse(mode,inputparam):
     axs1[3].set_title(stVec[3]+" response")
 
     fig2, axs2 = plt.subplots(4, sharex=True)
-    fig2.suptitle("Impulse Response"+inputtile)
+    fig2.suptitle("Impulse Response"+inputtitle)
     axs2[0].plot(time,y_impulse[0])
     axs2[0].set_title(stVec[0]+ " response")
     axs2[1].plot(time,y_impulse[1])
@@ -192,7 +197,7 @@ def CalcResponse(mode,inputparam):
     axs2[3].set_title(stVec[3]+" response")
 
     fig3, axs3 = plt.subplots(4, sharex=True)
-    fig3.suptitle("Step Response"+inputtile)
+    fig3.suptitle("Step Response"+inputtitle)
     axs3[0].plot(time,y_step[0])
     axs3[0].set_title(stVec[0]+" response")
     axs3[1].plot(time,y_step[1])
@@ -203,7 +208,7 @@ def CalcResponse(mode,inputparam):
     axs3[3].set_title(stVec[3]+ " response")
 
     fig4, axs4 = plt.subplots(4, sharex=True)
-    fig4.suptitle("Forced Function Response"+inputtile)
+    fig4.suptitle("Forced Function Response"+inputtitle)
     axs4[0].plot(time,y_forced[0])
     axs4[0].set_title(stVec[0]+ " response")
     axs4[1].plot(time,y_forced[1])
@@ -216,4 +221,4 @@ def CalcResponse(mode,inputparam):
     plt.show()
     return True
 
-CalcResponse(1,1)
+#CalcResponse(1,1)
