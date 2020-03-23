@@ -107,43 +107,63 @@ deleq = eledefl - (1/Cmdelta *Cmtc * (Tcs - Tc))
 deda, q = np.polyfit(aoa,deleq,1)
 line = deda*aoa+q
 print('deda =', deda)
-plt.grid()
-plt.scatter(aoa,deleq)
-plt.plot(aoa,line, c='red')
-plt.ylim(2,-2)
-plt.ylabel('-delta_e')
-plt.xlabel('aoa')
-plt.show()
+# plt.grid()
+# plt.scatter(aoa,deleq)
+# plt.plot(aoa,line, c='red')
+# plt.ylim(2,-2)
+# plt.ylabel('-delta_e')
+# plt.xlabel('aoa')
+# plt.show()
 
 Cmalpha = -deda * Cmdelta
 print('Cmalpha =', Cmalpha)
 
 #-------------------Plotting Ele defl against Ve----##
-plt.grid()
-plt.scatter(Ve_e,deleq)
-plt.ylim(1.5,-1)
-plt.ylabel('-delta_e')
-plt.xlabel('Ve_e')
-plt.show()
+# plt.grid()
+# plt.scatter(Ve_e,deleq)
+# plt.ylim(1.5,-1)
+# plt.ylabel('-delta_e')
+# plt.xlabel('Ve_e')
+# plt.show()
 
 ##------------Reduced Elevator control Curve----------##
 Femea = np.array([i.Fe for i in EleTrimCurve])
 Fe = Femea * (Ws/Wele)
-plt.grid()
-plt.scatter(Ve_e,Fe)
-plt.ylim(70,-40)
-plt.ylabel('-Fe')
-plt.xlabel('Ve_e')
-plt.show()
+# plt.grid()
+# plt.scatter(Ve_e,Fe)
+# plt.ylim(70,-40)
+# plt.ylabel('-Fe')
+# plt.xlabel('Ve_e')
+# plt.show()
 
 ##_______________________________________Flight test DATA_______________________________________##
-time_ele = time[29910:32911]
-# print(time_ele)
-AOA_ele = AOA1[29910:32911]
-de_ele = de[29910:32911]
+
+##---------------------Cmdelta determination of matlab data-----------------------------------##
+time_cg = time[33510:35911]
+xcg_cg = np.array(xcg[33510:35911])
+dxcg_cg1 = np.array([xcg_cg[i] - xcg_cg[i-1] for i in range(1,len(xcg_cg))])
+dxcg_cg = min(dxcg_cg1)
+de_cg = np.array(de[33510:35911])
+dde_cg = (de_cg[2000] - de_cg[399]) * pi/180    #determined by exact time of interval stationary data
+FUtot_cg = FUtot[33510:35911]
+index = np.where(dxcg_cg1 == np.amin(dxcg_cg1))
+W_cg = (masstot - FUtot_cg[2000])*g
+h_cg = alt2[35512]
+rho_cg = rho0 * pow((1 + (Tempgrad*h_cg)/Temp0),(-g/(R*Tempgrad) - 1))
+Vtas_cg = TAS2[35512]
+CN_cg = W_cg/(0.5*rho_cg*Vtas_cg**2*S)
+Cmdelta_mat = -(1/dde_cg) * CN_cg * (dxcg_cg/c)
+print('Cmdelta matlab =', Cmdelta_mat)
+
+##-------------------------------Elevator Trim Curve Of Matlab Data------------------##
+time_ele = time[29910:33511]
+AOA_ele = np.array(AOA1[29910:33511])
+de_ele = np.array(de[29910:33511])
+
 
 
 ####-------------------------Comments----------------------------------#####
-# xcg = AT_trimmed[:,3]
+# xcg =
 # dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
 # xcgd = min(dxcg)
+# dde_cg1 = np.array([de_cg[i] - de_cg[i-1] for i in range(1,len(de_cg))])
