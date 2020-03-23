@@ -159,6 +159,15 @@ print('Cmdelta matlab =', Cmdelta_mat)
 time_ele = time[29910:33511]
 AOA_ele = np.array(AOA1[29910:33511])
 de_ele = np.array(de[29910:33511])
+Cmtc = Cmtc
+Vtas_ele = np.array(TAS2[29910:33511])
+h_ele = np.array(alt2[29910:33511])
+rho_ele = rho0 * pow((1 + (Tempgrad*h_ele)/Temp0),(-g/(R*Tempgrad) - 1))
+Ve_ele = Vtas_ele * np.sqrt(rho_ele/rho0)
+FUtot_ele = np.array(FUtot[29910:33511])
+W_ele = np.array([(masstot-FUtot_ele[i])*g for i in range(len(FUtot_ele))])
+Ws = Ws
+Ve_graph = Ve_ele * np.sqrt(Ws/W_ele)
 
 
 
