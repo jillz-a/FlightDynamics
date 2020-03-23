@@ -23,7 +23,18 @@ p = np.genfromtxt('flight_data/rollrate.csv')
 r = np.genfromtxt('flight_data/yawrate.csv')
 
 
-def CheckData(tstart, tend):
+def CheckData(tstart, tend, instashow=True, title="Flight Data as provided "):
+    '''
+    Checks the data from the flight test and plots it between the times as input
+
+    ------
+    Input:
+        tstart: time to start evaluating in seconds.
+        tend: time to end evaluation in seconds.
+    Note that both values must be in the range of the flight duration, 0 ->  5343.2
+
+
+    '''
     istart = tstart*10
     iend = tend*10
     T = np.linspace(tstart, tend, (tend-tstart)*10 + 1)
@@ -43,7 +54,7 @@ def CheckData(tstart, tend):
     stVec2 = ["beta [sideslip]", "phi [roll]", "p [roll rate]", "r [yaw rate]"]
 
     fig1, axs1 = plt.subplots(7, sharex=True)
-    fig1.suptitle("Flight Data as provided ")
+    fig1.suptitle(title)
     axs1[0].plot(T,udak)
     axs1[0].set_title(stVec[0])
     axs1[1].plot(T,alpha)
@@ -60,13 +71,29 @@ def CheckData(tstart, tend):
     axs1[6].plot(T,rrel)
     axs1[6].set_title(stVec2[3])
 
+
+    if instashow == True:
+        plt.show()
+
+    return fig1,axs1
+
+def DisplayEigenmotionData():
+    fig1, axs1 = CheckData(3600, 3780, instashow=False, title="Phugoid Motion")
+    fig2, axs2 = CheckData(3780, 3900, instashow=False, title="Short Period")
+    fig3, axs3 = CheckData(3900, 4020, instashow=False, title="Aperiodic Roll")
+    fig4, axs4 = CheckData(4020, 4080, instashow=False, title="Dutch Roll")
+    fig5, axs5 = CheckData(4080, 4200, instashow=False, title="Dutch Roll YD")
+    fig6, axs6 = CheckData(4200, 4320, instashow=False, title="Spiral")             # Assuming it took approximately 2 minutes
+
     plt.show()
 
-    return True
-
-CheckData(3600,3660)
+DisplayEigenmotionData()
 
 def ValidateModel(mode):
+    '''
+    WIP, don't look yet
+    '''
+
     MatrixCalculation.GenSymmetricStateSys()
     inputparam = 1
     sys, sysEig, inputindex, stVec, inputtitle = MatrixCalculation.ResponseInputHandler(mode, inputparam)
