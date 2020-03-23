@@ -105,33 +105,33 @@ l = len(data["flightdata"]["vane_AOA"]['data'])
 #
 # np.savetxt("theta.csv", pitch, delimiter=",")
 
-pitchrate = []
-for i in range(l):
-    a = data["flightdata"]["Ahrs1_bPitchRate"]['data'][:][i]
-    pitchrate.append(a[0])
-
-np.savetxt("pitchrate.csv", pitchrate, delimiter=",")
-
-roll = []
-for i in range(l):
-    a = data["flightdata"]["Ahrs1_Roll"]['data'][:][i]
-    roll.append(a[0])
-
-np.savetxt("roll.csv", roll, delimiter=",")
-
-rollrate = []
-for i in range(l):
-    a = data["flightdata"]["Ahrs1_bRollRate"]['data'][:][i]
-    rollrate.append(a[0])
-
-np.savetxt("rollrate.csv", rollrate, delimiter=",")
-
-yawrate = []
-for i in range(l):
-    a = data["flightdata"]["Ahrs1_bYawRate"]['data'][:][i]
-    yawrate.append(a[0])
-
-np.savetxt("yawrate.csv", yawrate, delimiter=",")
+# pitchrate = []
+# for i in range(l):
+#     a = data["flightdata"]["Ahrs1_bPitchRate"]['data'][:][i]
+#     pitchrate.append(a[0])
+#
+# np.savetxt("pitchrate.csv", pitchrate, delimiter=",")
+#
+# roll = []
+# for i in range(l):
+#     a = data["flightdata"]["Ahrs1_Roll"]['data'][:][i]
+#     roll.append(a[0])
+#
+# np.savetxt("roll.csv", roll, delimiter=",")
+#
+# rollrate = []
+# for i in range(l):
+#     a = data["flightdata"]["Ahrs1_bRollRate"]['data'][:][i]
+#     rollrate.append(a[0])
+#
+# np.savetxt("rollrate.csv", rollrate, delimiter=",")
+#
+# yawrate = []
+# for i in range(l):
+#     a = data["flightdata"]["Ahrs1_bYawRate"]['data'][:][i]
+#     yawrate.append(a[0])
+#
+# np.savetxt("yawrate.csv", yawrate, delimiter=",")
 
 # FUl = []
 # for i in range(l):
@@ -146,3 +146,17 @@ np.savetxt("yawrate.csv", yawrate, delimiter=",")
 #     FUr.append(a[0])
 #
 # np.savetxt("FUr.csv", FUr, delimiter=",")
+
+delta_a = []
+for i in range(l):
+    a = data["flightdata"]["delta_a"]['data'][:][i]
+    delta_a.append(a[0])
+
+np.savetxt("delta_a.csv", delta_a, delimiter=",")
+
+delta_r = []
+for i in range(l):
+    a = data["flightdata"]["delta_r"]['data'][:][i]
+    delta_r.append(a[0])
+
+np.savetxt("delta_r.csv", delta_r, delimiter=",")

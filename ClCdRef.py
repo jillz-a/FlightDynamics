@@ -74,7 +74,7 @@ plt.subplot(211)
 Am = np.vstack([AOAlist, np.ones(len(AOAlist))]).T
 a,b = np.linalg.lstsq(Am,CLlist,rcond=None)[0]
 CLalpha = a
-#print(CLalpha)
+print(CLalpha, CLalpha*(180/np.pi))
 plt.scatter(AOAlist,CLlist)
 plt.plot(AOAlist, np.array(AOAlist)*a + b)
 plt.ylabel("Lift coefficient [-]")
@@ -91,7 +91,7 @@ plt.ylabel("Drag coefficient [-]")
 plt.xlabel("Angle of Attack [deg]")
 plt.xlim(0,11)
 plt.ylim(0,0.06)
-plt.show()
+# plt.show()
 
 CL2 = np.array(CLlist)**2
 C = np.vstack([CL2, np.ones(len(CL2))]).T

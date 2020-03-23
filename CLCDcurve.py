@@ -18,9 +18,11 @@ xcg = np.array(pd.read_csv('x_cg.csv', delimiter=' ', header=None))
 shiftxcg = np.array(pd.read_csv('cg_shift.csv', delimiter=' ', header=None))
 alt = np.array(pd.read_csv('flight_data/bcAlt.csv', delimiter=' ', header = None))
 alt2 = alt * 0.3048   #ft to meters
+FUl = np.array(pd.read_csv('flight_data/FUl.csv', delimiter=' ', header = None))
+FUr = np.array(pd.read_csv('flight_data/FUr.csv', delimiter=' ', header = None))
+FUtot = (FUl + FUr) * 0.453592 #lbs to kg
 
-
-AT = np.column_stack([AOA1,TAS2,de,xcg,alt2,TAT])
+AT = np.column_stack([AOA1,TAS2,de,xcg,alt2,TAT,FUtot])
 cut_off = 70
 AT_trimmed = AT[AT[:,1] > cut_off]
 # print(AT_trimmed.shape)
@@ -29,12 +31,14 @@ AT_trimmed = AT[AT[:,1] > cut_off]
 AOA = AT_trimmed[:,0]
 V = AT_trimmed[:,1]
 h = AT_trimmed[:,4]
+FU = AT_trimmed[:,6]
 rho1 = rho0 * pow((1 + (Tempgrad*h)/Temp0),(-g/(R*Tempgrad) - 1))
-#Weight =
-CLgraph = W/(0.5 * V**2 * rho1 * S)
+masstot = mass + passmass + fuelblock
+Weight = [(masstot - FU[i])*g for i in range(len(FU))]
+CLgraph = Weight/(0.5 * V**2 * rho1 * S)
 t, ma = np.polyfit(AOA,CLgraph,1)
 CLline = t*AOA + ma
-print('Cl_alpha =', t, t *(180/pi))
+print('Cl_alpha =', t, t*(180/pi))
 ##Calculate CD##
 CDgraph = CD0 + (CLline) ** 2 / (pi * A * e)
 
@@ -60,10 +64,10 @@ Reyn = np.array([(rho1[i] * V[i] * c/mu[i]) for i in range(len(mu))])
 print('Reynoldsnumber Range =', max(Reyn), min(Reyn))
 
 ##Cmalpha and Cmdelta Calculations##
-de = AT_trimmed[:,2]
-deda, q = np.polyfit(AOA,de,1)
-line = deda*AOA+q
-print('deda =', deda)
+# de = AT_trimmed[:,2]
+# deda, q = np.polyfit(AOA,de,1)
+# line = deda*AOA+q
+# print('deda =', deda)
 # plt.grid()
 # plt.scatter(AOA,de)
 # plt.plot(AOA,line, c='red')
@@ -73,22 +77,21 @@ print('deda =', deda)
 # plt.show()
 
 ##------------Calculate Cmdelta and Cmalpha using Post Flight Data-------------------------##
-dde1 = [i.de for i in CGshift]
-dde = (dde1[1] - dde1[0])*(pi/180)
-dde2 = -0.15 *(pi/180)          #from first version data sheet excel
-dxcg = shiftxcg[1]-shiftxcg[0]
-hp = CGshift[1].height
-Vias = CGshift[1].IAS
-Tm = float(CGshift[1].TAT) + 273.15
-VTAS, rhoTAS = Vequi(hp,Vias,Tm)[0:2]
-Fused = CGshift[1].Fused
-Weight = (m + passmass + fuelblock - Fused)*g
-CN = Weight /(0.5*rhoTAS*(VTAS**2)*S)
-print(CN)
-Cmdelta = -(1/dde) * CN * dxcg/c
-Cmalpha = -deda * Cmdelta
-print('Cmdelta =', Cmdelta)                 #ongeveer factor 2 te klein
-print('Cmalpha =', Cmalpha)
+# dde1 = [i.de for i in CGshift]
+# dde = (dde1[1] - dde1[0])*(pi/180)
+# dxcg = shiftxcg[1]-shiftxcg[0]
+# hp = CGshift[1].height
+# Vias = CGshift[1].IAS
+# Tm = float(CGshift[1].TAT) + 273.15
+# VTAS, rhoTAS = Vequi(hp,Vias,Tm)[0:2]
+# Fused = CGshift[1].Fused
+# Weight = (mass + passmass + fuelblock - Fused)*g
+# CN = Weight/(0.5*rhoTAS*(VTAS**2)*S)
+# print('CN =', CN)
+# Cmdelta = -(1/dde) * CN * dxcg/c
+# Cmalpha = -deda * Cmdelta
+# print('Cmdelta =', Cmdelta)                 #ongeveer factor 2 te klein
+# print('Cmalpha =', Cmalpha)
 
 ##--------------Elevator Trim Curve-----------------##
 height = np.array([i.height for i in EleTrimCurve])
@@ -96,9 +99,9 @@ V_ias = np.array([i.IAS for i in EleTrimCurve])
 Temp = np.array([i.TAT for i in EleTrimCurve])
 V_e = Vequi(height,V_ias,Temp)[2]
 Fusedele = np.array([i.Fused for i in EleTrimCurve])
-mtot_el = m + passmass + fuelblock - Fusedele
+mtot_el = mass + passmass + fuelblock - Fusedele
 Wele = mtot_el * g
-Ws = m * g
+Ws = 60500 #N
 Ve_e = V_e * np.sqrt(Ws/Wele)
 print(Ve_e)
 
@@ -111,6 +114,9 @@ dV = [(Ve_e[i]-Ve_e[i-1]) for i in range(1,5)]
 d_eng = 686 #mm
 
 print(dV) #Look into tomorrow which way to calculate Tc and Tcs!!!
+
+
+
 ####-------------------------Comments----------------------------------#####
 # xcg = AT_trimmed[:,3]
 # dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
