@@ -77,9 +77,11 @@ Weight = (mass + passmass + fuelblock - Fused)*g
 CN = Weight/(0.5*rhoTAS*(VTAS**2)*S)
 print('CN =', CN)
 Cmdelta = -(1/dde) * CN * dxcg/c
-print('Cmdelta =', Cmdelta)                 #ongeveer factor 2 te klein
+print('Cmdelta =', Cmdelta)
 
-##--------------Elevator Trim Curve-----------------##
+##_______________________________________Stationary Flight Data_________________________________________##
+
+##--------------Elevator Trim Curve Ve-----------------##
 height = np.array([i.height for i in EleTrimCurve])
 V_ias = np.array([i.IAS for i in EleTrimCurve])
 Temp = np.array([(i.TAT + 273.15) for i in EleTrimCurve])
@@ -92,14 +94,16 @@ Wele = mtot_el * g
 Ws = 60500 #N
 Ve_e = V_e * np.sqrt(Ws/Wele)
 
+##-----------Elevator Trim Curve Ele defl eq-----------##
 Cmtc = -.0064  #reader appendix
 eledefl = np.array([i.de for i in EleTrimCurve])
 aoa = np.array([i.AoA for i in EleTrimCurve])
 d_eng = 0.686 #m
-Tc = totalthrustele/(0.5*rhoele*Vtasele**2*S)
-Tcs = totalthrustelestand/(0.5*rhoele*Vtasele**2*d_eng**2)
+Tc = totalthrustele/(0.5*rhoele*Ve_e**2*S)
+Tcs = totalthrustelestand/(0.5*rhoele*Ve_e**2*d_eng**2)
 deleq = eledefl - (1/Cmdelta *Cmtc * (Tcs - Tc))
 
+##-------Plotting AoA against Ele delfection and determine Cmalpha------##
 deda, q = np.polyfit(aoa,deleq,1)
 line = deda*aoa+q
 print('deda =', deda)
@@ -114,12 +118,28 @@ plt.show()
 Cmalpha = -deda * Cmdelta
 print('Cmalpha =', Cmalpha)
 
+#-------------------Plotting Ele defl against Ve----##
 plt.grid()
 plt.scatter(Ve_e,deleq)
-plt.ylim(2,-2)
+plt.ylim(1.5,-1)
 plt.ylabel('-delta_e')
 plt.xlabel('Ve_e')
 plt.show()
+
+##------------Reduced Elevator control Curve----------##
+Femea = np.array([i.Fe for i in EleTrimCurve])
+Fe = Femea * (Ws/Wele)
+plt.grid()
+plt.scatter(Ve_e,Fe)
+plt.ylim(70,-40)
+plt.ylabel('-Fe')
+plt.xlabel('Ve_e')
+plt.show()
+
+##_______________________________________Flight test DATA_______________________________________##
+
+
+
 ####-------------------------Comments----------------------------------#####
 # xcg = AT_trimmed[:,3]
 # dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])

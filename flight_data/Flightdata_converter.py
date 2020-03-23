@@ -77,15 +77,15 @@ l = len(data["flightdata"]["vane_AOA"]['data'])
 #
 # np.savetxt("alt.csv", alt, delimiter=",")
 
-# time = []
-# for i in range(l):
-#     a = data["flightdata"]["time"]['data'][:][i]
-#     b = []
-#     b.append(a)
-#     time.append(b[0])
-#
-#
-# np.savetxt("time.csv", time, delimiter=",")
+time = []
+for i in range(l):
+    a = data["flightdata"]["time"]['data'][:][i]
+    b = []
+    b.append(round(a,5))
+    time.append(b[0])
+
+
+np.savetxt("time.csv", time, delimiter=",")
 
 #test
 #TAS, MACH, TAT, bcALT, alt
@@ -161,9 +161,9 @@ l = len(data["flightdata"]["vane_AOA"]['data'])
 #
 # np.savetxt("delta_r.csv", delta_r, delimiter=",")
 
-F_e = []
-for i in range(l):
-    a = data["flightdata"]["column_fe"]['data'][:][i]
-    F_e.append(a[0])
-
-np.savetxt("Fele.csv", F_e, delimiter=",")
+# F_e = []
+# for i in range(l):
+#     a = data["flightdata"]["column_fe"]['data'][:][i]
+#     F_e.append(a[0])
+#
+# np.savetxt("Fele.csv", F_e, delimiter=",")
