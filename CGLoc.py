@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 from ReadMeas import *
-import matplotlib2tikz as tikz
+#import matplotlib2tikz as tikz
 
 #import data
 time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None)) #sec
