@@ -30,7 +30,7 @@ def getdata(rangestart,rangeend,datatype = False):
                     FFr = getval(i,7)*convert.lbs_to_kg
                     Fused = getval(i,8)*convert.lbs_to_kg
                     TAT = getval(i,9)
-#               ET  = float(time.split(":")[0])*60 + float(time.split(":")[1])
+                    ET  = float(time.split(":")[0])*60 + float(time.split(":")[1])
             datalist.append(data)
     return datalist
 
