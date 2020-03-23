@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from ReadMeas import *
-from ClCdRef import passmass, Vequi, totalthrustele, totalthrustelestand
+from ClCdRef import passmass, Vequi, totalthrustele, totalthrustelestand, totalthrustele_mat
 
 ##READ DATA AND CREATE ARRAY##
 time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None))
@@ -21,6 +21,7 @@ alt2 = alt * 0.3048   #ft to meters
 FUl = np.array(pd.read_csv('flight_data/FUl.csv', delimiter=' ', header = None))
 FUr = np.array(pd.read_csv('flight_data/FUr.csv', delimiter=' ', header = None))
 FUtot = (FUl + FUr) * 0.453592 #lbs to kg
+Fele = np.array(pd.read_csv('flight_data/Fele.csv', delimiter=' ', header = None))
 
 AT = np.column_stack([AOA1,TAS2,de,xcg,alt2,TAT,FUtot])
 cut_off = 70
@@ -159,20 +160,47 @@ print('Cmdelta matlab =', Cmdelta_mat)
 time_ele = time[29910:33511]
 AOA_ele = np.array(AOA1[29910:33511])
 de_ele = np.array(de[29910:33511])
-Cmtc = Cmtc
 Vtas_ele = np.array(TAS2[29910:33511])
 h_ele = np.array(alt2[29910:33511])
 rho_ele = rho0 * pow((1 + (Tempgrad*h_ele)/Temp0),(-g/(R*Tempgrad) - 1))
 Ve_ele = Vtas_ele * np.sqrt(rho_ele/rho0)
 FUtot_ele = np.array(FUtot[29910:33511])
 W_ele = np.array([(masstot-FUtot_ele[i])*g for i in range(len(FUtot_ele))])
-Ws = Ws
 Ve_graph = Ve_ele * np.sqrt(Ws/W_ele)
+# print(len(Ve_graph))
+Tc = totalthrustele_mat/(0.5*rho_ele*Ve_graph**2*S)
+Tcs = 1/(0.5*rho_ele*Ve_graph**2*d_eng**2)    ###vind echte waarde voor thrust met die exe
+de_elemat = de_ele - (1/Cmdelta_mat * Cmtc) * (Tcs - Tc)
+# print(len(de_elemat))
 
+plt.grid()
+plt.scatter(Ve_graph[:,0],de_elemat[:,0], marker='.')
+plt.ylim(2,-1)
+plt.ylabel('- Deflection Elevator [deg]')
+plt.xlabel('Ve_ele^*')
+plt.show()
 
+deda_mat, b_mat = np.polyfit(AOA_ele[:,0], de_elemat[:,0],1)
+plt.grid()
+plt.scatter(AOA_ele[:,0],de_elemat[:,0],marker='.')
+plt.ylim(2,-1)
+plt.ylabel('-delta_e')
+plt.xlabel('AOA')
+plt.show()
+
+Cmalpha_mat = -deda_mat * Cmdelta_mat
+print('Cmalpha matlab =', Cmalpha_mat)
+
+Femea_mat = np.array(Fele[29910:33511])
+Fele_mat = Femea_mat * Ws/W_ele
+plt.grid()
+plt.scatter(Ve_graph[:,0],Fele_mat[:,0], marker='.')
+plt.ylim(70,-50)
+plt.ylabel('-Fe')
+plt.xlabel('Ve_e')
+plt.show()
 
 ####-------------------------Comments----------------------------------#####
-# xcg =
 # dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
 # xcgd = min(dxcg)
 # dde_cg1 = np.array([de_cg[i] - de_cg[i-1] for i in range(1,len(de_cg))])
