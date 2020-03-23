@@ -97,7 +97,7 @@ print('Reynoldsnumber Range =', max(Reyn), min(Reyn))
 height = np.array([i.height for i in EleTrimCurve])
 V_ias = np.array([i.IAS for i in EleTrimCurve])
 Temp = np.array([i.TAT for i in EleTrimCurve])
-V_e = Vequi(height,V_ias,Temp)[2]
+rhoele, Vtasele, V_e = Vequi(height,V_ias,Temp)
 Fusedele = np.array([i.Fused for i in EleTrimCurve])
 mtot_el = mass + passmass + fuelblock - Fusedele
 Wele = mtot_el * g
@@ -107,15 +107,12 @@ print(Ve_e)
 
 print(totalthrustele)
 mflow_s = 0.048 #kg/s
-Cmtc = -.0064
+Cmtc = -.0064  #reader appendix
 eledefl = np.array([i.de for i in EleTrimCurve])
 mflow = np.array([(i.FFl + i.FFr)/3600 for i in EleTrimCurve])
-dV = [(Ve_e[i]-Ve_e[i-1]) for i in range(1,5)]
 d_eng = 686 #mm
 
-print(dV) #Look into tomorrow which way to calculate Tc and Tcs!!!
-
-
+#thrust.exe runnen voor nieuwe massflow
 
 ####-------------------------Comments----------------------------------#####
 # xcg = AT_trimmed[:,3]
