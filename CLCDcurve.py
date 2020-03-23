@@ -19,6 +19,7 @@ shiftxcg = np.array(pd.read_csv('cg_shift.csv', delimiter=' ', header=None))
 alt = np.array(pd.read_csv('flight_data/bcAlt.csv', delimiter=' ', header = None))
 alt2 = alt * 0.3048   #ft to meters
 
+
 AT = np.column_stack([AOA1,TAS2,de,xcg,alt2,TAT])
 cut_off = 70
 AT_trimmed = AT[AT[:,1] > cut_off]
@@ -29,6 +30,7 @@ AOA = AT_trimmed[:,0]
 V = AT_trimmed[:,1]
 h = AT_trimmed[:,4]
 rho1 = rho0 * pow((1 + (Tempgrad*h)/Temp0),(-g/(R*Tempgrad) - 1))
+#Weight =
 CLgraph = W/(0.5 * V**2 * rho1 * S)
 t, ma = np.polyfit(AOA,CLgraph,1)
 CLline = t*AOA + ma

@@ -56,13 +56,13 @@ l = len(data["flightdata"]["vane_AOA"]['data'])
 #
 # np.savetxt("Mach.csv", Mach, delimiter=",")
 # #
-SAT = []
-for i in range(l):
-    a = data["flightdata"]["Dadc1_sat"]['data'][:][i]
-    SAT.append(a[0])
-#
-np.savetxt("SAT.csv", SAT, delimiter=",")
-#
+# SAT = []
+# for i in range(l):
+#     a = data["flightdata"]["Dadc1_sat"]['data'][:][i]
+#     SAT.append(a[0])
+# #
+# np.savetxt("SAT.csv", SAT, delimiter=",")
+# #
 # bcAlt = []
 # for i in range(l):
 #     a = data["flightdata"]["Dadc1_bcAlt"]['data'][:][i]
@@ -104,3 +104,45 @@ np.savetxt("SAT.csv", SAT, delimiter=",")
 #     pitch.append(a[0])
 #
 # np.savetxt("theta.csv", pitch, delimiter=",")
+
+pitchrate = []
+for i in range(l):
+    a = data["flightdata"]["Ahrs1_bPitchRate"]['data'][:][i]
+    pitchrate.append(a[0])
+
+np.savetxt("pitchrate.csv", pitchrate, delimiter=",")
+
+roll = []
+for i in range(l):
+    a = data["flightdata"]["Ahrs1_Roll"]['data'][:][i]
+    roll.append(a[0])
+
+np.savetxt("roll.csv", roll, delimiter=",")
+
+rollrate = []
+for i in range(l):
+    a = data["flightdata"]["Ahrs1_bRollRate"]['data'][:][i]
+    rollrate.append(a[0])
+
+np.savetxt("rollrate.csv", rollrate, delimiter=",")
+
+yawrate = []
+for i in range(l):
+    a = data["flightdata"]["Ahrs1_bYawRate"]['data'][:][i]
+    yawrate.append(a[0])
+
+np.savetxt("yawrate.csv", yawrate, delimiter=",")
+
+# FUl = []
+# for i in range(l):
+#     a = data["flightdata"]["lh_engine_FU"]['data'][:][i]
+#     FUl.append(a[0])
+#
+# np.savetxt("FUl.csv", FUl, delimiter=",")
+#
+# FUr = []
+# for i in range(l):
+#     a = data["flightdata"]["rh_engine_FU"]['data'][:][i]
+#     FUr.append(a[0])
+#
+# np.savetxt("FUr.csv", FUr, delimiter=",")
