@@ -45,7 +45,7 @@ def x_cg(time, fuel_data, flow_eng1, flow_eng2):
     x_s10 = 170
     m_s10 = 189.6
 
-    m_payload = m_s1 + m_s2 + m_s2 + m_s3 + m_s4 + m_s5 + m_s6 + m_s7 + m_s8 + m_s10 #pounds
+    m_payload = m_s1 + m_s2 + + m_s3 + m_s4 + m_s5 + m_s6 + m_s7 + m_s8 + m_s10 #pounds
     #initial values (metric)
     Fuel_block = fuelblock #kg
     OEW = OEW*0.453592 #kg
@@ -198,7 +198,7 @@ def x_cg_num(CLCD1, EleTrimCurve, CGshift, fuel_data):
     x_s10 = 170
     m_s10 = 189.6
 
-    m_payload = m_s1 + m_s2 + m_s2 + m_s3 + m_s4 + m_s5 + m_s6 + m_s7 + m_s8 + m_s10 #pounds
+    m_payload = m_s1 + m_s2 + m_s3 + m_s4 + m_s5 + m_s6 + m_s7 + m_s8 + m_s10 #pounds
     #initial values (metric)
     Fuel_block = fuelblock #kg
     OEW = OEW*0.453592 #kg
