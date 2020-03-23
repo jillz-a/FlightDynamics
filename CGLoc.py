@@ -51,7 +51,7 @@ def x_cg(time, fuel_data, flow_eng1, flow_eng2):
     OEW = OEW*0.453592 #kg
 
     x_s1 = x_s1 * 0.0254 #m pilot 1
-    m_s1 = m_s1 * 0.0254 #kg
+    m_s1 = m_s1 * 0.453592 #kg
 
     x_s2 = x_s2 * 0.0254 #m pilot 2
     m_s2 = m_s2 * 0.453592 #kg
@@ -204,7 +204,7 @@ def x_cg_num(CLCD1, EleTrimCurve, CGshift, fuel_data):
     OEW = OEW*0.453592 #kg
 
     x_s1 = x_s1 * 0.0254 #m pilot 1
-    m_s1 = m_s1 * 0.0254 #kg
+    m_s1 = m_s1 * 0.453592 #kg
 
     x_s2 = x_s2 * 0.0254 #m pilot 2
     m_s2 = m_s2 * 0.453592 #kg
@@ -285,5 +285,5 @@ plt.plot([3408, 3559], x_cg_cgshift, 'r')
 
 plt.xlabel('time [s]')
 plt.ylabel('x_cg [m]')
-plt.ylim(6.9, 7.0)
+# plt.ylim(6.9, 7.0)
 plt.show()
