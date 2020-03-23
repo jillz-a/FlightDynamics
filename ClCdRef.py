@@ -55,14 +55,12 @@ for i in CLCD1:
     D = i.thrust
     
     mtot = m + passmass + fuelblock - Fused
-    print(mtot*g)
-    Vt = Vequi(hp,Vias,Tm)[0]
     Ve = Vequi(hp,Vias,Tm)[2]
     aero = 0.5*rho0*Ve**2*S
     Cl = mtot*g/aero
     Cd = D/aero
-    
-    
+
+
 #    print(Ve)
     CLlist.append(Cl)
     CDlist.append(Cd)
@@ -112,3 +110,16 @@ print('CD0 = ', CD0,'  e = ',e)
 # plt.xlabel('Drag coefficient [-]')
 # plt.ylabel('Lift coefficient [-]')
 # plt.plot()
+
+##-------------Elevator Trim Curve-----------------##
+elethrust = open("Thrust//thrustEleTrimMeas.dat", "r")
+elethrustarray = elethrust.readlines()
+eleleftthrust = []
+elerightthrust = []
+for i in elethrustarray:
+    i = i.split('\t')
+    i[1] = i[1].replace('\n','')
+    eleleftthrust.append(float(i[0]))
+    elerightthrust.append(float(i[1]))
+
+totalthrustele = np.add(eleleftthrust,elerightthrust)
