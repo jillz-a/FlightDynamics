@@ -12,15 +12,14 @@ import numpy as np
 p0 = 101325
 gamma = 1.4
 
-
 matlab = open("matlab1.dat", "w")
-for i in CLCD1:
+for i in EleTrimCurve:
 
     hp = i.height
     Vias = i.IAS
     Tempm = float(i.TAT) + 273.15
-    FFl = i.FFl/3600
-    FFr = i.FFr/3600
+    FFl = 0.024    #kg/s        i.FFl/3600
+    FFr = 0.024    #kg/s        i.FFr/3600
 
     p =  p0*(1+Tempgrad*hp/Temp0)**(-g/(Tempgrad*R))
     M = np.sqrt( 2/(gamma-1) * ((1+p0/p*((1+ (gamma-1)/(2*gamma) * rho0/p0 * Vias**2)**(gamma/(gamma-1))-1))**((gamma-1)/gamma)-1))

@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 from ReadMeas import *
-#import matplotlib2tikz as tikz
 
 #import data
 time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None)) #sec
@@ -46,13 +45,13 @@ def x_cg(time, fuel_data, flow_eng1, flow_eng2):
     x_s10 = 170
     m_s10 = 189.6
 
-    m_payload = m_s1 + m_s2 + m_s2 + m_s3 + m_s4 + m_s5 + m_s6 + m_s7 + m_s8 + m_s10 #pounds
+    m_payload = m_s1 + m_s2 + + m_s3 + m_s4 + m_s5 + m_s6 + m_s7 + m_s8 + m_s10 #pounds
     #initial values (metric)
     Fuel_block = fuelblock #kg
     OEW = OEW*0.453592 #kg
 
     x_s1 = x_s1 * 0.0254 #m pilot 1
-    m_s1 = m_s1 * 0.0254 #kg
+    m_s1 = m_s1 * 0.453592 #kg
 
     x_s2 = x_s2 * 0.0254 #m pilot 2
     m_s2 = m_s2 * 0.453592 #kg
@@ -199,13 +198,13 @@ def x_cg_num(CLCD1, EleTrimCurve, CGshift, fuel_data):
     x_s10 = 170
     m_s10 = 189.6
 
-    m_payload = m_s1 + m_s2 + m_s2 + m_s3 + m_s4 + m_s5 + m_s6 + m_s7 + m_s8 + m_s10 #pounds
+    m_payload = m_s1 + m_s2 + m_s3 + m_s4 + m_s5 + m_s6 + m_s7 + m_s8 + m_s10 #pounds
     #initial values (metric)
     Fuel_block = fuelblock #kg
     OEW = OEW*0.453592 #kg
 
     x_s1 = x_s1 * 0.0254 #m pilot 1
-    m_s1 = m_s1 * 0.0254 #kg
+    m_s1 = m_s1 * 0.453592 #kg
 
     x_s2 = x_s2 * 0.0254 #m pilot 2
     m_s2 = m_s2 * 0.453592 #kg
@@ -286,5 +285,5 @@ plt.plot([3408, 3559], x_cg_cgshift, 'r')
 
 plt.xlabel('time [s]')
 plt.ylabel('x_cg [m]')
-plt.ylim(6.9, 7.0)
+# plt.ylim(6.9, 7.0)
 plt.show()
