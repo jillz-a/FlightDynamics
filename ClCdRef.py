@@ -70,27 +70,27 @@ for i in CLCD1:
 
 #Several plots
 
-plt.subplot(211)
+# plt.subplot(211)
 Am = np.vstack([AOAlist, np.ones(len(AOAlist))]).T
 a,b = np.linalg.lstsq(Am,CLlist,rcond=None)[0]
 CLalpha = a
 print(CLalpha, CLalpha*(180/np.pi))
-plt.scatter(AOAlist,CLlist)
-plt.plot(AOAlist, np.array(AOAlist)*a + b)
-plt.ylabel("Lift coefficient [-]")
-plt.xlabel("Angle of Attack [deg]")
-plt.xlim(0,11)
-plt.ylim(0,0.9)
-#
-plt.subplot(212)
-B = np.vstack([AOAlist, np.ones(len(AOAlist))]).T
-c,d = np.linalg.lstsq(B,CDlist,rcond=None)[0]
-plt.scatter(AOAlist,CDlist)
-plt.plot(AOAlist, np.array(AOAlist)*c + d)
-plt.ylabel("Drag coefficient [-]")
-plt.xlabel("Angle of Attack [deg]")
-plt.xlim(0,11)
-plt.ylim(0,0.06)
+# plt.scatter(AOAlist,CLlist)
+# plt.plot(AOAlist, np.array(AOAlist)*a + b)
+# plt.ylabel("Lift coefficient [-]")
+# plt.xlabel("Angle of Attack [deg]")
+# plt.xlim(0,11)
+# plt.ylim(0,0.9)
+# #
+# plt.subplot(212)
+# B = np.vstack([AOAlist, np.ones(len(AOAlist))]).T
+# c,d = np.linalg.lstsq(B,CDlist,rcond=None)[0]
+# plt.scatter(AOAlist,CDlist)
+# plt.plot(AOAlist, np.array(AOAlist)*c + d)
+# plt.ylabel("Drag coefficient [-]")
+# plt.xlabel("Angle of Attack [deg]")
+# plt.xlim(0,11)
+# plt.ylim(0,0.06)
 # plt.show()
 
 CL2 = np.array(CLlist)**2
@@ -123,3 +123,15 @@ for i in elethrustarray:
     elerightthrust.append(float(i[1]))
 
 totalthrustele = np.add(eleleftthrust,elerightthrust)
+
+elethruststand = open("Thrust//thrustEleTrimMeasStandard.dat", "r")
+elethrustarraystand = elethruststand.readlines()
+eleleftthruststand = []
+elerightthruststand = []
+for i in elethrustarraystand:
+    i = i.split('\t')
+    i[1] = i[1].replace('\n','')
+    eleleftthruststand.append(float(i[0]))
+    elerightthruststand.append(float(i[1]))
+
+totalthrustelestand = np.add(eleleftthruststand,elerightthruststand)

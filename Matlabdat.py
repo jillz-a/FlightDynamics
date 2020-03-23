@@ -12,7 +12,6 @@ import numpy as np
 p0 = 101325
 gamma = 1.4
 
-
 matlab = open("matlab1.dat", "w")
 for i in EleTrimCurve:
 
