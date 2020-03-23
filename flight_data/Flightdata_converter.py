@@ -147,16 +147,23 @@ l = len(data["flightdata"]["vane_AOA"]['data'])
 #
 # np.savetxt("FUr.csv", FUr, delimiter=",")
 
-delta_a = []
+# delta_a = []
+# for i in range(l):
+#     a = data["flightdata"]["delta_a"]['data'][:][i]
+#     delta_a.append(a[0])
+#
+# np.savetxt("delta_a.csv", delta_a, delimiter=",")
+#
+# delta_r = []
+# for i in range(l):
+#     a = data["flightdata"]["delta_r"]['data'][:][i]
+#     delta_r.append(a[0])
+#
+# np.savetxt("delta_r.csv", delta_r, delimiter=",")
+
+F_e = []
 for i in range(l):
-    a = data["flightdata"]["delta_a"]['data'][:][i]
-    delta_a.append(a[0])
+    a = data["flightdata"]["column_fe"]['data'][:][i]
+    F_e.append(a[0])
 
-np.savetxt("delta_a.csv", delta_a, delimiter=",")
-
-delta_r = []
-for i in range(l):
-    a = data["flightdata"]["delta_r"]['data'][:][i]
-    delta_r.append(a[0])
-
-np.savetxt("delta_r.csv", delta_r, delimiter=",")
+np.savetxt("Fele.csv", F_e, delimiter=",")
