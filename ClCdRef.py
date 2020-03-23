@@ -23,7 +23,7 @@ def Vequi(hp,Vias,Tm):
     Vt = M*a
     rho = p/(R*T)
     Ve = Vt*np.sqrt(rho/rho0) 
-    return Vt, rho, Ve
+    return [Vt, rho, Ve]
 
 
 #Get the total thrust for both sides, and thus the drag

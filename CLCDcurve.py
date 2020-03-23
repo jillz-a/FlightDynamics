@@ -57,9 +57,9 @@ CDgraph = CD0 + (CLline) ** 2 / (pi * A * e)
 
 ##Calculate Reynolds Range with Sutherland Equation##
 b = 1.458*10**(-6)  #kg/msK^1/2
-S = 110.4 #K
+St = 110.4 #K
 T = AT_trimmed[:,5] + 273.15
-mu = (b * T ** (3/2))/(T + S)
+mu = (b * T ** (3/2))/(T + St)
 Reyn = np.array([(rho1[i] * V[i] * c/mu[i]) for i in range(len(mu))])
 print('Reynoldsnumber Range =', max(Reyn), min(Reyn))
 
@@ -70,52 +70,56 @@ dxcg = shiftxcg[1]-shiftxcg[0]
 hp = CGshift[1].height
 Vias = CGshift[1].IAS
 Tm = float(CGshift[1].TAT) + 273.15
-VTAS, rhoTAS = Vequi(hp,Vias,Tm)[0:2]
+VTAS = Vequi(hp,Vias,Tm)[0]
+rhoTAS = Vequi(hp,Vias,Tm)[1]
 Fused = CGshift[1].Fused
 Weight = (mass + passmass + fuelblock - Fused)*g
 CN = Weight/(0.5*rhoTAS*(VTAS**2)*S)
 print('CN =', CN)
 Cmdelta = -(1/dde) * CN * dxcg/c
-# Cmalpha = -deda * Cmdelta
 print('Cmdelta =', Cmdelta)                 #ongeveer factor 2 te klein
-# print('Cmalpha =', Cmalpha)
 
 ##--------------Elevator Trim Curve-----------------##
 height = np.array([i.height for i in EleTrimCurve])
 V_ias = np.array([i.IAS for i in EleTrimCurve])
-Temp = np.array([i.TAT for i in EleTrimCurve])
-rhoele, Vtasele, V_e = Vequi(height,V_ias,Temp)
+Temp = np.array([(i.TAT + 273.15) for i in EleTrimCurve])
+Vtasele = Vequi(height,V_ias,Temp)[0]
+rhoele = Vequi(height,V_ias,Temp)[1]
+V_e = Vequi(height,V_ias,Temp)[2]
 Fusedele = np.array([i.Fused for i in EleTrimCurve])
 mtot_el = mass + passmass + fuelblock - Fusedele
 Wele = mtot_el * g
 Ws = 60500 #N
 Ve_e = V_e * np.sqrt(Ws/Wele)
-# print(Ve_e)
-# print(totalthrustele)
-# print(totalthrustelestand)
+
 Cmtc = -.0064  #reader appendix
 eledefl = np.array([i.de for i in EleTrimCurve])
-print(eledefl)
-mflow = np.array([(i.FFl + i.FFr)/3600 for i in EleTrimCurve])
-d_eng = 686 #mm
+aoa = np.array([i.AoA for i in EleTrimCurve])
+d_eng = 0.686 #m
 Tc = totalthrustele/(0.5*rhoele*Vtasele**2*S)
 Tcs = totalthrustelestand/(0.5*rhoele*Vtasele**2*d_eng**2)
 deleq = eledefl - (1/Cmdelta *Cmtc * (Tcs - Tc))
-print(deleq)
 
-deda, q = np.polyfit(Ve_e,deleq,1)
-line = deda*Ve_e+q
+deda, q = np.polyfit(aoa,deleq,1)
+line = deda*aoa+q
 print('deda =', deda)
 plt.grid()
-plt.scatter(Ve_e,deleq)
-plt.plot(Ve_e,line, c='red')
-plt.ylim(7,-7)
+plt.scatter(aoa,deleq)
+plt.plot(aoa,line, c='red')
+plt.ylim(2,-2)
 plt.ylabel('-delta_e')
-plt.xlabel('Ve_e')
+plt.xlabel('aoa')
 plt.show()
 
 Cmalpha = -deda * Cmdelta
-print(Cmalpha)
+print('Cmalpha =', Cmalpha)
+
+plt.grid()
+plt.scatter(Ve_e,deleq)
+plt.ylim(2,-2)
+plt.ylabel('-delta_e')
+plt.xlabel('Ve_e')
+plt.show()
 ####-------------------------Comments----------------------------------#####
 # xcg = AT_trimmed[:,3]
 # dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
