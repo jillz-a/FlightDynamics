@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 from ReadMeas import *
+import matplotlib2tikz as tikz
 
 #import data
 time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None)) #sec
@@ -18,38 +19,36 @@ def x_cg(time, fuel_data, flow_eng1, flow_eng2):
     #======================================initial values (non metric)======================================================
     OEW = 9165 #pounds
 
-    Fuel_block = 4050 #pounds
-
     x_s1 = 131
-    m_s1 = 150
+    m_s1 = 224.8
 
     x_s2 = 131
-    m_s2 = 150
+    m_s2 = 176.4
 
     x_s3 = 214
-    m_s3 = 150
+    m_s3 = 174.2
 
     x_s4 = 214
-    m_s4 = 150
+    m_s4 = 167.6
 
     x_s5 = 251
-    m_s5 = 150
+    m_s5 = 138.9
 
     x_s6 = 251
-    m_s6 = 150
+    m_s6 = 167.6
 
     x_s7 = 288
-    m_s7 = 150
+    m_s7 = 174.2
 
     x_s8 = 288
-    m_s8 = 150
+    m_s8 = 209.4
 
     x_s10 = 170
-    m_s10 = 150
+    m_s10 = 189.6
 
     m_payload = m_s1 + m_s2 + m_s2 + m_s3 + m_s4 + m_s5 + m_s6 + m_s7 + m_s8 + m_s10 #pounds
     #initial values (metric)
-    Fuel_block = Fuel_block * 0.453592 #kg
+    Fuel_block = fuelblock #kg
     OEW = OEW*0.453592 #kg
 
     x_s1 = x_s1 * 0.0254 #m pilot 1
@@ -174,31 +173,31 @@ def x_cg_num(CLCD1, EleTrimCurve, CGshift, fuel_data):
     OEW = 9165 #pounds
 
     x_s1 = 131
-    m_s1 = 150
+    m_s1 = 224.8
 
     x_s2 = 131
-    m_s2 = 150
+    m_s2 = 176.4
 
     x_s3 = 214
-    m_s3 = 150
+    m_s3 = 174.2
 
     x_s4 = 214
-    m_s4 = 150
+    m_s4 = 167.6
 
     x_s5 = 251
-    m_s5 = 150
+    m_s5 = 138.9
 
     x_s6 = 251
-    m_s6 = 150
+    m_s6 = 167.6
 
     x_s7 = 288
-    m_s7 = 150
+    m_s7 = 174.2
 
     x_s8 = 288
-    m_s8 = 150
+    m_s8 = 209.4
 
     x_s10 = 170
-    m_s10 = 150
+    m_s10 = 189.6
 
     m_payload = m_s1 + m_s2 + m_s2 + m_s3 + m_s4 + m_s5 + m_s6 + m_s7 + m_s8 + m_s10 #pounds
     #initial values (metric)
@@ -274,7 +273,18 @@ def x_cg_num(CLCD1, EleTrimCurve, CGshift, fuel_data):
     M_fuel_cgshift  = np.array([f_fuel(m_fuel_cgshift[i]) for i in range(len(m_fuel_cgshift))]) #kgm
     x_cg_cgshift = np.divide(M_fuel_cgshift + M_empty + np.array([M_pay,M_pay_shift]), np.add(np.add(OEW, m_payload), m_fuel_cgshift)) #m from datum line
 
-    return  x_cg_CLCD1, x_cg_elev, x_cg_cgshift
+    return  x_cg_CLCD1, x_cg_elev, x_cg_cgshift, m_fuel_CLCD1, m_fuel_elev, m_fuel_cgshift, OEW, m_payload
 
-x_cg_CLCD1, x_cg_elev, x_cg_cgshift = x_cg_num(CLCD1, EleTrimCurve,CGshift, fuel_data)
+x_cg_CLCD1, x_cg_elev, x_cg_cgshift, m_fuel_CLCD1, m_fuel_elev, m_fuel_cgshift, OEW, m_payload = x_cg_num(CLCD1, EleTrimCurve,CGshift, fuel_data)
 
+np.savetxt('cg_shift.csv', x_cg_cgshift, delimiter=',')
+
+plt.plot(time, x_cg_t)
+plt.plot([1686, 1784, 1956, 2085, 2215, 2365], x_cg_CLCD1, 'r')
+plt.plot([3029, 3093, 3165, 3237, 3314], x_cg_elev, 'r')
+plt.plot([3408, 3559], x_cg_cgshift, 'r')
+
+plt.xlabel('time [s]')
+plt.ylabel('x_cg [m]')
+plt.ylim(6.9, 7.0)
+plt.show()

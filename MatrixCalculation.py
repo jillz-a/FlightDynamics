@@ -41,10 +41,10 @@ def GenSymmetricStateSys():
     A = -np.matmul(np.linalg.inv(C1),C2)
     B = -np.matmul(np.linalg.inv(C1),C3)
 
-    C = np.array([  [1, 0, 0, 0],
+    C = np.array([  [1/V, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
-                    [0, 0, 0, 1]])
+                    [0, 0, 0, cbar/V]])
     D = np.zeros((4,1))
 
 
@@ -92,8 +92,8 @@ def GenAsymmetricStateSys():
 
     C = np.array([  [1, 0, 0, 0],
                     [0, 1, 0, 0],
-                    [0, 0, 1, 0],
-                    [0, 0, 0, 1]])
+                    [0, 0, b/(2*V), 0],
+                    [0, 0, 0, b/(2*V)]])
     D = np.zeros((4,2))
 
     ## Create state space system ##
@@ -134,10 +134,12 @@ def CalcResponse(mode,inputparam):
         stVec = stateVectorAsymm
         if inputparam == 0:
             inputindex = 0
+            inputtitle = ", aileron input"
             print("Calculating system for asymmetric case, response to aileron input delta a")
             sys, sysEig = GenAsymmetricStateSys()
         elif inputparam == 1:
             inputindex = 1
+            inputtile = ", rudder input"
             print("Calculating system for asymmetric case, response to rudder input delta r")
             sys, sysEig = GenAsymmetricStateSys()
         else:
@@ -168,7 +170,7 @@ def CalcResponse(mode,inputparam):
     _, y_forced, _ = ctrl.forced_response(sys,T,forcedInput, initials)
 
     fig1, axs1 = plt.subplots(4, sharex=True)
-    fig1.suptitle("Initial Condition Response")
+    fig1.suptitle("Initial Condition Response"+inputtile)
     axs1[0].plot(time,yinit[0])
     axs1[0].set_title(stVec[0] + " response")
     axs1[1].plot(time,yinit[1])
@@ -179,7 +181,7 @@ def CalcResponse(mode,inputparam):
     axs1[3].set_title(stVec[3]+" response")
 
     fig2, axs2 = plt.subplots(4, sharex=True)
-    fig2.suptitle("Impulse Response")
+    fig2.suptitle("Impulse Response"+inputtile)
     axs2[0].plot(time,y_impulse[0])
     axs2[0].set_title(stVec[0]+ " response")
     axs2[1].plot(time,y_impulse[1])
@@ -190,7 +192,7 @@ def CalcResponse(mode,inputparam):
     axs2[3].set_title(stVec[3]+" response")
 
     fig3, axs3 = plt.subplots(4, sharex=True)
-    fig3.suptitle("Step Response")
+    fig3.suptitle("Step Response"+inputtile)
     axs3[0].plot(time,y_step[0])
     axs3[0].set_title(stVec[0]+" response")
     axs3[1].plot(time,y_step[1])
@@ -201,7 +203,7 @@ def CalcResponse(mode,inputparam):
     axs3[3].set_title(stVec[3]+ " response")
 
     fig4, axs4 = plt.subplots(4, sharex=True)
-    fig4.suptitle("Forced Function Response")
+    fig4.suptitle("Forced Function Response"+inputtile)
     axs4[0].plot(time,y_forced[0])
     axs4[0].set_title(stVec[0]+ " response")
     axs4[1].plot(time,y_forced[1])
