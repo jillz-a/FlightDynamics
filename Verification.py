@@ -21,11 +21,11 @@ class Test(unittest.TestCase):
         x_cg_t, m_fuel_t, FMF = x_cg(time, fuel_data, flow_eng1, flow_eng2)
         xcg_begin = 7.13486
         xcg_shift = 0.055118
-        # xcg_end = 0
+
 
         self.assertEqual(round(x_cg_t[0],3), round(xcg_begin,3))
-        # self.assertEqual(x_cg_t[53430 / 2], xcg_middle)
-        # self.assertEqual(x_cg_t[-1], xcg_end)
+        self.assertEqual(round(x_cg_t[34899] - x_cg_t[34990], 4), round(xcg_shift, 4))
+
 
 if __name__ == '__main__':
     unittest.main()
