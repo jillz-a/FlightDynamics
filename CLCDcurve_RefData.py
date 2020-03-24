@@ -23,46 +23,46 @@ FUr = np.array(pd.read_csv('flight_data/FUr.csv', delimiter=' ', header = None))
 FUtot = (FUl + FUr) * 0.453592 #lbs to kg
 Fele = np.array(pd.read_csv('flight_data/Fele.csv', delimiter=' ', header = None))
 
-AT = np.column_stack([AOA1,TAS2,de,xcg,alt2,TAT,FUtot])
-cut_off = 70
-AT_trimmed = AT[AT[:,1] > cut_off]
-# print(AT_trimmed.shape)
-
-##Calculate CL and CLalpha##
-AOA = AT_trimmed[:,0]
-V = AT_trimmed[:,1]
-h = AT_trimmed[:,4]
-FU = AT_trimmed[:,6]
-rho1 = rho0 * pow((1 + (Tempgrad*h)/Temp0),(-g/(R*Tempgrad) - 1))
-masstot = mass + passmass + fuelblock
-Weight = [(masstot - FU[i])*g for i in range(len(FU))]
-CLgraph = Weight/(0.5 * V**2 * rho1 * S)
-t, ma = np.polyfit(AOA,CLgraph,1)
-CLline = t*AOA + ma
-print('Cl_alpha =', t, t*(180/pi))
-##Calculate CD##
-CDgraph = CD0 + (CLline) ** 2 / (pi * A * e)
-
-#Plots##
-# plt.grid()
-# scatter = plt.scatter(AOA,CLgraph,marker= '.', label='Measure point')
-# line = plt.plot(AOA,CLline,c='red', label= 'Least squares')
-# plt.title('CL-alpha curve')
-# plt.legend()
-# plt.show()
-
-# plt.grid()
-# plt.scatter(CDgraph,CLline)
-# plt.title('CD-CL curve')
-# plt.show()
-
-##Calculate Reynolds Range with Sutherland Equation##
-b = 1.458*10**(-6)  #kg/msK^1/2
-St = 110.4 #K
-T = AT_trimmed[:,5] + 273.15
-mu = (b * T ** (3/2))/(T + St)
-Reyn = np.array([(rho1[i] * V[i] * c/mu[i]) for i in range(len(mu))])
-print('Reynoldsnumber Range =', max(Reyn), min(Reyn))
+# AT = np.column_stack([AOA1,TAS2,de,xcg,alt2,TAT,FUtot])
+# cut_off = 70
+# AT_trimmed = AT[AT[:,1] > cut_off]
+# # print(AT_trimmed.shape)
+#
+# ##Calculate CL and CLalpha##
+# AOA = AT_trimmed[:,0]
+# V = AT_trimmed[:,1]
+# h = AT_trimmed[:,4]
+# FU = AT_trimmed[:,6]
+# rho1 = rho0 * pow((1 + (Tempgrad*h)/Temp0),(-g/(R*Tempgrad) - 1))
+# masstot = mass + passmass + fuelblock
+# Weight = [(masstot - FU[i])*g for i in range(len(FU))]
+# CLgraph = Weight/(0.5 * V**2 * rho1 * S)
+# t, ma = np.polyfit(AOA,CLgraph,1)
+# CLline = t*AOA + ma
+# print('Cl_alpha =', t, t*(180/pi))
+# ##Calculate CD##
+# CDgraph = CD0 + (CLline) ** 2 / (pi * A * e)
+#
+# #Plots##
+# # plt.grid()
+# # scatter = plt.scatter(AOA,CLgraph,marker= '.', label='Measure point')
+# # line = plt.plot(AOA,CLline,c='red', label= 'Least squares')
+# # plt.title('CL-alpha curve')
+# # plt.legend()
+# # plt.show()
+#
+# # plt.grid()
+# # plt.scatter(CDgraph,CLline)
+# # plt.title('CD-CL curve')
+# # plt.show()
+#
+# ##Calculate Reynolds Range with Sutherland Equation##
+# b = 1.458*10**(-6)  #kg/msK^1/2
+# St = 110.4 #K
+# T = AT_trimmed[:,5] + 273.15
+# mu = (b * T ** (3/2))/(T + St)
+# Reyn = np.array([(rho1[i] * V[i] * c/mu[i]) for i in range(len(mu))])
+# print('Reynoldsnumber Range =', max(Reyn), min(Reyn))
 
 ##------------Calculate Cmdelta and Cmalpha using Post Flight Data-------------------------##
 dde1 = [i.de for i in CGshift]

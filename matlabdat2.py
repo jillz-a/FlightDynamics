@@ -17,7 +17,7 @@ trust = np.column_stack([alt[29910:33511],Mach[29910:33511],T[29910:33511],FMFL2
 
 matlab = open("matlab3.dat", "w")
 for i in range(len(trust)):
-    hp = round(trust[i,0],1)
+    hp = round(trust[i,0],0)
     M = round(trust[i,1],3)
     T = round(trust[i,2],3)
     FFl = round(0.048,3)
