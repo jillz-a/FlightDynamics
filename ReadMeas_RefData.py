@@ -24,7 +24,7 @@ def getdata(rangestart,rangeend,datatype = False):
                     FFl = getval(i,9)*convert.lbs_to_kg
                     FFr = getval(i,10)*convert.lbs_to_kg
                     Fused = getval(i,11)*convert.lbs_to_kg
-                    TAT = getval(i,12)
+                    TAT = float(getval(i,12))
                 else:    
                     FFl = getval(i,6)*convert.lbs_to_kg
                     FFr = getval(i,7)*convert.lbs_to_kg
