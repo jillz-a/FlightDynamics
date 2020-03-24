@@ -22,47 +22,53 @@ FUl = np.array(pd.read_csv('flight_data/FUl.csv', delimiter=' ', header = None))
 FUr = np.array(pd.read_csv('flight_data/FUr.csv', delimiter=' ', header = None))
 FUtot = (FUl + FUr) * 0.453592 #lbs to kg
 Fele = np.array(pd.read_csv('flight_data/Fele.csv', delimiter=' ', header = None))
-
-AT = np.column_stack([AOA1,TAS2,de,xcg,alt2,TAT,FUtot])
-cut_off = 70
-AT_trimmed = AT[AT[:,1] > cut_off]
-# print(AT_trimmed.shape)
+SAT1 = np.array(pd.read_csv('flight_data/SAT.csv', delimiter=' ', header = None))
+SAT = SAT1 + 273.15
 
 ##Calculate CL and CLalpha##
-AOA = AT_trimmed[:,0]
-V = AT_trimmed[:,1]
-h = AT_trimmed[:,4]
-FU = AT_trimmed[:,6]
-rho1 = rho0 * pow((1 + (Tempgrad*h)/Temp0),(-g/(R*Tempgrad) - 1))
+time_CL = time[16710:23911] #to check
+AOA_CL = np.array(AOA1[16710:23911])
+VTAS_CL = np.array(TAS2[16710:23911])
+h_CL = np.array(alt2[16710:23911])
+FU_CL = np.array(FUtot[16710:23911])
+rho1_CL = rho0 * pow((1 + (Tempgrad*h_CL)/Temp0),(-g/(R*Tempgrad) - 1))
 masstot = mass + passmass + fuelblock
-Weight = [(masstot - FU[i])*g for i in range(len(FU))]
-CLgraph = Weight/(0.5 * V**2 * rho1 * S)
-t, ma = np.polyfit(AOA,CLgraph,1)
-CLline = t*AOA + ma
-print('Cl_alpha =', t, t*(180/pi))
+Weight_CL = [(masstot - FU_CL[i])*g for i in range(len(FU_CL))]
+CLgraph_mat = Weight_CL/(0.5 * VTAS_CL**2 * rho1_CL * S)
+
+#find linear relation for CL measurements
+clalpha_mat,ma_mat  = np.polyfit(AOA_CL[:,0],CLgraph_mat[:,0],1)
+CLline_CL = clalpha_mat*AOA_CL[:,0] + ma_mat
+print('Cl_alpha =', clalpha_mat, clalpha_mat*(180/pi))
 ##Calculate CD##
-CDgraph = CD0 + (CLline) ** 2 / (pi * A * e)
+CDgraph_mat = CD0 + (CLline_CL) ** 2 / (pi * A * e)
 
-#Plots##
+#Plots CL and CD##
 # plt.grid()
-# scatter = plt.scatter(AOA,CLgraph,marker= '.', label='Measure point')
-# line = plt.plot(AOA,CLline,c='red', label= 'Least squares')
-# plt.title('CL-alpha curve')
+# plt.scatter(AOA_CL[:,0],CLgraph_mat[:,0],marker= '.', label='Measure point')
+# plt.plot(AOA_CL[:,0],CLline_CL,c='darkorange', label= 'Least squares')
+# plt.ylabel('Lift Coefficient [-]')
+# plt.xlabel('Angle of Attack [deg]')
 # plt.legend()
+# plt.savefig('CLalpha_mat.jpg')
 # plt.show()
-
+#
 # plt.grid()
-# plt.scatter(CDgraph,CLline)
-# plt.title('CD-CL curve')
+# plt.scatter(CDgraph_mat,CLline_CL, marker='.')
+# plt.ylabel('Lift Coefficient [-]')
+# plt.xlabel('Drag Coefficient [-]')
+# plt.savefig('CLCD_mat.jpg')
 # plt.show()
 
-##Calculate Reynolds Range with Sutherland Equation##
-b = 1.458*10**(-6)  #kg/msK^1/2
-St = 110.4 #K
-T = AT_trimmed[:,5] + 273.15
-mu = (b * T ** (3/2))/(T + St)
-Reyn = np.array([(rho1[i] * V[i] * c/mu[i]) for i in range(len(mu))])
-print('Reynoldsnumber Range =', max(Reyn), min(Reyn))
+##------------Reynolds Number Range-----------##
+# b = 1.458*10**(-6)  #kg/msK^1/2
+# St = 110.4 #K
+# Tst = np.array(SAT[16710:23911])
+# mu = (b * Tst ** (3/2))/(Tst + St)
+# Reyn = np.array([(rho1_CL[i] * VTAS_CL[i] * c/mu[i]) for i in range(len(mu))])
+# print('Reynoldsnumber Range =', max(Reyn), min(Reyn))
+
+##_______________________________________Stationary Flight Data_________________________________________##
 
 ##------------Calculate Cmdelta and Cmalpha using Post Flight Data-------------------------##
 dde1 = [i.de for i in CGshift]
@@ -79,8 +85,6 @@ CN = Weight/(0.5*rhoTAS*(VTAS**2)*S)
 print('CN =', CN)
 Cmdelta = -(1/dde) * CN * dxcg/c
 print('Cmdelta =', Cmdelta)
-
-##_______________________________________Stationary Flight Data_________________________________________##
 
 ##--------------Elevator Trim Curve Ve-----------------##
 height = np.array([i.height for i in EleTrimCurve])
@@ -108,13 +112,13 @@ deleq = eledefl - (1/Cmdelta *Cmtc * (Tcs - Tc))
 deda, q = np.polyfit(aoa,deleq,1)
 line = deda*aoa+q
 print('deda =', deda)
-# plt.grid()
-# plt.scatter(aoa,deleq)
-# plt.plot(aoa,line, c='red')
-# plt.ylim(2,-2)
-# plt.ylabel('-delta_e')
-# plt.xlabel('aoa')
-# plt.show()
+plt.grid()
+plt.scatter(aoa,deleq)
+plt.plot(aoa,line, c='orange')
+plt.ylim(1.5,-0.5)
+plt.ylabel('Delta Elevator Deflection [deg]')
+plt.xlabel('Angle of Attack [deg]')
+plt.show()
 
 Cmalpha = -deda * Cmdelta
 print('Cmalpha =', Cmalpha)
@@ -173,34 +177,74 @@ Tcs = 1/(0.5*rho_ele*Ve_graph**2*d_eng**2)    ###vind echte waarde voor thrust m
 de_elemat = de_ele - (1/Cmdelta_mat * Cmtc) * (Tcs - Tc)
 # print(len(de_elemat))
 
-plt.grid()
-plt.scatter(Ve_graph[:,0],de_elemat[:,0], marker='.')
-plt.ylim(2,-1)
-plt.ylabel('- Deflection Elevator [deg]')
-plt.xlabel('Ve_ele^*')
-plt.show()
+# plt.grid()
+# plt.scatter(Ve_graph[:,0],de_elemat[:,0], marker='.')
+# plt.ylim(2,-1)
+# plt.ylabel('- Deflection Elevator [deg]')
+# plt.xlabel('Ve_ele^*')
+# plt.show()
 
 deda_mat, b_mat = np.polyfit(AOA_ele[:,0], de_elemat[:,0],1)
-plt.grid()
-plt.scatter(AOA_ele[:,0],de_elemat[:,0],marker='.')
-plt.ylim(2,-1)
-plt.ylabel('-delta_e')
-plt.xlabel('AOA')
-plt.show()
+# plt.grid()
+# plt.scatter(AOA_ele[:,0],de_elemat[:,0],marker='.')
+# plt.plot(AOA_ele[:,0], deda_mat*AOA_ele[:,0] + b_mat, c='orange')
+# plt.ylim(2,-1)
+# plt.ylabel('-delta_e')
+# plt.xlabel('AOA')
+# plt.show()
 
 Cmalpha_mat = -deda_mat * Cmdelta_mat
 print('Cmalpha matlab =', Cmalpha_mat)
 
 Femea_mat = np.array(Fele[29910:33511])
 Fele_mat = Femea_mat * Ws/W_ele
-plt.grid()
-plt.scatter(Ve_graph[:,0],Fele_mat[:,0], marker='.')
-plt.ylim(70,-50)
-plt.ylabel('-Fe')
-plt.xlabel('Ve_e')
-plt.show()
+# plt.grid()
+# plt.scatter(Ve_graph[:,0],Fele_mat[:,0], marker='.')
+# plt.ylim(70,-50)
+# plt.ylabel('-Fe')
+# plt.xlabel('Ve_e')
+# plt.show()
 
-####-------------------------Comments----------------------------------#####
-# dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
-# xcgd = min(dxcg)
-# dde_cg1 = np.array([de_cg[i] - de_cg[i-1] for i in range(1,len(de_cg))])
+####-------------------------Old versions----------------------------------#####
+# AT = np.column_stack([AOA1,TAS2,de,xcg,alt2,TAT,FUtot])
+# cut_off = 70
+# AT_trimmed = AT[AT[:,1] > cut_off]
+# print(AT_trimmed.shape)
+
+##Calculate CL and CLalpha##
+# AOA = AT_trimmed[:,0]
+# V = AT_trimmed[:,1]
+# h = AT_trimmed[:,4]
+# FU = AT_trimmed[:,6]
+# rho1 = rho0 * pow((1 + (Tempgrad*h)/Temp0),(-g/(R*Tempgrad) - 1))
+# masstot = mass + passmass + fuelblock
+# Weight = [(masstot - FU[i])*g for i in range(len(FU))]
+# CLgraph = Weight/(0.5 * V**2 * rho1 * S)
+# t, ma = np.polyfit(AOA,CLgraph,1)
+# CLline = t*AOA + ma
+# print('Cl_alpha =', t, t*(180/pi))
+# ##Calculate CD##
+# CDgraph = CD0 + (CLline) ** 2 / (pi * A * e)
+
+#Plots CL and CD##
+# plt.grid()
+# scatter = plt.scatter(AOA,CLgraph,marker= '.', label='Measure point')
+# line = plt.plot(AOA,CLline,c='darkorange', label= 'Least squares')
+# plt.ylabel('Lift Coefficient [-]')
+# plt.xlabel('Angle of Attack [deg]')
+# plt.legend()
+# plt.show()
+#
+# plt.grid()
+# plt.scatter(CDgraph,CLline)
+# plt.ylabel('Lift Coefficient [-]')
+# plt.xlabel('Drag Coefficient [-]')
+# plt.show()
+
+##Calculate Reynolds Range with Sutherland Equation##
+# b = 1.458*10**(-6)  #kg/msK^1/2
+# St = 110.4 #K
+# T = AT_trimmed[:,5] + 273.15
+# mu = (b * T ** (3/2))/(T + St)
+# Reyn = np.array([(rho1[i] * V[i] * c/mu[i]) for i in range(len(mu))])
+# print('Reynoldsnumber Range =', max(Reyn), min(Reyn))
