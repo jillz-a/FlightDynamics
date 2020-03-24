@@ -98,7 +98,7 @@ Ve_e = V_e * np.sqrt(Ws/Wele)
 ##-----------Elevator Trim Curve Ele defl eq-----------##
 Cmtc = -.0064  #reader appendix
 eledefl = np.array([i.de for i in EleTrimCurve])
-aoa = np.array([i.AoA for i in EleTrimCurve])
+aoa = np.array([float(i.AoA) for i in EleTrimCurve])
 d_eng = 0.686 #m
 Tc = totalthrustele/(0.5*rhoele*Ve_e**2*S)
 Tcs = totalthrustelestand/(0.5*rhoele*Ve_e**2*d_eng**2)
