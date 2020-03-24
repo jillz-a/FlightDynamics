@@ -13,6 +13,9 @@ flow_eng1 = np.array(pd.read_csv('flight_data/FMF_eng1.csv', delimiter=',', head
 
 flow_eng2 = np.array(pd.read_csv('flight_data/FMF_eng2.csv', delimiter=',', header=None)) #pounds / hour
 
+x_lemac = 6.64083 #begin leading edge MAC from datum line in meters
+MAC = 2.0569 #MAC length in meters
+
 
 def x_cg(time, fuel_data, flow_eng1, flow_eng2):
     #======================================initial values (non metric)======================================================
@@ -92,10 +95,10 @@ def x_cg(time, fuel_data, flow_eng1, flow_eng2):
     #account for observer 3L moving to cockpit at 58 min 19 sec: so at t[34990]
     x_s7_t = []
     for i in range(len(time)):
-        if i < 34990:
-            x_s7_t.append(x_s7)
-        else:
+        if 34080 < i < 36190:
             x_s7_t.append(x_s1)
+        else:
+            x_s7_t.append(x_s7)
     #change of payload moment per time step
     M_pay_t = np.array([x_s1 * m_s1 + x_s2 * m_s2 + x_s3 * m_s3 + x_s4 * m_s4 + x_s5 * m_s5 + x_s6 * m_s6 + x_s7 * m_s7 + x_s8 * m_s8 + x_s10 * m_s10 for x_s7 in x_s7_t])#kgm
 
@@ -147,16 +150,16 @@ def x_cg(time, fuel_data, flow_eng1, flow_eng2):
     m_payload_t = np.ones(len(time))*m_payload #Payload weight for every time step
 
     #=========================x_cg location in m========================
-    x_cg_t = np.divide(M_total_t, np.add(np.add(OEW_t, m_payload_t), m_fuel_t))
+    x_cg_t = (np.divide(M_total_t, np.add(np.add(OEW_t, m_payload_t), m_fuel_t)) - x_lemac)/MAC
 
     
-    #plt.plot(time,M_total_t)
+    # plt.plot(time,M_total_t)
     # plt.plot(time, x_cg_t)
     # plt.xlabel('time [s]')
-    # plt.ylabel('x_cg [m]')
+    # plt.ylabel('x_cg [% MAC]')
     # plt.show()
 
-    np.savetxt('x_cg.csv', x_cg_t, delimiter=',')
+    # np.savetxt('x_cg.csv', x_cg_t, delimiter=',')
 
     return x_cg_t, m_fuel_t, FMF
 
@@ -260,30 +263,30 @@ def x_cg_num(CLCD1, EleTrimCurve, CGshift, fuel_data):
     #----------------------------------------------For CLCD1 case--------------------------------------------------------------
     m_fuel_CLCD1  = np.array([Fuel_block - CLCD1[i].Fused for i in range(len(CLCD1))]) #kg
     M_fuel_CLCD1  = np.array([f_fuel(m_fuel_CLCD1[i]) for i in range(len(m_fuel_CLCD1))]) #kgm
-    x_cg_CLCD1 = np.divide(M_fuel_CLCD1 + M_empty + M_pay, np.add(np.add(OEW, m_payload), m_fuel_CLCD1)) #m from datum
+    x_cg_CLCD1 = (np.divide(M_fuel_CLCD1 + M_empty + M_pay, np.add(np.add(OEW, m_payload), m_fuel_CLCD1)) - x_lemac)/MAC #m from datum
 
     #----------------------------------------------For Elevator Trim case--------------------------------------------------------------
     m_fuel_elev  = np.array([Fuel_block - EleTrimCurve[i].Fused for i in range(len(EleTrimCurve))]) #kg
     M_fuel_elev  = np.array([f_fuel(m_fuel_elev[i]) for i in range(len(m_fuel_elev))]) #kgm
-    x_cg_elev = np.divide(M_fuel_elev + M_empty + M_pay, np.add(np.add(OEW, m_payload), m_fuel_elev)) #m from datum
+    x_cg_elev = (np.divide(M_fuel_elev + M_empty + M_pay, np.add(np.add(OEW, m_payload), m_fuel_elev))- x_lemac)/MAC #m from datum
 
     #----------------------------------------------For CG Shift case--------------------------------------------------------------
     m_fuel_cgshift  = np.array([Fuel_block - CGshift[i].Fused for i in range(len(CGshift))]) #kg
     M_fuel_cgshift  = np.array([f_fuel(m_fuel_cgshift[i]) for i in range(len(m_fuel_cgshift))]) #kgm
-    x_cg_cgshift = np.divide(M_fuel_cgshift + M_empty + np.array([M_pay,M_pay_shift]), np.add(np.add(OEW, m_payload), m_fuel_cgshift)) #m from datum line
+    x_cg_cgshift = (np.divide(M_fuel_cgshift + M_empty + np.array([M_pay,M_pay_shift]), np.add(np.add(OEW, m_payload), m_fuel_cgshift)) - x_lemac)/MAC#m from datum line
 
     return  x_cg_CLCD1, x_cg_elev, x_cg_cgshift, m_fuel_CLCD1, m_fuel_elev, m_fuel_cgshift, OEW, m_payload
 
 x_cg_CLCD1, x_cg_elev, x_cg_cgshift, m_fuel_CLCD1, m_fuel_elev, m_fuel_cgshift, OEW, m_payload = x_cg_num(CLCD1, EleTrimCurve,CGshift, fuel_data)
 
-np.savetxt('cg_shift.csv', x_cg_cgshift, delimiter=',')
+# np.savetxt('cg_shift.csv', x_cg_cgshift, delimiter=',')
 
 plt.plot(time, x_cg_t)
-plt.plot([1686, 1784, 1956, 2085, 2215, 2365], x_cg_CLCD1, 'r')
-plt.plot([3029, 3093, 3165, 3237, 3314], x_cg_elev, 'r')
-plt.plot([3408, 3559], x_cg_cgshift, 'r')
+# plt.plot([1686, 1784, 1956, 2085, 2215, 2365], x_cg_CLCD1, 'r')
+# plt.plot([3029, 3093, 3165, 3237, 3314], x_cg_elev, 'r')
+# plt.plot([3408, 3559], x_cg_cgshift, 'r')
 
 plt.xlabel('time [s]')
-plt.ylabel('x_cg [m]')
-# plt.ylim(6.9, 7.0)
+plt.ylabel('x_cg [%MAC]')
+# # # plt.ylim(6.9, 7.0)
 plt.show()
