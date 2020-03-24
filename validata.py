@@ -136,7 +136,7 @@ def CompareData(mode, tstart, tend, instashow=True, title="Flight Data as provid
     elif mode == Mode.Asymmetric:
         sys, eigs = MatrixCalculation.GenAsymmetricStateSys()
         _, SDList, _ = ctrl.forced_response(sys,FD.T, np.vstack((FD.delta_e, FD.delta_r)), initials)
-        SD = FLContainer(Fd.T, FD.V0, 0, 0, 0, 0, SDList[0], SDList[1], SDList[2], SDList[3], 0, 0 , 0)
+        SD = FLContainer(FD.T, FD.V0, 0, 0, 0, 0, SDList[0], SDList[1], SDList[2], SDList[3], 0, 0 , 0)
 
     else: 
         print("Please select a valid mode form the Mode enumerator")
@@ -195,7 +195,19 @@ def CompareData(mode, tstart, tend, instashow=True, title="Flight Data as provid
     return fig1,axs1
 
 
+def ValidateModel():
+    fig1, axs1 = CompareData(Mode.Symmetric,  3600, 3780, instashow=False, title="Phugoid Motion")
+    fig2, axs2 = CompareData(Mode.Symmetric,  3780, 3900, instashow=False, title="Short Period")
+    fig3, axs3 = CompareData(Mode.Asymmetric, 3900, 4020, instashow=False, title="Aperiodic Roll")
+    fig4, axs4 = CompareData(Mode.Asymmetric, 4020, 4080, instashow=False, title="Dutch Roll")
+    fig5, axs5 = CompareData(Mode.Asymmetric, 4080, 4200, instashow=False, title="Dutch Roll YD")
+    fig6, axs6 = CompareData(Mode.Asymmetric, 4200, 4320, instashow=False, title="Spiral")             # Assuming it took approximately 2 minutes
+
+    plt.legend()
+    plt.show()
+
 ############# Main ##################
 
-#DisplayEigenmotionData()
-CompareData(Mode.Symmetric, 3600, 3780)
+DisplayEigenmotionData()
+#CompareData(Mode.Symmetric, 3600, 3780)
+#ValidateModel()
