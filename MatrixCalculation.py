@@ -48,7 +48,7 @@ def GenSymmetricStateSys():
     A = -np.matmul(np.linalg.inv(C1),C2)
     B = -np.matmul(np.linalg.inv(C1),C3)
 
-    C = np.array([  [1/V, 0, 0, 0],
+    C = np.array([  [1, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
                     [0, 0, 0, cbar/V]])
@@ -228,4 +228,3 @@ def CalcResponse(mode,inputparam):
     plt.show()
     return True
 
-#CalcResponse(1,1)
