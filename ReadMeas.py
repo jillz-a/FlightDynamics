@@ -10,7 +10,7 @@ def getdata(rangestart,rangeend,datatype = False):
     datalist = []
     for i in range(rangestart,rangeend):
         isempty = getval(i,1)
-        if isempty != "":        
+        if isempty != "":
             class data:
                 measurement = getval(i,0)
                 time = getval(i,1)

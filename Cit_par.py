@@ -13,10 +13,9 @@ th0    = 0            # pitch angle in the stationary flight condition [rad]
 mass      = 9165 * 0.453592  #mass [kg]
 
 # aerodynamic properties
-e      =  0.8            # Oswald factor [ ]
-CD0    =  0.04           # Zero lift drag coefficient [ ]
-CLa_old    =  5.084           # Slope of CL-alpha curve [ ]
-CLa = 4.308989764385696
+e      =  0.7512121046190305            # Oswald factor [ ]
+CD0    =  0.02508787875247808         # Zero lift drag coefficient [ ]
+CLa    =  4.4352636034540955         # Slope of CL-alpha curve [ ]
 
 # Longitudinal stability
 Cma_old    =  -0.5626 # longitudinal stabilty [ ]
@@ -25,6 +24,7 @@ Cmde_old   =  -1.1642 # elevator effectiveness [ ]
 Cmde = -1.43401916
 
 # Aircraft geometry
+
 S      = 30.00	          # wing area [m^2]
 Sh     = 0.2 * S         # stabiliser area [m^2]
 Sh_S   = Sh / S	          # [ ]

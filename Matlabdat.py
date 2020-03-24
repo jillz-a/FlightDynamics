@@ -34,6 +34,6 @@ for i in EleTrimCurve:
     FFr = round(FFr, 3)    
     
     print(hp, M, Tempdiff, FFl, FFr)
-    matlab.write(str(hp) + " " + str(M) + " " + str(Tempdiff) + " " + str(FFl) + " " + str(FFr) + "\n") 
+#    matlab.write(str(hp) + " " + str(M) + " " + str(Tempdiff) + " " + str(FFl) + " " + str(FFr) + "\n") 
 matlab.close()
 
