@@ -2,6 +2,13 @@ import control as ctrl
 from Cit_par import *
 import numpy as np
 from matplotlib import pyplot as plt
+from enum import Enum
+
+class Mode(Enum):
+    Symmetric = 1
+    AsymmetricElevatorInput = 2
+    AsymmetricRudderInput = 3
+    Asymmetric = 4
 
 cbar = c
 V = V0
@@ -221,4 +228,4 @@ def CalcResponse(mode,inputparam):
     plt.show()
     return True
 
-#CalcResponse(1,1)
+#CalcResponse(0,1)
