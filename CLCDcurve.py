@@ -1,9 +1,10 @@
-from Cit_par import *
+from Cit_par import mass,A,e,CD0,rho0,Tempgrad,R,g,Temp0,S,c
+from math import pi
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from ReadMeas import *
-from ClCdRef import passmass, Vequi, totalthrustele, totalthrustelestand, totalthrustele_mat, totalthrustele_matstand
+from ClCdRef import passmass, Vequi, totalthrustele, totalthrustelestand, totalthrustele_mat, totalthrustele_matstand, CLalpha, b,
 
 ##READ DATA AND CREATE ARRAY##
 time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None))
@@ -42,6 +43,8 @@ CLline_CL = clalpha_mat*AOA_CL[:,0] + ma_mat
 print('Cl_alpha =', clalpha_mat, clalpha_mat*(180/pi))
 ##Calculate CD##
 CDgraph_mat = CD0 + (CLline_CL) ** 2 / (pi * A * e)
+
+#From Numerical Model#
 
 #Plots CL and CD##
 # plt.grid()

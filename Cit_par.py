@@ -15,7 +15,8 @@ mass      = 9165 * 0.453592  #mass [kg]
 # aerodynamic properties
 e      =  0.8            # Oswald factor [ ]
 CD0    =  0.04           # Zero lift drag coefficient [ ]
-CLa    =  5.084           # Slope of CL-alpha curve [ ]
+CLa_old    =  5.084           # Slope of CL-alpha curve [ ]
+CLa = 4.308989764385696
 
 # Longitudinal stability
 Cma_old    =  -0.5626 # longitudinal stabilty [ ]
