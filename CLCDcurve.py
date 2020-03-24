@@ -1,9 +1,10 @@
-from Cit_par import *
+from Cit_par import mass,CD0,rho0,Tempgrad,R,g,Temp0,S,c,A
+from math import pi
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from ReadMeas import *
-from ClCdRef import passmass, Vequi, totalthrustele, totalthrustelestand, totalthrustele_mat, totalthrustele_matstand
+from ClCdRef import passmass, Vequi, totalthrustele, totalthrustelestand, totalthrustele_mat, totalthrustele_matstand, CLalpha, b,e,CD0, AOAlist, CD, CLlist
 
 ##READ DATA AND CREATE ARRAY##
 time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None))
@@ -42,22 +43,29 @@ CLline_CL = clalpha_mat*AOA_CL[:,0] + ma_mat
 print('Cl_alpha =', clalpha_mat, clalpha_mat*(180/pi))
 ##Calculate CD##
 CDgraph_mat = CD0 + (CLline_CL) ** 2 / (pi * A * e)
+CDstat = CD
+
+#From Numerical Model#
+AOAstat = np.array(AOAlist)
+linecl_stat = CLalpha*AOAstat + b
 
 #Plots CL and CD##
 # plt.grid()
-# plt.scatter(AOA_CL[:,0],CLgraph_mat[:,0],marker= '.', label='Measure point')
-# plt.plot(AOA_CL[:,0],CLline_CL,c='darkorange', label= 'Least squares')
+# plt.plot(AOAstat,linecl_stat, label='Stationary Flight Measurements')
+# plt.plot(AOA_CL[:,0],CLline_CL,c='darkorange', label= 'Least Squares of Flightdata')
 # plt.ylabel('Lift Coefficient [-]')
 # plt.xlabel('Angle of Attack [deg]')
 # plt.legend()
-# plt.savefig('CLalpha_mat.jpg')
+# plt.savefig('CLalphacompare.jpg')
 # plt.show()
 #
 # plt.grid()
-# plt.scatter(CDgraph_mat,CLline_CL, marker='.')
+# plt.scatter(CDgraph_mat,CLline_CL, marker='.', label='Measure Point Flightdata')
+# plt.plot(CDstat,CLlist,c='orange', label='Stationary Flight Measurements')
 # plt.ylabel('Lift Coefficient [-]')
 # plt.xlabel('Drag Coefficient [-]')
-# plt.savefig('CLCD_mat.jpg')
+# plt.legend()
+# plt.savefig('CLCDcompare.jpg')
 # plt.show()
 
 ##------------Reynolds Number Range-----------##
@@ -128,6 +136,7 @@ print('Cmalpha =', Cmalpha)
 # Ve_e_dde1 = np.column_stack([Ve_e,deleq])
 # Ve_e_dde = Ve_e_dde1[Ve_e_dde1[:,0].argsort()]
 # d, f, j = np.polyfit(Ve_e_dde[:,0],Ve_e_dde[:,1],2)
+# line_eleV = d*Ve_e_dde[:,0]**2 + f*Ve_e_dde[:,0] + j
 # plt.grid()
 # plt.scatter(Ve_e_dde[:,0],Ve_e_dde[:,1], label='Measure Point')
 # plt.plot(Ve_e_dde[:,0],d*Ve_e_dde[:,0]**2 + f*Ve_e_dde[:,0] + j, c='orange', label='Least Squares')
@@ -141,9 +150,10 @@ print('Cmalpha =', Cmalpha)
 ##------------Reduced Elevator control Curve----------##
 Femea = np.array([i.Fe for i in EleTrimCurve])
 Fe = Femea * (Ws/Wele)
-# Ve_e_Fe1 = np.column_stack([Ve_e,Fe])
-# Ve_e_Fe = Ve_e_Fe1[Ve_e_Fe1[:,0].argsort()]
-# d, f, j = np.polyfit(Ve_e_Fe[:,0],Ve_e_Fe[:,1],2)
+Ve_e_Fe1 = np.column_stack([Ve_e,Fe])
+Ve_e_Fe = Ve_e_Fe1[Ve_e_Fe1[:,0].argsort()]
+d, f, j = np.polyfit(Ve_e_Fe[:,0],Ve_e_Fe[:,1],2)
+line_feele = d*Ve_e_Fe[:,0]**2 + f*Ve_e_Fe[:,0] + j
 # plt.grid()
 # plt.scatter(Ve_e_Fe[:,0],Ve_e_Fe[:,1], label='Measure Point')
 # plt.plot(Ve_e_Fe[:,0],d*Ve_e_Fe[:,0]**2 + f*Ve_e_Fe[:,0] + j, c='orange', label='Least Squares')
@@ -192,24 +202,28 @@ de_elemat = de_ele - (1/Cmdelta_mat * Cmtc) * (Tcs - Tc)
 
 # f , k, v = np.polyfit(Ve_graph[:,0],de_elemat[:,0],2)
 # plt.grid()
-# plt.scatter(Ve_graph[:,0],de_elemat[:,0], marker='.', label='Measure Point')
-# plt.plot(Ve_graph[:,0], f*Ve_graph[:,0]**2 + k *Ve_graph[:,0] + v, c='orange', label='Least Squares')
+# # plt.scatter(Ve_graph[:,0],de_elemat[:,0], marker='.', label='Measure Point')
+# # plt.plot(Ve_graph[:,0], f*Ve_graph[:,0]**2 + k *Ve_graph[:,0] + v, c='orange', label='Least Squares')
+# plt.plot(Ve_graph[:,0], f*Ve_graph[:,0]**2 + k *Ve_graph[:,0] + v, c='orange', label='Least Squares of Flightdata')
+# plt.plot(Ve_e_dde[:,0],line_eleV, label='Stationary Flight Measurements')
 # plt.ylim(1.25,-0.7)
 # plt.ylabel('Delta Elevator Deflection [deg]')
 # plt.xlabel('Reduced Equivalent Airspeed [m/s]')
 # plt.legend()
-# plt.savefig('DedV_mat.jpg')
+# plt.savefig('DedVcompare.jpg')
 # plt.show()
 
 deda_mat, b_mat = np.polyfit(AOA_ele[:,0], de_elemat[:,0],1)
 # plt.grid()
-# plt.scatter(AOA_ele[:,0],de_elemat[:,0],marker='.', label='Measure Point')
-# plt.plot(AOA_ele[:,0], deda_mat*AOA_ele[:,0] + b_mat, c='orange', label='Least Squares')
+# # plt.scatter(AOA_ele[:,0],de_elemat[:,0],marker='.', label='Measure Point')
+# plt.plot(aoa,line, label='Stationary Flight Measurements')
+# plt.plot(AOA_ele[:,0], deda_mat*AOA_ele[:,0] + b_mat, c='orange', label='Least Squares of Flightdata')
+# # plt.plot(AOA_ele[:,0], deda_mat*AOA_ele[:,0] + b_mat, c='orange', label='Least Squares')
 # plt.ylim(1.25,-0.7)
 # plt.ylabel('Delta Elevator Deflection [deg]')
 # plt.xlabel('Angle of Attack [deg]')
 # plt.legend()
-# plt.savefig('DedAOA_mat.jpg')
+# plt.savefig('DedAOAcompare.jpg')
 # plt.show()
 
 Cmalpha_mat = -deda_mat * Cmdelta_mat
@@ -217,15 +231,17 @@ print('Cmalpha matlab =', Cmalpha_mat)
 
 Femea_mat = np.array(Fele[29910:33511])
 Fele_mat = Femea_mat * Ws/W_ele
-# w , s, v = np.polyfit(Ve_graph[:,0],Fele_mat[:,0],2)
+w , s, v = np.polyfit(Ve_graph[:,0],Fele_mat[:,0],2)
 # plt.grid()
-# plt.scatter(Ve_graph[:,0],Fele_mat[:,0], marker='.', label='Measure Point')
-# plt.plot(Ve_graph[:,0],w*Ve_graph[:,0]**2 + s * Ve_graph[:,0] + v, c='orange', label='Least Squares')
+# # plt.scatter(Ve_graph[:,0],Fele_mat[:,0], marker='.', label='Measure Point')
+# # plt.plot(Ve_graph[:,0],w*Ve_graph[:,0]**2 + s * Ve_graph[:,0] + v, c='orange', label='Least Squares')
+# plt.plot(Ve_graph[:,0],w*Ve_graph[:,0]**2 + s * Ve_graph[:,0] + v, c='orange', label='Least Squares of Flightdata')
+# plt.plot(Ve_e_Fe[:,0],line_feele, label='Stationary Flight Measurements')
 # plt.ylim(70,-50)
 # plt.ylabel('Force Elevator Control Wheel [N]')
 # plt.xlabel('Reduced Equivalent Airspeed [m/s]')
 # plt.legend()
-# plt.savefig('FeV_mat.jpg')
+# plt.savefig('FeVcompare.jpg')
 # plt.show()
 
 ####-------------------------Old versions----------------------------------#####
