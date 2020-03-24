@@ -1,10 +1,10 @@
-from Cit_par import mass,A,e,CD0,rho0,Tempgrad,R,g,Temp0,S,c
+from Cit_par import mass,CD0,rho0,Tempgrad,R,g,Temp0,S,c,A
 from math import pi
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from ReadMeas import *
-from ClCdRef import passmass, Vequi, totalthrustele, totalthrustelestand, totalthrustele_mat, totalthrustele_matstand, CLalpha, b,
+from ClCdRef import passmass, Vequi, totalthrustele, totalthrustelestand, totalthrustele_mat, totalthrustele_matstand, CLalpha, b,e,CD0, AOAlist, CD, CLlist
 
 ##READ DATA AND CREATE ARRAY##
 time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None))
@@ -43,24 +43,29 @@ CLline_CL = clalpha_mat*AOA_CL[:,0] + ma_mat
 print('Cl_alpha =', clalpha_mat, clalpha_mat*(180/pi))
 ##Calculate CD##
 CDgraph_mat = CD0 + (CLline_CL) ** 2 / (pi * A * e)
+CDstat = CD
 
 #From Numerical Model#
+AOAstat = np.array(AOAlist)
+linecl_stat = CLalpha*AOAstat + b
 
 #Plots CL and CD##
 # plt.grid()
-# plt.scatter(AOA_CL[:,0],CLgraph_mat[:,0],marker= '.', label='Measure point')
-# plt.plot(AOA_CL[:,0],CLline_CL,c='darkorange', label= 'Least squares')
+# plt.plot(AOAstat,linecl_stat, label='Stationary Flight Measurements')
+# plt.plot(AOA_CL[:,0],CLline_CL,c='darkorange', label= 'Least Squares of Flightdata')
 # plt.ylabel('Lift Coefficient [-]')
 # plt.xlabel('Angle of Attack [deg]')
 # plt.legend()
-# plt.savefig('CLalpha_mat.jpg')
+# plt.savefig('CLalphacompare.jpg')
 # plt.show()
 #
 # plt.grid()
-# plt.scatter(CDgraph_mat,CLline_CL, marker='.')
+# plt.scatter(CDgraph_mat,CLline_CL, marker='.', label='Measure Point Flightdata')
+# plt.plot(CDstat,CLlist,c='orange', label='Stationary Flight Measurements')
 # plt.ylabel('Lift Coefficient [-]')
 # plt.xlabel('Drag Coefficient [-]')
-# plt.savefig('CLCD_mat.jpg')
+# plt.legend()
+# plt.savefig('CLCDcompare.jpg')
 # plt.show()
 
 ##------------Reynolds Number Range-----------##

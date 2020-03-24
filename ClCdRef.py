@@ -102,7 +102,9 @@ piAe,CD0 = np.linalg.lstsq(C,CDlist,rcond=None)[0]
 #plt.ylabel('Drag coefficient [-]')
 #plt.plot()
 
+
 e = 1/(piAe*np.pi*A)
+CD = CD0 + CL2/(np.pi*A*e)
 print('CD0 = ', CD0,'  e = ',e)
 
 # plt.scatter(CDlist,CLlist)
