@@ -11,12 +11,13 @@ alt = np.array(pd.read_csv('flight_data/alt.csv', delimiter=' ', header= None)) 
 FMFL = np.array(pd.read_csv('flight_data/FMF_eng1.csv', delimiter=',', header=None)) * 0.000125998 #1 kg/s
 FMFR = np.array(pd.read_csv('flight_data/FMF_eng2.csv', delimiter=',', header=None)) * 0.000125998 #2 kg/s
 T = [((SAT[i] + 273.15) - Temp0) for i in range(len(SAT))]
-
-trust = np.column_stack([alt[29910:33511],Mach[29910:33511],T[29910:33511],FMFL[29910:33511],FMFR[29910:33511]])
+FMFL2 = np.ones([3601,1])*0.048
+FMFR2 = np.ones([3601,1])*0.048
+trust = np.column_stack([alt[29910:33511],Mach[29910:33511],T[29910:33511],FMFL2,FMFR2])
 
 matlab = open("matlab3.dat", "w")
 for i in range(len(trust)):
-    hp = round(trust[i,0],3)
+    hp = round(trust[i,0],1)
     M = round(trust[i,1],3)
     T = round(trust[i,2],3)
     FFl = round(0.048,3)
