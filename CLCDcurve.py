@@ -107,7 +107,6 @@ d_eng = 0.686 #m
 Tc = totalthrustele/(0.5*rhoele*Ve_e**2*S)
 Tcs = totalthrustelestand/(0.5*rhoele*Ve_e**2*d_eng**2)
 deleq = eledefl - (1/Cmdelta *Cmtc * (Tcs - Tc))
-
 ##-------Plotting AoA against Ele delfection and determine Cmalpha------##
 deda, q = np.polyfit(aoa,deleq,1)
 line = deda*aoa+q
@@ -126,21 +125,33 @@ Cmalpha = -deda * Cmdelta
 print('Cmalpha =', Cmalpha)
 
 #-------------------Plotting Ele defl against Ve----##
+# Ve_e_dde1 = np.column_stack([Ve_e,deleq])
+# Ve_e_dde = Ve_e_dde1[Ve_e_dde1[:,0].argsort()]
+# d, f, j = np.polyfit(Ve_e_dde[:,0],Ve_e_dde[:,1],2)
 # plt.grid()
-# plt.scatter(Ve_e,deleq)
-# plt.ylim(1.5,-1)
-# plt.ylabel('-delta_e')
-# plt.xlabel('Ve_e')
+# plt.scatter(Ve_e_dde[:,0],Ve_e_dde[:,1], label='Measure Point')
+# plt.plot(Ve_e_dde[:,0],d*Ve_e_dde[:,0]**2 + f*Ve_e_dde[:,0] + j, c='orange', label='Least Squares')
+# plt.ylim(1.2,-0.4)
+# plt.ylabel('Delta Elevator Deflection [deg]')
+# plt.xlabel('Reduced Equivalent Airspeed [m/s]')
+# plt.legend()
+# plt.savefig('DedV.jpg')
 # plt.show()
 
 ##------------Reduced Elevator control Curve----------##
 Femea = np.array([i.Fe for i in EleTrimCurve])
 Fe = Femea * (Ws/Wele)
+# Ve_e_Fe1 = np.column_stack([Ve_e,Fe])
+# Ve_e_Fe = Ve_e_Fe1[Ve_e_Fe1[:,0].argsort()]
+# d, f, j = np.polyfit(Ve_e_Fe[:,0],Ve_e_Fe[:,1],2)
 # plt.grid()
-# plt.scatter(Ve_e,Fe)
+# plt.scatter(Ve_e_Fe[:,0],Ve_e_Fe[:,1], label='Measure Point')
+# plt.plot(Ve_e_Fe[:,0],d*Ve_e_Fe[:,0]**2 + f*Ve_e_Fe[:,0] + j, c='orange', label='Least Squares')
 # plt.ylim(70,-40)
-# plt.ylabel('-Fe')
-# plt.xlabel('Ve_e')
+# plt.ylabel('Force on Elevator Control Wheel [N]')
+# plt.xlabel('Reduced Equivalent Speed [m/s]')
+# plt.legend()
+# plt.savefig('FeV.jpg')
 # plt.show()
 
 ##_______________________________________Flight test DATA_______________________________________##
