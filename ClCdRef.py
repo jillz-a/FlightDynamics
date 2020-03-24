@@ -147,3 +147,15 @@ for i in elethrustarray_mat:
     elerightthrust_mat.append(float(i[1]))
 
 totalthrustele_mat= np.add(eleleftthrust_mat,elerightthrust_mat)
+
+elethrust_matstand = open("Thrust//thrustvalidationeletrimstandard.dat", "r")
+elethrustarray_matstand = elethrust_matstand.readlines()
+eleleftthrust_matstand = []
+elerightthrust_matstand = []
+for i in elethrustarray_matstand:
+    i = i.split('\t')
+    i[1] = i[1].replace('\n','')
+    eleleftthrust_matstand.append(float(i[0]))
+    elerightthrust_matstand.append(float(i[1]))
+
+totalthrustele_matstand= np.add(eleleftthrust_matstand,elerightthrust_matstand)

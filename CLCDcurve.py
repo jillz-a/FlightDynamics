@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from ReadMeas import *
-from ClCdRef import passmass, Vequi, totalthrustele, totalthrustelestand, totalthrustele_mat
+from ClCdRef import passmass, Vequi, totalthrustele, totalthrustelestand, totalthrustele_mat, totalthrustele_matstand
 
 ##READ DATA AND CREATE ARRAY##
 time = np.array(pd.read_csv('flight_data/time.csv', delimiter=',', header=None))
@@ -112,13 +112,15 @@ deleq = eledefl - (1/Cmdelta *Cmtc * (Tcs - Tc))
 deda, q = np.polyfit(aoa,deleq,1)
 line = deda*aoa+q
 print('deda =', deda)
-plt.grid()
-plt.scatter(aoa,deleq)
-plt.plot(aoa,line, c='orange')
-plt.ylim(1.5,-0.5)
-plt.ylabel('Delta Elevator Deflection [deg]')
-plt.xlabel('Angle of Attack [deg]')
-plt.show()
+# plt.grid()
+# plt.scatter(aoa,deleq, label='Measure Point')
+# plt.plot(aoa,line, c='orange', label='Least Squares')
+# plt.ylim(1.2,-0.5)
+# plt.ylabel('Delta Elevator Deflection [deg]')
+# plt.xlabel('Angle of Attack [deg]')
+# plt.legend()
+# plt.savefig('DedAOA.jpg')
+# plt.show()
 
 Cmalpha = -deda * Cmdelta
 print('Cmalpha =', Cmalpha)
@@ -173,24 +175,30 @@ W_ele = np.array([(masstot-FUtot_ele[i])*g for i in range(len(FUtot_ele))])
 Ve_graph = Ve_ele * np.sqrt(Ws/W_ele)
 # print(len(Ve_graph))
 Tc = totalthrustele_mat/(0.5*rho_ele*Ve_graph**2*S)
-Tcs = 1/(0.5*rho_ele*Ve_graph**2*d_eng**2)    ###vind echte waarde voor thrust met die exe
+Tcs = totalthrustele_matstand/(0.5*rho_ele*Ve_graph**2*d_eng**2)
 de_elemat = de_ele - (1/Cmdelta_mat * Cmtc) * (Tcs - Tc)
 # print(len(de_elemat))
 
+# f , k, v = np.polyfit(Ve_graph[:,0],de_elemat[:,0],2)
 # plt.grid()
-# plt.scatter(Ve_graph[:,0],de_elemat[:,0], marker='.')
-# plt.ylim(2,-1)
-# plt.ylabel('- Deflection Elevator [deg]')
-# plt.xlabel('Ve_ele^*')
+# plt.scatter(Ve_graph[:,0],de_elemat[:,0], marker='.', label='Measure Point')
+# plt.plot(Ve_graph[:,0], f*Ve_graph[:,0]**2 + k *Ve_graph[:,0] + v, c='orange', label='Least Squares')
+# plt.ylim(1.25,-0.7)
+# plt.ylabel('Delta Elevator Deflection [deg]')
+# plt.xlabel('Reduced Equivalent Airspeed [m/s]')
+# plt.legend()
+# plt.savefig('DedV_mat.jpg')
 # plt.show()
 
 deda_mat, b_mat = np.polyfit(AOA_ele[:,0], de_elemat[:,0],1)
 # plt.grid()
-# plt.scatter(AOA_ele[:,0],de_elemat[:,0],marker='.')
-# plt.plot(AOA_ele[:,0], deda_mat*AOA_ele[:,0] + b_mat, c='orange')
-# plt.ylim(2,-1)
-# plt.ylabel('-delta_e')
-# plt.xlabel('AOA')
+# plt.scatter(AOA_ele[:,0],de_elemat[:,0],marker='.', label='Measure Point')
+# plt.plot(AOA_ele[:,0], deda_mat*AOA_ele[:,0] + b_mat, c='orange', label='Least Squares')
+# plt.ylim(1.25,-0.7)
+# plt.ylabel('Delta Elevator Deflection [deg]')
+# plt.xlabel('Angle of Attack [deg]')
+# plt.legend()
+# plt.savefig('DedAOA_mat.jpg')
 # plt.show()
 
 Cmalpha_mat = -deda_mat * Cmdelta_mat
@@ -198,11 +206,15 @@ print('Cmalpha matlab =', Cmalpha_mat)
 
 Femea_mat = np.array(Fele[29910:33511])
 Fele_mat = Femea_mat * Ws/W_ele
+# w , s, v = np.polyfit(Ve_graph[:,0],Fele_mat[:,0],2)
 # plt.grid()
-# plt.scatter(Ve_graph[:,0],Fele_mat[:,0], marker='.')
+# plt.scatter(Ve_graph[:,0],Fele_mat[:,0], marker='.', label='Measure Point')
+# plt.plot(Ve_graph[:,0],w*Ve_graph[:,0]**2 + s * Ve_graph[:,0] + v, c='orange', label='Least Squares')
 # plt.ylim(70,-50)
-# plt.ylabel('-Fe')
-# plt.xlabel('Ve_e')
+# plt.ylabel('Force Elevator Control Wheel [N]')
+# plt.xlabel('Reduced Equivalent Airspeed [m/s]')
+# plt.legend()
+# plt.savefig('FeV_mat.jpg')
 # plt.show()
 
 ####-------------------------Old versions----------------------------------#####
