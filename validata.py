@@ -146,7 +146,7 @@ def CompareData(mode, tstart, tend, instashow=True, title="Flight Data as provid
     stVec = ["u [airpseed, TAS]", "alpha [AoA]", "theta [flight path]", "q [pitch rate, nondimensional]"]
     stVec2 = ["beta [sideslip]", "phi [roll]", "p [roll rate]", "r [yaw rate]"]
 
-    fig1, axs1 = plt.subplots(4, sharex=True)
+    fig1, axs1 = plt.subplots(4, sharex=True, figsize=(12,9))
     fig1.suptitle(title)
 
     if mode == Mode.Symmetric:
@@ -188,6 +188,8 @@ def CompareData(mode, tstart, tend, instashow=True, title="Flight Data as provid
         axs1[2].set_title(stVec2[2])
         axs1[3].plot(SD.T,SD.rrel, label="SD")
         axs1[3].set_title(stVec2[3])
+
+    axs1.flat[3].set(xlabel='time [s]')
 
     if instashow == True:
         plt.show()
