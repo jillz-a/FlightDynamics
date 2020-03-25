@@ -85,23 +85,29 @@ def CheckData(tstart, tend, instashow=True, title="Flight Data as provided "):
     stVec = ["u [airpseed, TAS]", "alpha [AoA]", "theta [flight path]", "q [pitch rate, nondimensional]"]
     stVec2 = ["beta [sideslip]", "phi [roll]", "p [roll rate]", "r [yaw rate]"]
 
-    fig1, axs1 = plt.subplots(7, sharex=True)
+    fig1, axs1 = plt.subplots(1, sharex=True)
     fig1.suptitle(title)
-    axs1[0].plot(trimmedData.T,trimmedData.udak)
-    axs1[0].set_title(stVec[0])
-    axs1[1].plot(trimmedData.T,trimmedData.alpha)
-    axs1[1].set_title(stVec[1])
-    axs1[2].plot(trimmedData.T,trimmedData.theta)
-    axs1[2].set_title(stVec[2])
-    axs1[3].plot(trimmedData.T,trimmedData.qdak)
-    axs1[3].set_title(stVec[3])
+    print(max(trimmedData.udak))
+    print(min(trimmedData.udak))
+    eq = (max(trimmedData.udak)+min(trimmedData.udak))/2
+    print(eq)
+    plt.plot(trimmedData.T,trimmedData.udak)
+    plt.ylim(2*min(trimmedData.udak),2*max(trimmedData.udak))
+    #plt.show()
+    #axs1[0].set_title(stVec[0])
+    #axs1[1].plot(trimmedData.T,trimmedData.alpha)
+    #axs1[1].set_title(stVec[1])
+    #axs1[2].plot(trimmedData.T,trimmedData.theta)
+    #axs1[2].set_title(stVec[2])
+    #axs1[3].plot(trimmedData.T,trimmedData.qdak)
+    #axs1[3].set_title(stVec[3])
 
-    axs1[4].plot(trimmedData.T,trimmedData.phi)
-    axs1[4].set_title(stVec2[1])
-    axs1[5].plot(trimmedData.T,trimmedData.prel)
-    axs1[5].set_title(stVec2[2])
-    axs1[6].plot(trimmedData.T,trimmedData.rrel)
-    axs1[6].set_title(stVec2[3])
+    #axs1[4].plot(trimmedData.T,trimmedData.phi)
+    #axs1[4].set_title(stVec2[1])
+    #axs1[5].plot(trimmedData.T,trimmedData.prel)
+    #axs1[5].set_title(stVec2[2])
+    #axs1[6].plot(trimmedData.T,trimmedData.rrel)
+    #axs1[6].set_title(stVec2[3])
 
 
     if instashow == True:
@@ -111,11 +117,11 @@ def CheckData(tstart, tend, instashow=True, title="Flight Data as provided "):
 
 def DisplayEigenmotionData():
     fig1, axs1 = CheckData(3600, 3780, instashow=False, title="Phugoid Motion")
-    fig2, axs2 = CheckData(3780, 3900, instashow=False, title="Short Period")
-    fig3, axs3 = CheckData(3900, 4020, instashow=False, title="Aperiodic Roll")
-    fig4, axs4 = CheckData(4020, 4080, instashow=False, title="Dutch Roll")
-    fig5, axs5 = CheckData(4080, 4200, instashow=False, title="Dutch Roll YD")
-    fig6, axs6 = CheckData(4200, 4320, instashow=False, title="Spiral")             # Assuming it took approximately 2 minutes
+    #fig2, axs2 = CheckData(3780, 3900, instashow=False, title="Short Period")
+    #fig3, axs3 = CheckData(3900, 4020, instashow=False, title="Aperiodic Roll")
+    #fig4, axs4 = CheckData(4020, 4080, instashow=False, title="Dutch Roll")
+    #fig5, axs5 = CheckData(4080, 4200, instashow=False, title="Dutch Roll YD")
+    #fig6, axs6 = CheckData(4200, 4320, instashow=False, title="Spiral")             # Assuming it took approximately 2 minutes
 
     plt.show()
 
