@@ -1,5 +1,5 @@
 import numpy as np
-from Cit_par import S, Tempgrad, Temp0, g, rho0, R, A
+from Cit_par import S, Tempgrad, Temp0, g, rho0, R, A,c
 from ReadMeas import *
 import matplotlib.pyplot as plt
 
@@ -100,11 +100,11 @@ print(CLalpha)
 CL2 = np.array(CLlist)**2
 C = np.vstack([CL2, np.ones(len(CL2))]).T
 piAe,CD0 = np.linalg.lstsq(C,CDlist,rcond=None)[0]
-plt.scatter(CL2,CDlist)
-plt.plot(CL2, CL2*piAe + CD0)
-plt.xlabel('Lift coefficient squared [-]')
-plt.ylabel('Drag coefficient [-]')
-plt.plot()
+# plt.scatter(CL2,CDlist)
+# plt.plot(CL2, CL2*piAe + CD0)
+# plt.xlabel('Lift coefficient squared [-]')
+# plt.ylabel('Drag coefficient [-]')
+# plt.plot()
 
 e = 1/(piAe*np.pi*A)
 print('CD0 = ', CD0,'  e = ',e)
@@ -116,17 +116,17 @@ print('CD0 = ', CD0,'  e = ',e)
 #plt.plot()
 
 ##-------------Elevator Trim Curve-----------------##
-#elethrust = open("Thrust//thrustEleTrimMeas.dat", "r")
-#elethrustarray = elethrust.readlines()
-#eleleftthrust = []
-#elerightthrust = []
-#for i in elethrustarray:
-#    i = i.split('\t')
-#    i[1] = i[1].replace('\n','')
-#    eleleftthrust.append(float(i[0]))
-#    elerightthrust.append(float(i[1]))
-#
-#totalthrustele = np.add(eleleftthrust,elerightthrust)
+elethrust = open("Thrust//thrustEleTrimMeas.dat", "r")
+elethrustarray = elethrust.readlines()
+eleleftthrust = []
+elerightthrust = []
+for i in elethrustarray:
+   i = i.split('\t')
+   i[1] = i[1].replace('\n','')
+   eleleftthrust.append(float(i[0]))
+   elerightthrust.append(float(i[1]))
+
+totalthrustele = np.add(eleleftthrust,elerightthrust)
 
 elethruststand = open("Thrust//thrustEleTrimMeasStandard.dat", "r")
 elethrustarraystand = elethruststand.readlines()

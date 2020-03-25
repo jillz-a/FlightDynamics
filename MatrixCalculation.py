@@ -228,3 +228,4 @@ def CalcResponse(mode,inputparam):
     plt.show()
     return True
 
+CalcResponse(0,1)
