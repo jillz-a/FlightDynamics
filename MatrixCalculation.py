@@ -181,7 +181,8 @@ def CalcResponse(mode,inputparam):
     _, y_step = ctrl.step_response(sys, T, initials, input=inputindex)
     _, y_forced, _ = ctrl.forced_response(sys,T,forcedInput, initials)
 
-    fig1, axs1 = plt.subplots(4, sharex=True)
+
+    fig1, axs1 = plt.subplots(4, sharex=True, figsize=(12,9))
     fig1.suptitle("Initial Condition Response"+inputtitle)
     axs1[0].plot(time,yinit[0])
     axs1[0].set_title(stVec[0] + " response")
@@ -192,7 +193,10 @@ def CalcResponse(mode,inputparam):
     axs1[3].plot(time,yinit[3])
     axs1[3].set_title(stVec[3]+" response")
 
-    fig2, axs2 = plt.subplots(4, sharex=True)
+    axs1.flat[3].set(xlabel='time [s]')
+    
+
+    fig2, axs2 = plt.subplots(4, sharex=True, figsize=(12,9))
     fig2.suptitle("Impulse Response"+inputtitle)
     axs2[0].plot(time,y_impulse[0])
     axs2[0].set_title(stVec[0]+ " response")
@@ -203,7 +207,9 @@ def CalcResponse(mode,inputparam):
     axs2[3].plot(time,y_impulse[3])
     axs2[3].set_title(stVec[3]+" response")
 
-    fig3, axs3 = plt.subplots(4, sharex=True)
+    axs2.flat[3].set(xlabel='time [s]')
+
+    fig3, axs3 = plt.subplots(4, sharex=True, figsize=(12,9))
     fig3.suptitle("Step Response"+inputtitle)
     axs3[0].plot(time,y_step[0])
     axs3[0].set_title(stVec[0]+" response")
@@ -214,7 +220,9 @@ def CalcResponse(mode,inputparam):
     axs3[3].plot(time,y_step[3])
     axs3[3].set_title(stVec[3]+ " response")
 
-    fig4, axs4 = plt.subplots(4, sharex=True)
+    axs3.flat[3].set(xlabel='time [s]')
+
+    fig4, axs4 = plt.subplots(4, sharex=True, figsize=(12,9))
     fig4.suptitle("Forced Function Response"+inputtitle)
     axs4[0].plot(time,y_forced[0])
     axs4[0].set_title(stVec[0]+ " response")
@@ -225,7 +233,9 @@ def CalcResponse(mode,inputparam):
     axs4[3].plot(time,y_forced[3])
     axs4[3].set_title(stVec[3]+" response")
 
+    axs4.flat[3].set(xlabel='time [s]')
+
     plt.show()
     return True
 
-#CalcResponse(1,1)
+CalcResponse(1,1)

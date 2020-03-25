@@ -208,6 +208,6 @@ def ValidateModel():
 
 ############# Main ##################
 
-DisplayEigenmotionData()
+#DisplayEigenmotionData()
 #CompareData(Mode.Symmetric, 3600, 3780)
-#ValidateModel()
+ValidateModel()
