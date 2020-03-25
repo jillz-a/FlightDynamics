@@ -32,17 +32,18 @@ AOA_CL = np.array(AOA1[16710:23911])
 VTAS_CL = np.array(TAS2[16710:23911])
 h_CL = np.array(alt2[16710:23911])
 FU_CL = np.array(FUtot[16710:23911])
+Mach_CL = np.array(Mach[16710:23911])
 rho1_CL = rho0 * pow((1 + (Tempgrad*h_CL)/Temp0),(-g/(R*Tempgrad) - 1))
 masstot = mass + passmass + fuelblock
 Weight_CL = [(masstot - FU_CL[i])*g for i in range(len(FU_CL))]
 CLgraph_mat = Weight_CL/(0.5 * VTAS_CL**2 * rho1_CL * S)
-
+print(min(Mach_CL), max(Mach_CL))
 #find linear relation for CL measurements
 clalpha_mat,ma_mat  = np.polyfit(AOA_CL[:,0],CLgraph_mat[:,0],1)
 CLline_CL = clalpha_mat*AOA_CL[:,0] + ma_mat
 print('Cl_alpha =', clalpha_mat, clalpha_mat*(180/pi))
 ##Calculate CD##
-CDgraph_mat = CD0 + (CLline_CL) ** 2 / (pi * A * e)
+CDgraph_mat = CD0 + (CLgraph_mat) ** 2 / (pi * A * e)
 
 #From Numerical Model#
 AOAstat = np.array(AOAlist)
@@ -51,7 +52,8 @@ CDstat = CD0 + linecl_stat/(pi * A * e)
 
 #Plots CL and CD##
 # plt.grid()
-# plt.plot(AOAstat,linecl_stat, label='Stationary Flight Measurements')
+# plt.scatter(AOA_CL,CLgraph_mat,marker= '.', label='Measure point')
+# # plt.plot(AOAstat,linecl_stat, label='Stationary Flight Measurements')
 # plt.plot(AOA_CL[:,0],CLline_CL,c='darkorange', label= 'Least Squares of Flightdata')
 # plt.ylabel('Lift Coefficient [-]')
 # plt.xlabel('Angle of Attack [deg]')
@@ -59,14 +61,14 @@ CDstat = CD0 + linecl_stat/(pi * A * e)
 # # plt.savefig('CLalphacompare.jpg')
 # plt.show()
 #
-# plt.grid()
-# plt.scatter(CDgraph_mat,CLline_CL, marker='.', label='Measure Point Flightdata')
+plt.grid()
+plt.scatter(CDgraph_mat,CLgraph_mat, marker='.', label='Measure Point Flightdata')
 # plt.plot(CDstat,CLlist,c='orange', label='Stationary Flight Measurements')
-# plt.ylabel('Lift Coefficient [-]')
-# plt.xlabel('Drag Coefficient [-]')
-# plt.legend()
-# plt.savefig('CLCDcompare.jpg')
-# plt.show()
+plt.ylabel('Lift Coefficient [-]')
+plt.xlabel('Drag Coefficient [-]')
+plt.legend()
+plt.savefig('CLCDcompare.jpg')
+plt.show()
 
 ##------------Reynolds Number Range-----------##
 # b = 1.458*10**(-6)  #kg/msK^1/2
@@ -116,20 +118,21 @@ Tc = totalthrustele/(0.5*rho0*Ve_e**2*S)
 print(Tc)
 Tcs = totalthrustelestand/(0.5*rho0*Ve_e**2*d_eng**2)
 print(Tcs)
+Cmdelta_veri = -0.41532
 deleq = eledefl - (1/Cmdelta *Cmtc * (Tcs - Tc))
 ##-------Plotting AoA against Ele delfection and determine Cmalpha------##
 deda, q = np.polyfit(aoa,deleq,1)
 line = deda*aoa+q
 print('deda =', deda)
-# plt.grid()
-# plt.scatter(aoa,deleq, label='Measure Point')
-# plt.plot(aoa,line, c='orange', label='Least Squares')
-# plt.ylim(1.2,-0.5)
-# plt.ylabel('Reduced Elevator Deflection [deg]')
-# plt.xlabel('Angle of Attack [deg]')
-# plt.legend()
-# plt.savefig('DedAOA.jpg')
-# plt.show()
+plt.grid()
+plt.scatter(aoa,deleq, label='Measure Point')
+plt.plot(aoa,line, c='orange', label='Least Squares')
+plt.ylim(1.2,-0.5)
+plt.ylabel('Reduced Elevator Deflection [deg]')
+plt.xlabel('Angle of Attack [deg]')
+plt.legend()
+plt.savefig('DedAOA_verification.jpg')
+plt.show()
 
 Cmalpha = -deda * Cmdelta
 print('Cmalpha =', Cmalpha)
@@ -202,17 +205,17 @@ Tcs = totalthrustele_matstand/(0.5*rho0*Ve_graph**2*d_eng**2)
 de_elemat = de_ele - (1/Cmdelta_mat * Cmtc) * (Tcs - Tc)
 # print(len(de_elemat))
 
-# f , k, v = np.polyfit(Ve_graph[:,0],de_elemat[:,0],2)
+f , k, v = np.polyfit(Ve_graph[:,0],de_elemat[:,0],2)
 # plt.grid()
 # plt.scatter(Ve_graph[:,0],de_elemat[:,0], marker='.', label='Measure Point')
 # plt.plot(Ve_graph[:,0], f*Ve_graph[:,0]**2 + k *Ve_graph[:,0] + v, c='orange', label='Least Squares')
-# plt.plot(Ve_graph[:,0], f*Ve_graph[:,0]**2 + k *Ve_graph[:,0] + v, c='orange', label='Least Squares of Flightdata')
-# plt.plot(Ve_e_dde[:,0],line_eleV, label='Stationary Flight Measurements')
+# # plt.plot(Ve_graph[:,0], f*Ve_graph[:,0]**2 + k *Ve_graph[:,0] + v, c='orange', label='Least Squares of Flightdata')
+# # plt.plot(Ve_e_dde[:,0],line_eleV, label='Stationary Flight Measurements')
 # plt.ylim(1.25,-0.7)
 # plt.ylabel('Reduced Elevator Deflection [deg]')
 # plt.xlabel('Reduced Equivalent Airspeed [m/s]')
 # plt.legend()
-# plt.savefig('DedVcompare.jpg')
+# plt.savefig('DedV_mat.jpg')
 # plt.show()
 
 deda_mat, b_mat = np.polyfit(AOA_ele[:,0], de_elemat[:,0],1)
@@ -225,7 +228,7 @@ deda_mat, b_mat = np.polyfit(AOA_ele[:,0], de_elemat[:,0],1)
 # plt.ylabel('Reduced Elevator Deflection [deg]')
 # plt.xlabel('Angle of Attack [deg]')
 # plt.legend()
-# plt.savefig('DedAOAcompare.jpg')
+# plt.savefig('DedAOA_compare.jpg')
 # plt.show()
 
 Cmalpha_mat = -deda_mat * Cmdelta_mat
@@ -233,17 +236,17 @@ print('Cmalpha matlab =', Cmalpha_mat)
 
 Femea_mat = np.array(Fele[29910:33511])
 Fele_mat = Femea_mat * Ws/W_ele
-# w , s, v = np.polyfit(Ve_graph[:,0],Fele_mat[:,0],2)
+w , s, v = np.polyfit(Ve_graph[:,0],Fele_mat[:,0],2)
 # plt.grid()
-# # plt.scatter(Ve_graph[:,0],Fele_mat[:,0], marker='.', label='Measure Point')
-# # plt.plot(Ve_graph[:,0],w*Ve_graph[:,0]**2 + s * Ve_graph[:,0] + v, c='orange', label='Least Squares')
-# plt.plot(Ve_graph[:,0],w*Ve_graph[:,0]**2 + s * Ve_graph[:,0] + v, c='orange', label='Least Squares of Flightdata')
-# plt.plot(Ve_e_Fe[:,0],line_feele, label='Stationary Flight Measurements')
+# plt.scatter(Ve_graph[:,0],Fele_mat[:,0], marker='.', label='Measure Point')
+# plt.plot(Ve_graph[:,0],w*Ve_graph[:,0]**2 + s * Ve_graph[:,0] + v, c='orange', label='Least Squares')
+# # plt.plot(Ve_graph[:,0],w*Ve_graph[:,0]**2 + s * Ve_graph[:,0] + v, c='orange', label='Least Squares of Flightdata')
+# # plt.plot(Ve_e_Fe[:,0],line_feele, label='Stationary Flight Measurements')
 # plt.ylim(70,-50)
 # plt.ylabel('Reduced Force on Elevator Control Wheel [N]')
 # plt.xlabel('Reduced Equivalent Airspeed [m/s]')
 # plt.legend()
-# plt.savefig('FeVcompare.jpg')
+# plt.savefig('FeV_mat.jpg')
 # plt.show()
 
 ####-------------------------Old versions----------------------------------#####

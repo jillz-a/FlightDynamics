@@ -108,99 +108,113 @@ deleq = eledefl - (1/Cmdelta *Cmtc * (Tcs - Tc))
 deda, q = np.polyfit(aoa,deleq,1)
 line = deda*aoa+q
 print('deda =', deda)
-# plt.grid()
-# plt.scatter(aoa,deleq)
-# plt.plot(aoa,line, c='red')
-# plt.ylim(2,-2)
-# plt.ylabel('-delta_e')
-# plt.xlabel('aoa')
+plt.subplots_adjust(wspace=0.4)
+plt.subplot(131)
+plt.grid()
+plt.scatter(aoa,deleq)
+plt.plot(aoa,line, c='orange')
+plt.ylim(0.5,-1.75)
+plt.ylabel('Reduced Elevator Deflection [deg]')
+plt.xlabel('Angle of Attack [deg]')
 # plt.show()
 
 Cmalpha = -deda * Cmdelta
 print('Cmalpha =', Cmalpha)
 
 #-------------------Plotting Ele defl against Ve----##
-# plt.grid()
-# plt.scatter(Ve_e,deleq)
-# plt.ylim(1.5,-1)
-# plt.ylabel('-delta_e')
-# plt.xlabel('Ve_e')
+Ve_e_dde1 = np.column_stack([Ve_e,deleq])
+Ve_e_dde = Ve_e_dde1[Ve_e_dde1[:,0].argsort()]
+d, f, j = np.polyfit(Ve_e_dde[:,0],Ve_e_dde[:,1],2)
+line_eleV = d*Ve_e_dde[:,0]**2 + f*Ve_e_dde[:,0] + j
+plt.subplot(132)
+plt.grid()
+plt.scatter(Ve_e_dde[:,0],Ve_e_dde[:,1])
+plt.plot(Ve_e_dde[:,0],line_eleV, c='orange')
+plt.ylim(0.5,-1.75)
+plt.ylabel('Reduced Elevator Deflection [deg]')
+plt.xlabel('Reduced Equivalent Airspeed [m/s]')
 # plt.show()
 
 ##------------Reduced Elevator control Curve----------##
 Femea = np.array([i.Fe for i in EleTrimCurve])
 Fe = Femea * (Ws/Wele)
+Ve_e_Fe1 = np.column_stack([Ve_e,Fe])
+Ve_e_Fe = Ve_e_Fe1[Ve_e_Fe1[:,0].argsort()]
+d, f, j = np.polyfit(Ve_e_Fe[:,0],Ve_e_Fe[:,1],2)
+line_feele = d*Ve_e_Fe[:,0]**2 + f*Ve_e_Fe[:,0] + j
+plt.subplot(133)
+plt.grid()
+plt.scatter(Ve_e_Fe[:,0],Ve_e_Fe[:,1])
+plt.plot(Ve_e_Fe[:,0],line_feele, c='orange')
+plt.ylim(40,-60)
+plt.ylabel('Reduced Force on Elevator Control Wheel [N]')
+plt.xlabel('Reduced Equivalent Airspeed [m/s]')
+plt.show()
+
+# ##_______________________________________Flight test DATA_______________________________________##
+#
+# ##---------------------Cmdelta determination of matlab data-----------------------------------##
+# time_cg = time[33510:35911]
+# xcg_cg = np.array(xcg[33510:35911])
+# dxcg_cg1 = np.array([xcg_cg[i] - xcg_cg[i-1] for i in range(1,len(xcg_cg))])
+# dxcg_cg = min(dxcg_cg1)
+# de_cg = np.array(de[33510:35911])
+# dde_cg = (de_cg[2000] - de_cg[399]) * pi/180    #determined by exact time of interval stationary data
+# FUtot_cg = FUtot[33510:35911]
+# index = np.where(dxcg_cg1 == np.amin(dxcg_cg1))
+# W_cg = (masstot - FUtot_cg[2000])*g
+# h_cg = alt2[35512]
+# rho_cg = rho0 * pow((1 + (Tempgrad*h_cg)/Temp0),(-g/(R*Tempgrad) - 1))
+# Vtas_cg = TAS2[35512]
+# CN_cg = W_cg/(0.5*rho_cg*Vtas_cg**2*S)
+# Cmdelta_mat = -(1/dde_cg) * CN_cg * (dxcg_cg/c)
+# print('Cmdelta matlab =', Cmdelta_mat)
+#
+# ##-------------------------------Elevator Trim Curve Of Matlab Data------------------##
+# time_ele = time[29910:33511]
+# AOA_ele = np.array(AOA1[29910:33511])
+# de_ele = np.array(de[29910:33511])
+# Vtas_ele = np.array(TAS2[29910:33511])
+# h_ele = np.array(alt2[29910:33511])
+# rho_ele = rho0 * pow((1 + (Tempgrad*h_ele)/Temp0),(-g/(R*Tempgrad) - 1))
+# Ve_ele = Vtas_ele * np.sqrt(rho_ele/rho0)
+# FUtot_ele = np.array(FUtot[29910:33511])
+# W_ele = np.array([(masstot-FUtot_ele[i])*g for i in range(len(FUtot_ele))])
+# Ve_graph = Ve_ele * np.sqrt(Ws/W_ele)
+# # print(len(Ve_graph))
+# Tc = totalthrustele_mat/(0.5*rho_ele*Ve_graph**2*S)
+# Tcs = 1/(0.5*rho_ele*Ve_graph**2*d_eng**2)    ###vind echte waarde voor thrust met die exe
+# de_elemat = de_ele - (1/Cmdelta_mat * Cmtc) * (Tcs - Tc)
+# # print(len(de_elemat))
+#
 # plt.grid()
-# plt.scatter(Ve_e,Fe)
-# plt.ylim(70,-40)
+# plt.scatter(Ve_graph[:,0],de_elemat[:,0], marker='.')
+# plt.ylim(2,-1)
+# plt.ylabel('- Deflection Elevator [deg]')
+# plt.xlabel('Ve_ele^*')
+# plt.show()
+#
+# deda_mat, b_mat = np.polyfit(AOA_ele[:,0], de_elemat[:,0],1)
+# plt.grid()
+# plt.scatter(AOA_ele[:,0],de_elemat[:,0],marker='.')
+# plt.ylim(2,-1)
+# plt.ylabel('-delta_e')
+# plt.xlabel('AOA')
+# plt.show()
+#
+# Cmalpha_mat = -deda_mat * Cmdelta_mat
+# print('Cmalpha matlab =', Cmalpha_mat)
+#
+# Femea_mat = np.array(Fele[29910:33511])
+# Fele_mat = Femea_mat * Ws/W_ele
+# plt.grid()
+# plt.scatter(Ve_graph[:,0],Fele_mat[:,0], marker='.')
+# plt.ylim(70,-50)
 # plt.ylabel('-Fe')
 # plt.xlabel('Ve_e')
 # plt.show()
-
-##_______________________________________Flight test DATA_______________________________________##
-
-##---------------------Cmdelta determination of matlab data-----------------------------------##
-time_cg = time[33510:35911]
-xcg_cg = np.array(xcg[33510:35911])
-dxcg_cg1 = np.array([xcg_cg[i] - xcg_cg[i-1] for i in range(1,len(xcg_cg))])
-dxcg_cg = min(dxcg_cg1)
-de_cg = np.array(de[33510:35911])
-dde_cg = (de_cg[2000] - de_cg[399]) * pi/180    #determined by exact time of interval stationary data
-FUtot_cg = FUtot[33510:35911]
-index = np.where(dxcg_cg1 == np.amin(dxcg_cg1))
-W_cg = (masstot - FUtot_cg[2000])*g
-h_cg = alt2[35512]
-rho_cg = rho0 * pow((1 + (Tempgrad*h_cg)/Temp0),(-g/(R*Tempgrad) - 1))
-Vtas_cg = TAS2[35512]
-CN_cg = W_cg/(0.5*rho_cg*Vtas_cg**2*S)
-Cmdelta_mat = -(1/dde_cg) * CN_cg * (dxcg_cg/c)
-print('Cmdelta matlab =', Cmdelta_mat)
-
-##-------------------------------Elevator Trim Curve Of Matlab Data------------------##
-time_ele = time[29910:33511]
-AOA_ele = np.array(AOA1[29910:33511])
-de_ele = np.array(de[29910:33511])
-Vtas_ele = np.array(TAS2[29910:33511])
-h_ele = np.array(alt2[29910:33511])
-rho_ele = rho0 * pow((1 + (Tempgrad*h_ele)/Temp0),(-g/(R*Tempgrad) - 1))
-Ve_ele = Vtas_ele * np.sqrt(rho_ele/rho0)
-FUtot_ele = np.array(FUtot[29910:33511])
-W_ele = np.array([(masstot-FUtot_ele[i])*g for i in range(len(FUtot_ele))])
-Ve_graph = Ve_ele * np.sqrt(Ws/W_ele)
-# print(len(Ve_graph))
-Tc = totalthrustele_mat/(0.5*rho_ele*Ve_graph**2*S)
-Tcs = 1/(0.5*rho_ele*Ve_graph**2*d_eng**2)    ###vind echte waarde voor thrust met die exe
-de_elemat = de_ele - (1/Cmdelta_mat * Cmtc) * (Tcs - Tc)
-# print(len(de_elemat))
-
-plt.grid()
-plt.scatter(Ve_graph[:,0],de_elemat[:,0], marker='.')
-plt.ylim(2,-1)
-plt.ylabel('- Deflection Elevator [deg]')
-plt.xlabel('Ve_ele^*')
-plt.show()
-
-deda_mat, b_mat = np.polyfit(AOA_ele[:,0], de_elemat[:,0],1)
-plt.grid()
-plt.scatter(AOA_ele[:,0],de_elemat[:,0],marker='.')
-plt.ylim(2,-1)
-plt.ylabel('-delta_e')
-plt.xlabel('AOA')
-plt.show()
-
-Cmalpha_mat = -deda_mat * Cmdelta_mat
-print('Cmalpha matlab =', Cmalpha_mat)
-
-Femea_mat = np.array(Fele[29910:33511])
-Fele_mat = Femea_mat * Ws/W_ele
-plt.grid()
-plt.scatter(Ve_graph[:,0],Fele_mat[:,0], marker='.')
-plt.ylim(70,-50)
-plt.ylabel('-Fe')
-plt.xlabel('Ve_e')
-plt.show()
-
-####-------------------------Comments----------------------------------#####
-# dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
-# xcgd = min(dxcg)
-# dde_cg1 = np.array([de_cg[i] - de_cg[i-1] for i in range(1,len(de_cg))])
+#
+# ####-------------------------Comments----------------------------------#####
+# # dxcg = np.array([[xcg[i] - xcg[i-1]] for i in range(1,len(xcg))])
+# # xcgd = min(dxcg)
+# # dde_cg1 = np.array([de_cg[i] - de_cg[i-1] for i in range(1,len(de_cg))])
