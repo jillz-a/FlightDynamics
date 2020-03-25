@@ -48,7 +48,7 @@ def GenSymmetricStateSys():
     A = -np.matmul(np.linalg.inv(C1),C2)
     B = -np.matmul(np.linalg.inv(C1),C3)
 
-    C = np.array([  [1, 0, 0, 0],
+    C = np.array([  [1/V0, 0, 0, 0],
                     [0, 1, 0, 0],
                     [0, 0, 1, 0],
                     [0, 0, 0, cbar/V]])
@@ -164,7 +164,9 @@ def CalcResponse(mode,inputparam):
     # Pole and zeroes map #
     plt.scatter(sys.pole().real, sys.pole().imag)
     #plt.scatter(sys.zero().real, sys.zero.imag)
-    plt.suptitle("Pole-Zero map")
+    plt.suptitle("Pole-Zero map, asymmetric")
+    plt.xlabel("Re")
+    plt.ylabel("Im")
     plt.grid()
     syspoles = sys.damp()
     print("------------------")
@@ -238,4 +240,4 @@ def CalcResponse(mode,inputparam):
     plt.show()
     return True
 
-#CalcResponse(0,1)
+CalcResponse(0,1)
